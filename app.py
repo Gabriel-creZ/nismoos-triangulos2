@@ -381,3 +381,70 @@ def index():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if not session.get('logged_in'):
+        return render_template("login.html")
+    
+    # Variables para la calculadora
+    calc_input = request.form.get('calc_input', '')
+    calc_result = request.form.get('calc_result', '')
+    
+    # Variables para el triángulo
+    resultados = None
+    imagen = None
+    
+    if request.method == 'POST':
+        # Manejar cálculo de la calculadora
+        if 'calc_input' in request.form:
+            try:
+                calc_result = str(eval(calc_input))
+            except:
+                calc_result = "Error"
+        
+        # Manejar cálculo del triángulo
+        else:
+            try:
+                def get_val(field):
+                    val = request.form.get(field)
+                    return float(val) if val and val.strip() != "" else None
+
+                a_val = get_val("lado_a")
+                b_val = get_val("lado_b")
+                c_val = get_val("lado_c")
+                A_val = get_val("angulo_A")
+                B_val = get_val("angulo_B")
+                C_val = get_val("angulo_C")
+                
+                (res_a, res_b, res_c, res_A, res_B, res_C), metodo = resolver_triangulo(a_val, b_val, c_val, A_val, B_val, C_val)
+                
+                perimetro = res_a + res_b + res_c
+                s = perimetro / 2
+                area = math.sqrt(s * (s - res_a) * (s - res_b) * (s - res_c))
+                
+                if metodo == "senos":
+                    imagen = graficar_triangulo_sen(res_a, res_b, res_c, res_A, res_B, res_C)
+                else:
+                    imagen = graficar_triangulo_cos(res_a, res_b, res_c, res_A, res_B, res_C)
+                
+                resultados = {
+                    'lado_a': f"{res_a:.2f}",
+                    'lado_b': f"{res_b:.2f}",
+                    'lado_c': f"{res_c:.2f}",
+                    'angulo_A': f"{res_A:.2f}",
+                    'angulo_B': f"{res_B:.2f}",
+                    'angulo_C': f"{res_C:.2f}",
+                    'perimetro': f"{perimetro:.2f}",
+                    'area': f"{area:.2f}",
+                    'metodo': metodo
+                }
+                
+            except Exception as e:
+                flash(str(e))
+
+    return render_template("index.html",
+                         resultados=resultados,
+                         imagen=imagen,
+                         calc_input=calc_input,
+                         calc_result=calc_result)

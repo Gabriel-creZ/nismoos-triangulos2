@@ -3,14 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Acceso - NismoOS</title>
+  <title>Acceso - Instant Math Solver</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
   <div class="login-container">
-    <h2 class="login-title"><i class="fas fa-triangle"></i> Acceso al Sistema</h2>
+    <div class="login-logo">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo Instant Math Solver">
+    </div>
+    <h2 class="login-title">Acceso para el Usuario AMRD 🦌</h2>
     
     {% with messages = get_flashed_messages() %}
       {% if messages %}
@@ -31,16 +34,16 @@
         <label for="password"><i class="fas fa-key"></i> Contraseña:</label>
         <input type="password" name="password" id="password" placeholder="Ingrese su contraseña" required>
       </div>
-      <button type="submit" class="btn">
+      <button type="submit" class="login-btn">
         <i class="fas fa-sign-in-alt"></i> Ingresar
       </button>
     </form>
-    
-    <div class="footer">
-      <a href="https://bachantoniomadna.milaulas.com" target="_blank">
-        @ 2025 NismoOS - Herramienta educativa desarrollada por Gabriel Castillo, Alumno AMRD
-      </a>
-    </div>
+  </div>
+  
+  <div class="page-footer">
+    <a href="https://bachantoniomadna.milaulas.com" target="_blank">
+      @ 2025 Instant Math Solver - Herramienta con fines educativos desarrollada por Gabriel Castillo - Alumno AMRD
+    </a>
   </div>
 </body>
 </html>

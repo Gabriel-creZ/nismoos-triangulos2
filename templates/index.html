@@ -3,153 +3,87 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NismoOS: Resolución de Triángulos</title>
+  <title>Instant Math Solver: Resolución de Triángulos 🧮</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
   {% if not session.get('logged_in') %}
-    <div class="login-container">
-      <div class="login-logo">
-        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo NismoOS">
-      </div>
-      <h2 class="login-title"><i class="fas fa-triangle"></i> Acceso al Sistema</h2>
-      
-      {% with messages = get_flashed_messages() %}
-        {% if messages %}
-          <div class="error-message">
-            {% for msg in messages %}
-              <p><i class="fas fa-exclamation-circle"></i> {{ msg }}</p>
-            {% endfor %}
-          </div>
-        {% endif %}
-      {% endwith %}
-      
-      <form method="POST" action="{{ url_for('login') }}" class="login-form">
-        <div class="form-group">
-          <label for="username"><i class="fas fa-user"></i> Usuario:</label>
-          <input type="text" name="username" id="username" placeholder="Ingrese su usuario" required>
-        </div>
-        <div class="form-group">
-          <label for="password"><i class="fas fa-key"></i> Contraseña:</label>
-          <input type="password" name="password" id="password" placeholder="Ingrese su contraseña" required>
-        </div>
-        <button type="submit" class="login-btn">
-          <i class="fas fa-sign-in-alt"></i> Ingresar
-        </button>
-      </form>
-      
-      <div class="footer">
-        <a href="https://bachantoniomadna.milaulas.com" target="_blank">
-          @ 2025 NismoOS - Herramienta educativa desarrollada por Gabriel Castillo, Alumno AMRD
-        </a>
-      </div>
-    </div>
+  <!-- Contenido del login -->
   {% else %}
-    <div class="container">
-      <header class="header">
-        <h1><i class="fas fa-triangle triangle-icon"></i> NismoOS: Resolución de Triángulos <i class="fas fa-triangle triangle-icon"></i></h1>
-        <p class="creator">By: <em>gabriel_cre</em></p>
-      </header>
+  <div class="container">
+    <header class="header">
+      <h1><i class="fas fa-triangle"></i> Instant Math Solver: Resolución de Triángulos 🧮 <i class="fas fa-triangle"></i></h1>
+      <p class="creator">By: <em>gabriel_cre</em></p>
+    </header>
 
-      <div class="decorative-image">
-        <img src="{{ url_for('static', filename='images/triangle-decor.png') }}" alt="Diseño decorativo">
+    <div class="content">
+      <!-- Formulario del triángulo -->
+      <div class="form-container">
+        <!-- ... (tu formulario existente) ... -->
       </div>
 
-      {% with messages = get_flashed_messages() %}
-        {% if messages %}
-          <div class="error-message">
-            {% for msg in messages %}
-              <p><i class="fas fa-exclamation-circle"></i> {{ msg }}</p>
-            {% endfor %}
-          </div>
-        {% endif %}
-      {% endwith %}
-
-      <div class="content">
-        <div class="form-container">
-          <h2 class="form-title"><i class="fas fa-calculator"></i> Datos del Triángulo</h2>
+      <!-- Calculadora -->
+      <div class="calculator-container">
+        <div class="calculator">
+          <h2 class="form-title"><i class="fas fa-calculator"></i> Calculadora Básica</h2>
           <form method="POST">
             <div class="form-group">
-              <label for="lado_a"><i class="fas fa-ruler-horizontal"></i> Lado a:</label>
-              <input type="text" name="lado_a" id="lado_a" placeholder="Ingrese longitud">
+              <input type="text" name="calc_input" value="{{ calc_input }}" class="calc-display" readonly>
+              <div class="calc-result">{{ calc_result }}</div>
             </div>
-            <div class="form-group">
-              <label for="lado_b"><i class="fas fa-ruler-horizontal"></i> Lado b:</label>
-              <input type="text" name="lado_b" id="lado_b" placeholder="Ingrese longitud">
+            <div class="calc-buttons">
+              <button type="button" class="calc-btn" onclick="addToDisplay('7')">7</button>
+              <button type="button" class="calc-btn" onclick="addToDisplay('8')">8</button>
+              <button type="button" class="calc-btn" onclick="addToDisplay('9')">9</button>
+              <button type="button" class="calc-btn operator" onclick="addToDisplay('+')">+</button>
+              
+              <button type="button" class="calc-btn" onclick="addToDisplay('4')">4</button>
+              <button type="button" class="calc-btn" onclick="addToDisplay('5')">5</button>
+              <button type="button" class="calc-btn" onclick="addToDisplay('6')">6</button>
+              <button type="button" class="calc-btn operator" onclick="addToDisplay('-')">-</button>
+              
+              <button type="button" class="calc-btn" onclick="addToDisplay('1')">1</button>
+              <button type="button" class="calc-btn" onclick="addToDisplay('2')">2</button>
+              <button type="button" class="calc-btn" onclick="addToDisplay('3')">3</button>
+              <button type="button" class="calc-btn operator" onclick="addToDisplay('*')">×</button>
+              
+              <button type="button" class="calc-btn" onclick="addToDisplay('0')">0</button>
+              <button type="button" class="calc-btn" onclick="addToDisplay('.')">.</button>
+              <button type="button" class="calc-btn" onclick="clearDisplay()">C</button>
+              <button type="button" class="calc-btn operator" onclick="addToDisplay('/')">÷</button>
+              
+              <button type="submit" class="calc-btn equal">=</button>
             </div>
-            <div class="form-group">
-              <label for="lado_c"><i class="fas fa-ruler-horizontal"></i> Lado c:</label>
-              <input type="text" name="lado_c" id="lado_c" placeholder="Ingrese longitud">
-            </div>
-            <div class="form-group">
-              <label for="angulo_A"><i class="fas fa-angle-right"></i> Ángulo α (alpha):</label>
-              <input type="text" name="angulo_A" id="angulo_A" placeholder="Ingrese grados">
-            </div>
-            <div class="form-group">
-              <label for="angulo_B"><i class="fas fa-angle-right"></i> Ángulo β (beta):</label>
-              <input type="text" name="angulo_B" id="angulo_B" placeholder="Ingrese grados">
-            </div>
-            <div class="form-group">
-              <label for="angulo_C"><i class="fas fa-angle-right"></i> Ángulo γ (gamma):</label>
-              <input type="text" name="angulo_C" id="angulo_C" placeholder="Ingrese grados">
-            </div>
-            <button type="submit" class="btn">
-              <i class="fas fa-calculator"></i> Resolver Triángulo
-            </button>
           </form>
         </div>
-
-        {% if resultados %}
-        <div class="results-container">
-          <h2 class="results-title"><i class="fas fa-chart-pie"></i> Resultados <small>(ley de {{ resultados.metodo }})</small></h2>
-          
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">📏</span> Lado a:</span>
-            <span class="result-value">{{ resultados.lado_a }} u</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">📏</span> Lado b:</span>
-            <span class="result-value">{{ resultados.lado_b }} u</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">📏</span> Lado c:</span>
-            <span class="result-value">{{ resultados.lado_c }} u</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">📐</span> Ángulo α:</span>
-            <span class="result-value">{{ resultados.angulo_A }}°</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">📐</span> Ángulo β:</span>
-            <span class="result-value">{{ resultados.angulo_B }}°</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">📐</span> Ángulo γ:</span>
-            <span class="result-value">{{ resultados.angulo_C }}°</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">⏱️</span> Perímetro:</span>
-            <span class="result-value">{{ resultados.perimetro }} u</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">🔵</span> Área:</span>
-            <span class="result-value">{{ resultados.area }} u²</span>
-          </div>
-          
-          <h3 style="text-align: center; margin-top: 25px;"><i class="fas fa-drafting-compass"></i> Gráfica del Triángulo</h3>
-          <img src="data:image/png;base64,{{ imagen }}" alt="Gráfica del triángulo" class="triangle-image">
-        </div>
-        {% endif %}
       </div>
 
-      <div class="footer">
-        <a href="https://bachantoniomadna.milaulas.com" target="_blank">
-          @ 2025 NismoOS - Herramienta educativa desarrollada por Gabriel Castillo, Alumno AMRD
-        </a>
+      <!-- Resultados del triángulo -->
+      {% if resultados %}
+      <div class="results-container">
+        <!-- ... (tus resultados existentes) ... -->
       </div>
+      {% endif %}
     </div>
+
+    <div class="page-footer">
+      <a href="https://bachantoniomadna.milaulas.com" target="_blank">
+        @ 2025 Instant Math Solver - Herramienta con fines educativos desarrollada por Gabriel Castillo - Alumno AMRD
+      </a>
+    </div>
+  </div>
   {% endif %}
+
+  <script>
+  function addToDisplay(value) {
+    document.querySelector('input[name="calc_input"]').value += value;
+  }
+
+  function clearDisplay() {
+    document.querySelector('input[name="calc_input"]').value = '';
+  }
+  </script>
 </body>
 </html>
