@@ -95,54 +95,54 @@ def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None,
     if num_angles == 1 and num_sides == 2:
         if angulo_A is not None and lado_a is not None:
             if lado_b is not None:
-                sinB = lado_b * math.sin(math.radians(angulo_A)) / lado_a
+                sinB = (lado_b * math.sin(math.radians(angulo_A))) / lado_a
                 if sinB < -1 or sinB > 1:
                     raise ValueError("No hay solución, ya que sin(β) está fuera de rango.")
                 angulo_B = math.degrees(math.asin(sinB))
                 angulo_C = 180 - angulo_A - angulo_B
-                lado_c = lado_a * math.sin(math.radians(angulo_C)) / math.sin(math.radians(angulo_A))
+                lado_c = (lado_a * math.sin(math.radians(angulo_C))) / math.sin(math.radians(angulo_A))
                 return lado_a, lado_b, lado_c, angulo_A, angulo_B, angulo_C
             elif lado_c is not None:
-                sinC = lado_c * math.sin(math.radians(angulo_A)) / lado_a
+                sinC = (lado_c * math.sin(math.radians(angulo_A))) / lado_a
                 if sinC < -1 or sinC > 1:
                     raise ValueError("No hay solución, ya que sin(γ) está fuera de rango.")
                 angulo_C = math.degrees(math.asin(sinC))
                 angulo_B = 180 - angulo_A - angulo_C
-                lado_b = lado_a * math.sin(math.radians(angulo_B)) / math.sin(math.radians(angulo_A))
+                lado_b = (lado_a * math.sin(math.radians(angulo_B))) / math.sin(math.radians(angulo_A))
                 return lado_a, lado_b, lado_c, angulo_A, angulo_B, angulo_C
         if angulo_B is not None and lado_b is not None:
             if lado_a is not None:
-                sinA = lado_a * math.sin(math.radians(angulo_B)) / lado_b
+                sinA = (lado_a * math.sin(math.radians(angulo_B))) / lado_b
                 if sinA < -1 or sinA > 1:
                     raise ValueError("No hay solución, ya que sin(α) está fuera de rango.")
                 angulo_A = math.degrees(math.asin(sinA))
                 angulo_C = 180 - angulo_A - angulo_B
-                lado_c = lado_b * math.sin(math.radians(angulo_C)) / math.sin(math.radians(angulo_B))
+                lado_c = (lado_b * math.sin(math.radians(angulo_C))) / math.sin(math.radians(angulo_B))
                 return lado_a, lado_b, lado_c, angulo_A, angulo_B, angulo_C
             elif lado_c is not None:
-                sinC = lado_c * math.sin(math.radians(angulo_B)) / lado_b
+                sinC = (lado_c * math.sin(math.radians(angulo_B))) / lado_b
                 if sinC < -1 or sinC > 1:
                     raise ValueError("No hay solución, ya que sin(γ) está fuera de rango.")
                 angulo_C = math.degrees(math.asin(sinC))
                 angulo_A = 180 - angulo_B - angulo_C
-                lado_a = lado_b * math.sin(math.radians(angulo_A)) / math.sin(math.radians(angulo_B))
+                lado_a = (lado_b * math.sin(math.radians(angulo_A))) / math.sin(math.radians(angulo_B))
                 return lado_a, lado_b, lado_c, angulo_A, angulo_B, angulo_C
         if angulo_C is not None and lado_c is not None:
             if lado_a is not None:
-                sinA = lado_a * math.sin(math.radians(angulo_C)) / lado_c
+                sinA = (lado_a * math.sin(math.radians(angulo_C))) / lado_c
                 if sinA < -1 or sinA > 1:
                     raise ValueError("No hay solución, ya que sin(α) está fuera de rango.")
                 angulo_A = math.degrees(math.asin(sinA))
                 angulo_B = 180 - angulo_A - angulo_C
-                lado_b = lado_a * math.sin(math.radians(angulo_B)) / math.sin(math.radians(angulo_A))
+                lado_b = (lado_a * math.sin(math.radians(angulo_B))) / math.sin(math.radians(angulo_A))
                 return lado_a, lado_b, lado_c, angulo_A, angulo_B, angulo_C
             elif lado_b is not None:
-                sinB = lado_b * math.sin(math.radians(angulo_C)) / lado_c
+                sinB = (lado_b * math.sin(math.radians(angulo_C))) / lado_c
                 if sinB < -1 or sinB > 1:
                     raise ValueError("No hay solución, ya que sin(β) está fuera de rango.")
                 angulo_B = math.degrees(math.asin(sinB))
                 angulo_A = 180 - angulo_B - angulo_C
-                lado_a = lado_b * math.sin(math.radians(angulo_A)) / math.sin(math.radians(angulo_B))
+                lado_a = (lado_b * math.sin(math.radians(angulo_A))) / math.sin(math.radians(angulo_B))
                 return lado_a, lado_b, lado_c, angulo_A, angulo_B, angulo_C
     raise ValueError("No se pudo determinar el triángulo con la información proporcionada.")
 
@@ -196,82 +196,82 @@ def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
 
     # Caso SAS: dos lados y el ángulo incluido
     if a is not None and b is not None and C is not None:
-        c = math.sqrt(a**2 + b**2 - 2 * a * b * math.cos(math.radians(C))))
-        A = math.degrees(math.asin(a * math.sin(math.radians(C)) / c)))
+        c = math.sqrt(a**2 + b**2 - 2 * a * b * math.cos(math.radians(C)))
+        A = math.degrees(math.asin(a * math.sin(math.radians(C)) / c))
         B = 180 - C - A
         return a, b, c, A, B, C
     if a is not None and c is not None and B is not None:
-        b = math.sqrt(a**2 + c**2 - 2 * a * c * math.cos(math.radians(B))))
-        A = math.degrees(math.asin(a * math.sin(math.radians(B)) / b)))
+        b = math.sqrt(a**2 + c**2 - 2 * a * c * math.cos(math.radians(B)))
+        A = math.degrees(math.asin(a * math.sin(math.radians(B)) / b))
         C = 180 - B - A
         return a, b, c, A, B, C
     if b is not None and c is not None and A is not None:
-        a = math.sqrt(b**2 + c**2 - 2 * b * c * math.cos(math.radians(A))))
-        B = math.degrees(math.asin(b * math.sin(math.radians(A)) / a)))
+        a = math.sqrt(b**2 + c**2 - 2 * b * c * math.cos(math.radians(A)))
+        B = math.degrees(math.asin(b * math.sin(math.radians(A)) / a))
         C = 180 - A - B
         return a, b, c, A, B, C
 
     # Caso ASA/AAS: 2 ángulos y 1 lado
     if sum(x is not None for x in [A, B, C]) >= 2 and sum(x is not None for x in [a, b, c]) == 1:
         if a is not None:
-            k = a / math.sin(math.radians(A)))
-            b = k * math.sin(math.radians(B)))
-            c = k * math.sin(math.radians(C)))
+            k = a / math.sin(math.radians(A))
+            b = k * math.sin(math.radians(B))
+            c = k * math.sin(math.radians(C))
         elif b is not None:
-            k = b / math.sin(math.radians(B)))
-            a = k * math.sin(math.radians(A)))
-            c = k * math.sin(math.radians(C)))
+            k = b / math.sin(math.radians(B))
+            a = k * math.sin(math.radians(A))
+            c = k * math.sin(math.radians(C))
         elif c is not None:
-            k = c / math.sin(math.radians(C)))
-            a = k * math.sin(math.radians(A)))
-            b = k * math.sin(math.radians(B)))
+            k = c / math.sin(math.radians(C))
+            a = k * math.sin(math.radians(A))
+            b = k * math.sin(math.radians(B))
         return a, b, c, A, B, C
 
     # Caso SSA: 2 lados y un ángulo opuesto a uno de ellos
     if a is not None and b is not None and A is not None:
-        ratio = b * math.sin(math.radians(A)) / a
+        ratio = (b * math.sin(math.radians(A))) / a
         if ratio > 1 or ratio < -1:
             raise ValueError("No hay solución real para el caso SSA (a, b, α).")
         B1 = math.degrees(math.asin(ratio))
         if A + B1 < 180:
             B = B1
             C = 180 - A - B
-            c = a * math.sin(math.radians(C)) / math.sin(math.radians(A))
+            c = (a * math.sin(math.radians(C))) / math.sin(math.radians(A))
             return a, b, c, A, B, C
         else:
             B = 180 - B1
             C = 180 - A - B
-            c = a * math.sin(math.radians(C)) / math.sin(math.radians(A))
+            c = (a * math.sin(math.radians(C))) / math.sin(math.radians(A))
             return a, b, c, A, B, C
     if a is not None and c is not None and A is not None:
-        ratio = c * math.sin(math.radians(A)) / a
+        ratio = (c * math.sin(math.radians(A))) / a
         if ratio > 1 or ratio < -1:
             raise ValueError("No hay solución real para el caso SSA (a, c, α).")
         C1 = math.degrees(math.asin(ratio))
         if A + C1 < 180:
             C = C1
             B = 180 - A - C
-            b = a * math.sin(math.radians(B)) / math.sin(math.radians(A))
+            b = (a * math.sin(math.radians(B))) / math.sin(math.radians(A))
             return a, b, c, A, B, C
         else:
             C = 180 - C1
             B = 180 - A - C
-            b = a * math.sin(math.radians(B)) / math.sin(math.radians(A))
+            b = (a * math.sin(math.radians(B))) / math.sin(math.radians(A))
             return a, b, c, A, B, C
     if b is not None and c is not None and B is not None:
-        ratio = c * math.sin(math.radians(B)) / b
+        ratio = (c * math.sin(math.radians(B))) / b
         if ratio > 1 or ratio < -1:
             raise ValueError("No hay solución real para el caso SSA (b, c, β).")
         C1 = math.degrees(math.asin(ratio))
         if B + C1 < 180:
             C = C1
             A = 180 - B - C
-            a = b * math.sin(math.radians(A)) / math.sin(math.radians(B))
+            a = (b * math.sin(math.radians(A))) / math.sin(math.radians(B))
             return a, b, c, A, B, C
         else:
             C = 180 - C1
             A = 180 - B - C
-            a = b * math.sin(math.radians(A)) / math.sin(math.radians(B))
+            a = (b * math.sin(math.radians(A))) / math.sin(math.radians(B))
             return a, b, c, A, B, C
 
     raise ValueError("No se pudo resolver el triángulo con la información dada.")
@@ -279,7 +279,7 @@ def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
 def graficar_triangulo_cos(a, b, c, A, B, C):
     A_point = (0, 0)
     B_point = (c, 0)
-    C_point = (b * math.cos(math.radians(A))), b * math.sin(math.radians(A))))
+    C_point = (b * math.cos(math.radians(A))), b * math.sin(math.radians(A))
     
     plt.figure()
     plt.plot([A_point[0], B_point[0]], [A_point[1], B_point[1]], 'g-', label='Lado c')
@@ -395,3 +395,4 @@ def index():
 
 if __name__ == "__main__":
     app.run(debug=True)
+    
