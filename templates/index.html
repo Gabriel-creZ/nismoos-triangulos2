@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Instant Math Solver: Resolución de Triángulos 🧮</title>
+  <title>Instant Math Solver: Resolución de Triángulos</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -14,7 +14,7 @@
       <div class="login-logo">
         <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo Instant Math Solver">
       </div>
-      <h2 class="login-title">Acceso para el Usuario AMRD 🦌</h2>
+      <h2 class="login-title"><i class="fas fa-triangle"></i> Acceso para el Usuario AMRD 🦌</h2>
       
       {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -39,31 +39,41 @@
           <i class="fas fa-sign-in-alt"></i> Ingresar
         </button>
       </form>
-    </div>
-    
-    <div class="page-footer">
-      <a href="https://bachantoniomadna.milaulas.com" target="_blank">
-        @ 2025 Instant Math Solver - Herramienta con fines educativos desarrollada por Gabriel Castillo - Alumno AMRD
-      </a>
+      
+      <div class="footer">
+        <a href="https://bachantoniomadna.milaulas.com" target="_blank">
+          @ 2025 Instant Math Solver - Herramienta con fines educativos desarrollada por Gabriel Castillo - Alumno AMRD
+        </a>
+      </div>
     </div>
   {% else %}
     <div class="container">
       <header class="header">
-        <h1><i class="fas fa-triangle"></i> Instant Math Solver: Resolución de Triángulos 🧮 <i class="fas fa-triangle"></i></h1>
+        <h1><i class="fas fa-triangle triangle-icon"></i> Instant Math Solver: Resolución De Triángulos 🧮 <i class="fas fa-triangle triangle-icon"></i></h1>
         <p class="creator">By: <em>gabriel_cre</em></p>
       </header>
+
+      <div class="decorative-image">
+        <img src="{{ url_for('static', filename='images/triangle-decor.png') }}" alt="Diseño decorativo">
+      </div>
+
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div class="error-message">
+            {% for msg in messages %}
+              <p><i class="fas fa-exclamation-circle"></i> {{ msg }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
 
       <div class="content">
         <div class="form-container">
           <h2 class="form-title"><i class="fas fa-calculator"></i> Datos del Triángulo</h2>
-          
-          <div class="instruction-message">
-            Ingresa al menos 3 datos para resolver el triángulo, pueden ser lados o ángulos. ✅
-            <span class="example-text">
-              Ejemplo: α = 80°, β = 20°, b = 7
-            </span>
+          <div class="instruction">
+            Ingresa al menos 3 datos para resolver el triángulo, pueden ser lados o ángulos. ✅<br>
+            Ejemplo: α = 80°, β = 20°, b = 7
           </div>
-
           <form method="POST">
             <div class="form-group">
               <label for="lado_a"><i class="fas fa-ruler-horizontal"></i> Lado a:</label>
@@ -95,15 +105,114 @@
           </form>
         </div>
 
-        <!-- Calculadora y resultados aquí -->
+        {% if resultados %}
+        <div class="results-container">
+          <h2 class="results-title"><i class="fas fa-chart-pie"></i> Resultados <small>(ley de {{ resultados.metodo }})</small></h2>
+          
+          <div class="result-item">
+            <span class="result-label"><span class="emoji">📏</span> Lado a:</span>
+            <span class="result-value">{{ resultados.lado_a }} u</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label"><span class="emoji">📏</span> Lado b:</span>
+            <span class="result-value">{{ resultados.lado_b }} u</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label"><span class="emoji">📏</span> Lado c:</span>
+            <span class="result-value">{{ resultados.lado_c }} u</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label"><span class="emoji">📐</span> Ángulo α:</span>
+            <span class="result-value">{{ resultados.angulo_A }}°</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label"><span class="emoji">📐</span> Ángulo β:</span>
+            <span class="result-value">{{ resultados.angulo_B }}°</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label"><span class="emoji">📐</span> Ángulo γ:</span>
+            <span class="result-value">{{ resultados.angulo_C }}°</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label"><span class="emoji">⏱️</span> Perímetro:</span>
+            <span class="result-value">{{ resultados.perimetro }} u</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label"><span class="emoji">🔵</span> Área:</span>
+            <span class="result-value">{{ resultados.area }} u²</span>
+          </div>
+          
+          <h3 style="text-align: center; margin-top: 25px;"><i class="fas fa-drafting-compass"></i> Gráfica del Triángulo</h3>
+          <img src="data:image/png;base64,{{ imagen }}" alt="Gráfica del triángulo" class="triangle-image">
+        </div>
+        {% endif %}
+
+        <div class="calculator-container">
+          <h2 class="calculator-title"><i class="fas fa-calculator"></i> Calculadora Básica</h2>
+          <div class="calculator">
+            <input type="text" class="calculator-display" id="calc-display" readonly>
+            <div class="calculator-buttons">
+              <button class="calc-btn" onclick="appendToDisplay('7')">7</button>
+              <button class="calc-btn" onclick="appendToDisplay('8')">8</button>
+              <button class="calc-btn" onclick="appendToDisplay('9')">9</button>
+              <button class="calc-btn operator" onclick="appendToDisplay('+')">+</button>
+              <button class="calc-btn" onclick="appendToDisplay('4')">4</button>
+              <button class="calc-btn" onclick="appendToDisplay('5')">5</button>
+              <button class="calc-btn" onclick="appendToDisplay('6')">6</button>
+              <button class="calc-btn operator" onclick="appendToDisplay('-')">-</button>
+              <button class="calc-btn" onclick="appendToDisplay('1')">1</button>
+              <button class="calc-btn" onclick="appendToDisplay('2')">2</button>
+              <button class="calc-btn" onclick="appendToDisplay('3')">3</button>
+              <button class="calc-btn operator" onclick="appendToDisplay('*')">×</button>
+              <button class="calc-btn" onclick="appendToDisplay('0')">0</button>
+              <button class="calc-btn" onclick="appendToDisplay('.')">.</button>
+              <button class="calc-btn" onclick="clearDisplay()">C</button>
+              <button class="calc-btn operator" onclick="appendToDisplay('/')">÷</button>
+              <button class="calc-btn equals" onclick="calculateExpression()">=</button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="page-footer">
+      <div class="footer">
         <a href="https://bachantoniomadna.milaulas.com" target="_blank">
           @ 2025 Instant Math Solver - Herramienta con fines educativos desarrollada por Gabriel Castillo - Alumno AMRD
         </a>
       </div>
     </div>
+
+    <script>
+      function appendToDisplay(value) {
+        document.getElementById('calc-display').value += value;
+      }
+
+      function clearDisplay() {
+        document.getElementById('calc-display').value = '';
+      }
+
+      function calculateExpression() {
+        const display = document.getElementById('calc-display');
+        const expression = display.value;
+        
+        if (expression) {
+          fetch('/calculate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `expression=${encodeURIComponent(expression)}`
+          })
+          .then(response => response.text())
+          .then(result => {
+            display.value = result;
+          })
+          .catch(error => {
+            display.value = 'Error';
+            console.error('Error:', error);
+          });
+        }
+      }
+    </script>
   {% endif %}
 </body>
 </html>
