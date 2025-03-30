@@ -11,16 +11,10 @@
 <body>
   <div class="login-container">
     <a href="https://bachantoniomadna.milaulas.com" target="_blank" class="label-image-container">
-      <img src="{{ url_for('static', filename='images/label-image.png') }}" alt="Logo Instant Math Solver" class="label-image">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo Instant Math Solver" class="logo">
     </a>
     
     <h2 class="login-title"><i class="fas fa-triangle"></i> Acceso para el Usuario AMRD 🦌</h2>
-    
-    <div class="equation-link">
-      <a href="https://ejemplo.com/ecuaciones" target="_blank">
-        <i class="fas fa-external-link-alt"></i> Da click aquí para resolver Ecuaciones 2x2 y graficarlas
-      </a>
-    </div>
     
     {% with messages = get_flashed_messages() %}
       {% if messages %}
