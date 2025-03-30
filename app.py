@@ -7,7 +7,7 @@ import io
 import base64
 
 app = Flask(__name__)
-app.secret_key = 'tu_clave_secreta'  # Cambia esto por una clave más segura en producción
+app.secret_key = 'j350z271123r'  # Cambia esto por una clave más segura en producción
 
 # Configuración de sesión (para mantener el login activo)
 app.config['SESSION_PERMANENT'] = True
@@ -395,4 +395,3 @@ def index():
 
 if __name__ == "__main__":
     app.run(debug=True)
-    
