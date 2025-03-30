@@ -51,6 +51,13 @@
       <header class="header">
         <h1><i class="fas fa-triangle triangle-icon"></i> Instant Math Solver: Resolución De Triángulos 🧮 <i class="fas fa-triangle triangle-icon"></i></h1>
         <p class="creator">By: <em>gabriel_cre</em></p>
+        
+        <!-- Nuevo enlace añadido aquí debajo del título -->
+        <div class="equation-link">
+          <a href="https://ejemplo.com/ecuaciones" target="_blank">
+            <i class="fas fa-external-link-alt"></i> Da click aquí para resolver Ecuaciones 2x2 y graficarlas
+          </a>
+        </div>
       </header>
 
       <div class="decorative-image">
@@ -146,84 +153,14 @@
           <img src="data:image/png;base64,{{ imagen }}" alt="Gráfica del triángulo" class="triangle-image">
         </div>
         {% endif %}
-
-        <div class="calculator-container">
-          <h2 class="calculator-title"><i class="fas fa-calculator"></i> Calculadora Avanzada</h2>
-          <div class="calculator">
-            <input type="text" class="calculator-display" id="calc-display" readonly>
-            <div class="calculator-buttons">
-              <button class="calc-btn" onclick="appendToDisplay('7')">7</button>
-              <button class="calc-btn" onclick="appendToDisplay('8')">8</button>
-              <button class="calc-btn" onclick="appendToDisplay('9')">9</button>
-              <button class="calc-btn operator" onclick="appendToDisplay('+')">+</button>
-              <button class="calc-btn function" onclick="appendToDisplay('Math.sqrt(')">√</button>
-              
-              <button class="calc-btn" onclick="appendToDisplay('4')">4</button>
-              <button class="calc-btn" onclick="appendToDisplay('5')">5</button>
-              <button class="calc-btn" onclick="appendToDisplay('6')">6</button>
-              <button class="calc-btn operator" onclick="appendToDisplay('-')">-</button>
-              <button class="calc-btn function" onclick="appendToDisplay('**')">^</button>
-              
-              <button class="calc-btn" onclick="appendToDisplay('1')">1</button>
-              <button class="calc-btn" onclick="appendToDisplay('2')">2</button>
-              <button class="calc-btn" onclick="appendToDisplay('3')">3</button>
-              <button class="calc-btn operator" onclick="appendToDisplay('*')">×</button>
-              <button class="calc-btn" onclick="appendToDisplay('(')">(</button>
-              
-              <button class="calc-btn" onclick="appendToDisplay('0')">0</button>
-              <button class="calc-btn" onclick="appendToDisplay('.')">.</button>
-              <button class="calc-btn" onclick="clearDisplay()">C</button>
-              <button class="calc-btn operator" onclick="appendToDisplay('/')">÷</button>
-              <button class="calc-btn" onclick="appendToDisplay(')')">)</button>
-              
-              <button class="calc-btn equals" onclick="calculateExpression()">=</button>
-            </div>
-          </div>
-        </div>
       </div>
 
       <div class="footer">
         <a href="https://bachantoniomadna.milaulas.com" target="_blank">
           @ 2025 Instant Math Solver - Herramienta con fines educativos desarrollada por Gabriel Castillo - Alumno AMRD
         </a>
-        <a href="https://ejemplo.com/ecuaciones" target="_blank">
-          <i class="fas fa-external-link-alt"></i> Da click aquí para resolver Ecuaciones 2x2 y graficarlas
-        </a>
       </div>
     </div>
-
-    <script>
-      function appendToDisplay(value) {
-        document.getElementById('calc-display').value += value;
-      }
-
-      function clearDisplay() {
-        document.getElementById('calc-display').value = '';
-      }
-
-      function calculateExpression() {
-        const display = document.getElementById('calc-display');
-        const expression = display.value;
-        
-        if (expression) {
-          fetch('/calculate', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `expression=${encodeURIComponent(expression)}`
-          })
-          .then(response => response.text())
-          .then(result => {
-            display.value = result;
-          })
-          .catch(error => {
-            display.value = 'Error';
-            console.error('Error:', error);
-          });
-        }
-      }
-    </script>
   {% endif %}
 </body>
 </html>
