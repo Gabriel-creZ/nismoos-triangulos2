@@ -7,44 +7,11 @@ import io
 import base64
 
 app = Flask(__name__)
-app.secret_key = 'j350z271123r'  # Cambia esto por una clave más segura en producción
+app.secret_key = 'j350z271123r'
 
 # Configuración de sesión (para mantener el login activo)
 app.config['SESSION_PERMANENT'] = True
 app.config['PERMANENT_SESSION_LIFETIME'] = 3600  # 1 hora en segundos
-
-# Ruta para el login
-@app.route('/login', methods=['POST'])
-def login():
-    username = request.form.get('username')
-    password = request.form.get('password')
-    
-    if username == 'alumno' and password == 'amrd':
-        session['logged_in'] = True
-        return redirect(url_for('index'))
-    else:
-        flash('Usuario o contraseña incorrectos')
-        return redirect(url_for('index'))
-
-# Ruta para logout
-@app.route('/logout')
-def logout():
-    session.pop('logged_in', None)
-    return redirect(url_for('index'))
-
-# Ruta para calculadora
-@app.route('/calculate', methods=['POST'])
-def calculate():
-    if not session.get('logged_in'):
-        return redirect(url_for('index'))
-    
-    try:
-        expression = request.form.get('expression')
-        result = str(eval(expression))
-    except:
-        result = "Error"
-    
-    return result
 
 # ---------------------------
 # Funciones para ley de senos
@@ -151,7 +118,7 @@ def graficar_triangulo_sen(lado_a, lado_b, lado_c, angulo_A, angulo_B, angulo_C)
     B_point = (lado_c, 0)
     C_point = (lado_b * math.cos(math.radians(angulo_A)), lado_b * math.sin(math.radians(angulo_A)))
     
-    plt.figure()
+    plt.figure(figsize=(7,7))
     plt.plot([A_point[0], B_point[0]], [A_point[1], B_point[1]], 'b-', label='Lado c')
     plt.plot([A_point[0], C_point[0]], [A_point[1], C_point[1]], 'r-', label='Lado b')
     plt.plot([B_point[0], C_point[0]], [B_point[1], C_point[1]], 'g-', label='Lado a')
@@ -279,9 +246,9 @@ def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
 def graficar_triangulo_cos(a, b, c, A, B, C):
     A_point = (0, 0)
     B_point = (c, 0)
-    C_point = (b * math.cos(math.radians(A))), b * math.sin(math.radians(A))
+    C_point = (b * math.cos(math.radians(A)), b * math.sin(math.radians(A)))
     
-    plt.figure()
+    plt.figure(figsize=(7,7))
     plt.plot([A_point[0], B_point[0]], [A_point[1], B_point[1]], 'g-', label='Lado c')
     plt.plot([A_point[0], C_point[0]], [A_point[1], C_point[1]], 'r-', label='Lado b')
     plt.plot([B_point[0], C_point[0]], [B_point[1], C_point[1]], 'b-', label='Lado a')
@@ -343,16 +310,41 @@ def resolver_triangulo(a, b, c, A, B, C):
         return calcular_triangulo_cos(a=a, b=b, c=c, A=A, B=B, C=C), method
 
 # ---------------------------
-# Ruta principal de la aplicación
+# Rutas de la aplicación
 # ---------------------------
+
+# Ruta para el login (GET y POST)
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        # Usuario fijo: alumno / amrd
+        if username == 'alumno' and password == 'amrd':
+            session['logged_in'] = True
+            session['user'] = username
+            return redirect(url_for('index'))
+        else:
+            flash('Usuario o contraseña incorrectos, intente de nuevo.')
+            return render_template("login.html")
+    return render_template("login.html")
+
+# Ruta para logout
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    flash("Sesión cerrada correctamente.")
+    return redirect(url_for('login'))
+
+# Ruta principal: formulario y resultados
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    # Verificar si el usuario está logueado
     if not session.get('logged_in'):
-        return render_template("login.html")
+        return redirect(url_for('login'))
     
     if request.method == 'POST':
         try:
+            # Función auxiliar para extraer valores numéricos
             def get_val(field):
                 val = request.form.get(field)
                 return float(val) if val and val.strip() != "" else None
