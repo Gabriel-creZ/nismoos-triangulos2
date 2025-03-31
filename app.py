@@ -7,7 +7,7 @@ import io
 import base64
 
 app = Flask(__name__)
-app.secret_key = 'j350z271123r'  # Clave de seguridad
+app.secret_key = 'j350z271123r'  # Cambia esto por una clave más segura en producción
 
 # Configuración de sesión (para mantener el login activo)
 app.config['SESSION_PERMANENT'] = True
@@ -303,7 +303,6 @@ def resolver_triangulo(a, b, c, A, B, C):
 # ---------------------------
 # Rutas de la aplicación
 # ---------------------------
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
