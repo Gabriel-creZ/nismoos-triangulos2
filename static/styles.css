@@ -12,6 +12,7 @@
   --button-hover: #81c784;
 }
 
+/* Fondo general con color verde */
 body {
   font-family: 'Poppins', sans-serif;
   background-color: var(--background-color);
@@ -25,9 +26,19 @@ body {
   align-items: center;
 }
 
-/* Estilos para la imagen label */
+/* Contenedor blanco central */
+.container {
+  background: white;
+  max-width: 600px;
+  width: 90%;
+  margin: 40px auto;
+  padding: 20px 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Imagen label centrada dentro del contenedor blanco */
 .label-image-container {
-  display: block;
   text-align: center;
   margin-bottom: 20px;
 }
@@ -35,8 +46,8 @@ body {
 .label-image {
   max-width: 200px;
   height: auto;
-  transition: transform 0.3s ease;
   border-radius: 10px;
+  transition: transform 0.3s ease;
 }
 
 .label-image:hover {
@@ -44,24 +55,38 @@ body {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
+/* Login container (también usa contenedor blanco) */
 .login-container {
+  background: white;
   max-width: 400px;
+  width: 90%;
   margin: 50px auto;
-  background-color: white;
   padding: 30px;
   border-radius: 15px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   text-align: center;
-  width: 90%;
 }
 
+/* Títulos y textos */
 .login-title {
   font-size: 1.8rem;
   margin-bottom: 20px;
   color: var(--primary-color);
 }
 
-/* Estilos para el enlace de ecuaciones */
+.header h1 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.creator {
+  text-align: center;
+  color: var(--primary-color);
+  margin: 5px 0 15px 0;
+}
+
+/* Enlace de ecuaciones */
 .equation-link {
   margin: 20px 0;
   text-align: center;
@@ -89,6 +114,7 @@ body {
   margin-right: 8px;
 }
 
+/* Mensajes de error */
 .error-message {
   background-color: #fee2e2;
   color: #dc2626;
@@ -98,16 +124,18 @@ body {
   text-align: center;
 }
 
-.login-form .form-group {
-  margin-bottom: 20px;
+/* Formularios */
+.login-form .form-group,
+.form-group {
+  margin-bottom: 15px;
   text-align: left;
 }
 
 .form-group label {
-  margin-bottom: 8px;
-  font-weight: 500;
-  color: var(--dark-color);
   display: block;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--dark-color);
 }
 
 .form-group input {
@@ -124,7 +152,9 @@ body {
   outline: none;
 }
 
-.login-btn {
+/* Botones */
+.login-btn,
+.btn {
   background-color: var(--primary-color);
   color: white;
   border: none;
@@ -135,15 +165,20 @@ body {
   cursor: pointer;
   transition: all 0.3s;
   width: 100%;
+  display: block;
+  text-align: center;
+  text-decoration: none;
   margin-top: 10px;
 }
 
-.login-btn:hover {
+.login-btn:hover,
+.btn:hover {
   background-color: var(--button-hover);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Contenido y resultados */
 .content {
   display: flex;
   flex-direction: column;
@@ -166,32 +201,6 @@ body {
   font-size: 0.95rem;
   margin-bottom: 15px;
   text-align: center;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.btn {
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  padding: 15px 25px;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s;
-  display: inline-block;
-  text-decoration: none;
-  text-align: center;
-  width: 100%;
-}
-
-.btn:hover {
-  background-color: var(--button-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .results-container {
@@ -220,6 +229,7 @@ body {
   margin: 0 auto;
 }
 
+/* Pie de página */
 .footer {
   text-align: center;
   margin-top: 30px;
@@ -232,7 +242,7 @@ body {
 
 .footer em {
   font-style: italic;
-  color: #6c757d;
+  color: var(--primary-color);
 }
 
 /* Diseño responsive */
