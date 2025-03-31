@@ -146,6 +146,7 @@ body {
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.3s;
+  box-sizing: border-box;
 }
 
 .form-group input:focus {
@@ -170,6 +171,7 @@ body {
   text-align: center;
   text-decoration: none;
   margin: 10px auto;
+  box-sizing: border-box;
 }
 
 .login-btn:hover,
