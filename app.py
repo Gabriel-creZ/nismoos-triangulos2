@@ -7,7 +7,7 @@ import io
 import base64
 
 app = Flask(__name__)
-app.secret_key = 'j350z271123r'
+app.secret_key = 'j350z271123r'  # Clave de seguridad
 
 # Configuración de sesión (para mantener el login activo)
 app.config['SESSION_PERMANENT'] = True
@@ -145,7 +145,6 @@ def graficar_triangulo_sen(lado_a, lado_b, lado_c, angulo_A, angulo_B, angulo_C)
 # Funciones para ley de cosenos
 # ----------------------------
 def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
-    # Si se conocen 2 ángulos, calcular el tercero
     if sum(x is not None for x in [A, B, C]) == 2:
         if A is None:
             A = 180 - B - C
@@ -154,14 +153,12 @@ def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
         elif C is None:
             C = 180 - A - B
 
-    # Caso SSS: tres lados conocidos
     if all(x is not None for x in [a, b, c]):
         A = math.degrees(math.acos((b**2 + c**2 - a**2) / (2 * b * c)))
         B = math.degrees(math.acos((a**2 + c**2 - b**2) / (2 * a * c)))
         C = 180 - A - B
         return a, b, c, A, B, C
 
-    # Caso SAS: dos lados y el ángulo incluido
     if a is not None and b is not None and C is not None:
         c = math.sqrt(a**2 + b**2 - 2 * a * b * math.cos(math.radians(C)))
         A = math.degrees(math.asin(a * math.sin(math.radians(C)) / c))
@@ -178,7 +175,6 @@ def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
         C = 180 - A - B
         return a, b, c, A, B, C
 
-    # Caso ASA/AAS: 2 ángulos y 1 lado
     if sum(x is not None for x in [A, B, C]) >= 2 and sum(x is not None for x in [a, b, c]) == 1:
         if a is not None:
             k = a / math.sin(math.radians(A))
@@ -194,7 +190,6 @@ def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
             b = k * math.sin(math.radians(B))
         return a, b, c, A, B, C
 
-    # Caso SSA: 2 lados y un ángulo opuesto a uno de ellos
     if a is not None and b is not None and A is not None:
         ratio = (b * math.sin(math.radians(A))) / a
         if ratio > 1 or ratio < -1:
@@ -283,13 +278,10 @@ def resolver_triangulo(a, b, c, A, B, C):
     if count_sides + count_angles < 3 or count_sides < 1:
         raise ValueError("Se requieren al menos 3 datos (con al menos 1 lado) para resolver el triángulo.")
     
-    # Si se conocen 2 o más ángulos -> ASA/AAS -> Ley de Senos
     if count_angles >= 2:
         method = "senos"
-    # Si se conocen los 3 lados -> SSS -> Ley de Cosenos
     elif count_sides == 3:
         method = "cosenos"
-    # Caso SAS
     elif count_sides == 2 and count_angles == 1:
         if (a is not None and b is not None and C is not None) or \
            (a is not None and c is not None and B is not None) or \
@@ -297,11 +289,10 @@ def resolver_triangulo(a, b, c, A, B, C):
             method = "cosenos"
         else:
             method = "senos"
-    # Si se conoce 1 lado y 2 ángulos -> Ley de Senos
     elif count_sides == 1 and count_angles == 2:
         method = "senos"
     else:
-        method = "senos"  # Por defecto
+        method = "senos"
     
     if method == "senos":
         return calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C,
@@ -313,7 +304,6 @@ def resolver_triangulo(a, b, c, A, B, C):
 # Rutas de la aplicación
 # ---------------------------
 
-# Ruta para el login (GET y POST)
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -329,14 +319,12 @@ def login():
             return render_template("login.html")
     return render_template("login.html")
 
-# Ruta para logout
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
     flash("Sesión cerrada correctamente.")
     return redirect(url_for('login'))
 
-# Ruta principal: formulario y resultados
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if not session.get('logged_in'):
@@ -344,7 +332,6 @@ def index():
     
     if request.method == 'POST':
         try:
-            # Función auxiliar para extraer valores numéricos
             def get_val(field):
                 val = request.form.get(field)
                 return float(val) if val and val.strip() != "" else None
@@ -379,7 +366,7 @@ def index():
                 'metodo': metodo
             }
             
-            return render_template("index.html", resultados=resultados, imagen=imagen)
+            return render_template("resultado.html", resultados=resultados, imagen=imagen)
         except Exception as e:
             flash(str(e))
             return redirect(url_for('index'))

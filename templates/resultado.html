@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resultados - Resolución de Triángulos</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <a href="https://bachantoniomadna.milaulas.com" target="_blank" class="label-image-container">
+      <img src="{{ url_for('static', filename='images/label-image.png') }}" alt="Logo Instant Math Solver" class="label-image">
+    </a>
+    <header class="header">
+      <h1><i class="fas fa-triangle triangle-icon"></i> Instant Math Solver: Resolución de Triángulos 🧮 <i class="fas fa-triangle triangle-icon"></i></h1>
+      <p class="creator">By: <em>gabriel_cre</em></p>
+      <div class="equation-link">
+        <a href="https://resolucion-rectas-nismoos.onrender.com" target="_blank">
+          <i class="fas fa-external-link-alt"></i> Da click aquí para resolver Ecuaciones 2x2 y graficarlas
+        </a>
+      </div>
+    </header>
+    
+    <div class="content">
+      <div class="results-container">
+        <h2 class="results-title"><i class="fas fa-chart-pie"></i> Resultados <small>(ley de {{ resultados.metodo }})</small></h2>
+        
+        <div class="result-item">
+          <span class="result-label"><span class="emoji">📏</span> Lado a:</span>
+          <span class="result-value">{{ resultados.lado_a }} u</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label"><span class="emoji">📏</span> Lado b:</span>
+          <span class="result-value">{{ resultados.lado_b }} u</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label"><span class="emoji">📏</span> Lado c:</span>
+          <span class="result-value">{{ resultados.lado_c }} u</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label"><span class="emoji">📐</span> Ángulo α:</span>
+          <span class="result-value">{{ resultados.angulo_A }}°</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label"><span class="emoji">📐</span> Ángulo β:</span>
+          <span class="result-value">{{ resultados.angulo_B }}°</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label"><span class="emoji">📐</span> Ángulo γ:</span>
+          <span class="result-value">{{ resultados.angulo_C }}°</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label"><span class="emoji">⏱️</span> Perímetro:</span>
+          <span class="result-value">{{ resultados.perimetro }} u</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label"><span class="emoji">🔵</span> Área:</span>
+          <span class="result-value">{{ resultados.area }} u²</span>
+        </div>
+        
+        <h3 style="text-align: center; margin-top: 25px;"><i class="fas fa-drafting-compass"></i> Gráfica del Triángulo</h3>
+        <img src="data:image/png;base64,{{ imagen }}" alt="Gráfica del triángulo" class="triangle-image">
+        
+        <div class="result-item">
+          <a href="{{ url_for('index') }}" class="btn"><i class="fas fa-arrow-left"></i> Realizar nuevo cálculo</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <em>@ 2025 Instant Math Solver - Herramienta con fines educativos desarrollada por Gabriel Castillo - Alumno AMRD</em>
+    </div>
+  </div>
+</body>
+</html>

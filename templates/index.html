@@ -115,48 +115,6 @@
             </button>
           </form>
         </div>
-
-        {% if resultados %}
-        <div class="results-container">
-          <h2 class="results-title"><i class="fas fa-chart-pie"></i> Resultados <small>(ley de {{ resultados.metodo }})</small></h2>
-          
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">📏</span> Lado a:</span>
-            <span class="result-value">{{ resultados.lado_a }} u</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">📏</span> Lado b:</span>
-            <span class="result-value">{{ resultados.lado_b }} u</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">📏</span> Lado c:</span>
-            <span class="result-value">{{ resultados.lado_c }} u</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">📐</span> Ángulo α:</span>
-            <span class="result-value">{{ resultados.angulo_A }}°</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">📐</span> Ángulo β:</span>
-            <span class="result-value">{{ resultados.angulo_B }}°</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">📐</span> Ángulo γ:</span>
-            <span class="result-value">{{ resultados.angulo_C }}°</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">⏱️</span> Perímetro:</span>
-            <span class="result-value">{{ resultados.perimetro }} u</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">🔵</span> Área:</span>
-            <span class="result-value">{{ resultados.area }} u²</span>
-          </div>
-          
-          <h3 style="text-align: center; margin-top: 25px;"><i class="fas fa-drafting-compass"></i> Gráfica del Triángulo</h3>
-          <img src="data:image/png;base64,{{ imagen }}" alt="Gráfica del triángulo" class="triangle-image">
-        </div>
-        {% endif %}
       </div>
 
       <div class="footer">

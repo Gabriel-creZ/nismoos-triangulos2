@@ -235,7 +235,6 @@ body {
   color: #6c757d;
 }
 
-/* Diseño responsive */
 @media (max-width: 768px) {
   .login-container {
     margin: 20px auto;
