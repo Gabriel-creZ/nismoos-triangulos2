@@ -20,14 +20,14 @@
       <p class="creator">By: <em>gabriel_cre</em></p>
       <div class="equation-link">
         <a href="https://resolucion-rectas-nismoos.onrender.com" target="_blank">
-          <i class="fas fa-external-link-alt"></i> Da click aquí para resolver Ecuaciones 2x2 y graficarlas
+          <i class="fas fa-external-link-alt"></i> Da click aquí para resolver Ecuaciones y graficarlas
         </a>
       </div>
     </header>
     
     <div class="content">
       <div class="results-container">
-        <h2 class="results-title"><i class="fas fa-chart-pie"></i> Resultados <small>(ley de {{ resultados.metodo }})</small></h2>
+        <h2 class="results-title"><i class="fas fa-chart-pie"></i> Resultados (Método: {{ resultados.metodo }})</h2>
         
         <div class="result-item">
           <span class="result-label"><span class="emoji">📏</span> Lado a:</span>
@@ -58,8 +58,20 @@
           <span class="result-value">{{ resultados.perimetro }} u</span>
         </div>
         <div class="result-item">
-          <span class="result-label"><span class="emoji">🔵</span> Área:</span>
+          <span class="result-label"><span class="emoji">🔵</span> Área (Herón):</span>
           <span class="result-value">{{ resultados.area }} u²</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label"><span class="emoji">🧮</span> Medianas:</span>
+          <span class="result-value">mₐ = {{ resultados.mediana_a }} u, m_b = {{ resultados.mediana_b }} u, m_c = {{ resultados.mediana_c }} u</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label"><span class="emoji">⚪</span> Radio del circuncentro:</span>
+          <span class="result-value">{{ resultados.circumradius }} u</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label"><span class="emoji">📊</span> Tipo de triángulo:</span>
+          <span class="result-value">{{ resultados.tipo_triangulo }}</span>
         </div>
         
         <h3 style="text-align: center; margin-top: 25px;"><i class="fas fa-drafting-compass"></i> Gráfica del Triángulo</h3>
@@ -72,7 +84,7 @@
     </div>
     
     <div class="footer">
-      <em>@ 2025 Instant Math Solver - Herramienta con fines educativos desarrollada por Gabriel Castillo - Alumno AMRD</em>
+      <em>@ 2025 Instant Math Solver: Triángulos - Herramienta con fines educativos desarrollada por Gabriel Castillo - Alumno AMRD</em>
     </div>
   </div>
 </body>

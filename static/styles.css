@@ -1,12 +1,12 @@
 :root {
-  --primary-color: #2e7d32; /* Verde oscuro */
-  --secondary-color: #388e3c; /* Verde */
-  --accent-color: #66bb6a; /* Verde claro */
+  --primary-color: #2e7d32;
+  --secondary-color: #388e3c;
+  --accent-color: #66bb6a;
   --light-color: #f8f9fa;
   --dark-color: #2e2e2e;
   --success-color: #4cc9f0;
   --warning-color: #f72585;
-  --background-color: #5ab361; /* Fondo verde muy claro */
+  --background-color: #5ab361;
   --equation-link-color: #4a6fa5;
   --equation-link-hover: #3a5a8a;
   --button-hover: #81c784;
@@ -35,12 +35,13 @@ body {
   padding: 20px 30px;
   border-radius: 15px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
 }
 
-/* Imagen label centrada */
+/* Imagen label-image centrada */
 .label-image-container {
   text-align: center;
-  margin: 0 auto 20px;
+  margin-bottom: 20px;
   display: block;
 }
 
@@ -56,34 +57,20 @@ body {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Login container (usa contenedor blanco) */
-.login-container {
-  background: white;
-  max-width: 400px;
-  width: 90%;
-  margin: 50px auto;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+/* Header */
+.header {
   text-align: center;
-}
-
-/* Títulos y textos */
-.login-title {
-  font-size: 1.8rem;
   margin-bottom: 20px;
-  color: var(--primary-color);
 }
 
 .header h1 {
-  text-align: center;
   font-size: 2rem;
   margin-bottom: 10px;
 }
 
 .creator {
   text-align: center;
-  color: var(--primary-color);
+  color: var(--secondary-color);
   margin: 5px 0 15px 0;
 }
 
@@ -139,7 +126,8 @@ body {
   color: var(--dark-color);
 }
 
-.form-group input {
+.form-group input,
+.form-group textarea {
   width: 100%;
   padding: 12px 15px;
   border: 2px solid #e9ecef;
@@ -149,7 +137,8 @@ body {
   box-sizing: border-box;
 }
 
-.form-group input:focus {
+.form-group input:focus,
+.form-group textarea:focus {
   border-color: var(--accent-color);
   outline: none;
 }
@@ -224,12 +213,26 @@ body {
   padding: 15px;
   margin-bottom: 15px;
   border-radius: 8px;
+  box-sizing: border-box;
 }
 
 .triangle-image {
   max-width: 100%;
   display: block;
   margin: 0 auto;
+}
+
+/* Login container (usa contenedor blanco) */
+.login-container {
+  background: white;
+  max-width: 400px;
+  width: 90%;
+  margin: 50px auto;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  box-sizing: border-box;
 }
 
 /* Pie de página */
@@ -241,6 +244,7 @@ body {
   font-size: 0.9rem;
   border-top: 1px solid #e0e0e0;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .footer em {
@@ -248,20 +252,13 @@ body {
   color: var(--primary-color);
 }
 
-/* Diseño responsive */
+/* Responsive */
 @media (max-width: 768px) {
-  .login-container {
-    margin: 20px auto;
+  .container {
     padding: 20px;
   }
-  
-  .login-title {
-    font-size: 1.5rem;
-  }
-  
-  .equation-link a {
-    padding: 10px 15px;
-    font-size: 0.9rem;
+  .header h1 {
+    font-size: 1.8rem;
   }
 }
 
@@ -269,16 +266,14 @@ body {
   .label-image {
     max-width: 150px;
   }
-  
-  .login-title {
-    font-size: 1.3rem;
+  .header h1 {
+    font-size: 1.5rem;
   }
-  
-  .form-group input {
+  .form-group input,
+  .form-group textarea {
     padding: 10px 12px;
   }
-  
-  .login-btn, .btn {
+  .btn, .login-btn {
     padding: 12px 20px;
     font-size: 1rem;
   }

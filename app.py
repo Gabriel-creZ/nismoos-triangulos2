@@ -114,21 +114,32 @@ def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None,
     raise ValueError("No se pudo determinar el triángulo con la información proporcionada.")
 
 def graficar_triangulo_sen(lado_a, lado_b, lado_c, angulo_A, angulo_B, angulo_C):
+    # Definición de puntos: A en (0,0), B en (lado_c,0) y C usando lado_b y angulo_A
     A_point = (0, 0)
     B_point = (lado_c, 0)
     C_point = (lado_b * math.cos(math.radians(angulo_A)), lado_b * math.sin(math.radians(angulo_A)))
     
     plt.figure(figsize=(7,7))
-    plt.plot([A_point[0], B_point[0]], [A_point[1], B_point[1]], 'b-', label='Lado c')
-    plt.plot([A_point[0], C_point[0]], [A_point[1], C_point[1]], 'r-', label='Lado b')
-    plt.plot([B_point[0], C_point[0]], [B_point[1], C_point[1]], 'g-', label='Lado a')
+    # Dibujar lados con etiquetas
+    plt.plot([A_point[0], B_point[0]], [A_point[1], B_point[1]], 'b-', label=f"Lado c = {lado_c:.2f}")
+    plt.plot([A_point[0], C_point[0]], [A_point[1], C_point[1]], 'r-', label=f"Lado b = {lado_b:.2f}")
+    plt.plot([B_point[0], C_point[0]], [B_point[1], C_point[1]], 'g-', label=f"Lado a = {lado_a:.2f}")
     
-    plt.text(A_point[0], A_point[1], 'α', fontsize=12, ha='right')
-    plt.text(B_point[0], B_point[1], 'β', fontsize=12, ha='left')
-    plt.text(C_point[0], C_point[1], 'γ', fontsize=12, ha='center')
+    # Etiquetar los lados (mediante puntos medios)
+    midAB = ((A_point[0]+B_point[0])/2, (A_point[1]+B_point[1])/2)
+    midAC = ((A_point[0]+C_point[0])/2, (A_point[1]+C_point[1])/2)
+    midBC = ((B_point[0]+C_point[0])/2, (B_point[1]+C_point[1])/2)
+    plt.text(midAB[0], midAB[1]-0.5, f"{lado_c:.2f}", fontsize=10, color='blue', ha='center')
+    plt.text(midAC[0]-0.3, midAC[1], f"{lado_b:.2f}", fontsize=10, color='red', ha='center')
+    plt.text(midBC[0]+0.3, midBC[1], f"{lado_a:.2f}", fontsize=10, color='green', ha='center')
     
-    plt.xlim(-1, lado_c + 1)
-    plt.ylim(-1, max(lado_a, lado_b) + 1)
+    # Etiquetar ángulos en los vértices
+    plt.text(A_point[0]-0.2, A_point[1]-0.2, "α", fontsize=12, color='black')
+    plt.text(B_point[0]+0.2, B_point[1]-0.2, "β", fontsize=12, color='black')
+    plt.text(C_point[0], C_point[1]+0.2, "γ", fontsize=12, color='black')
+    
+    plt.xlim(min(A_point[0], B_point[0], C_point[0]) - 1, max(A_point[0], B_point[0], C_point[0]) + 1)
+    plt.ylim(min(A_point[1], B_point[1], C_point[1]) - 1, max(A_point[1], B_point[1], C_point[1]) + 1)
     plt.gca().set_aspect('equal', adjustable='box')
     plt.title('Triángulo Resuelto (Ley de Senos)')
     plt.grid()
@@ -141,9 +152,103 @@ def graficar_triangulo_sen(lado_a, lado_b, lado_c, angulo_A, angulo_B, angulo_C)
     plt.close()
     return image_base64
 
+def graficar_triangulo_cos(a, b, c, A, B, C):
+    A_point = (0, 0)
+    B_point = (c, 0)
+    C_point = (b * math.cos(math.radians(A)), b * math.sin(math.radians(A)))
+    
+    plt.figure(figsize=(7,7))
+    plt.plot([A_point[0], B_point[0]], [A_point[1], B_point[1]], 'g-', label=f"Lado c = {c:.2f}")
+    plt.plot([A_point[0], C_point[0]], [A_point[1], C_point[1]], 'r-', label=f"Lado b = {b:.2f}")
+    plt.plot([B_point[0], C_point[0]], [B_point[1], C_point[1]], 'b-', label=f"Lado a = {a:.2f}")
+    
+    midAB = ((A_point[0]+B_point[0])/2, (A_point[1]+B_point[1])/2)
+    midAC = ((A_point[0]+C_point[0])/2, (A_point[1]+C_point[1])/2)
+    midBC = ((B_point[0]+C_point[0])/2, (B_point[1]+C_point[1])/2)
+    plt.text(midAB[0], midAB[1]-0.5, f"{c:.2f}", fontsize=10, color='green', ha='center')
+    plt.text(midAC[0]-0.3, midAC[1], f"{b:.2f}", fontsize=10, color='red', ha='center')
+    plt.text(midBC[0]+0.3, midBC[1], f"{a:.2f}", fontsize=10, color='blue', ha='center')
+    
+    plt.text(A_point[0]-0.2, A_point[1]-0.2, "α", fontsize=12, color='black')
+    plt.text(B_point[0]+0.2, B_point[1]-0.2, "β", fontsize=12, color='black')
+    plt.text(C_point[0], C_point[1]+0.2, "γ", fontsize=12, color='black')
+    
+    x_vals = [A_point[0], B_point[0], C_point[0]]
+    y_vals = [A_point[1], B_point[1], C_point[1]]
+    plt.xlim(min(x_vals)-1, max(x_vals)+1)
+    plt.ylim(min(y_vals)-1, max(y_vals)+1)
+    plt.gca().set_aspect('equal', adjustable='box')
+    plt.title('Triángulo Resuelto (Ley de Cosenos)')
+    plt.grid()
+    plt.legend()
+    
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    image_base64 = base64.b64encode(buf.getvalue()).decode('utf-8')
+    plt.close()
+    return image_base64
+
 # ----------------------------
-# Funciones para ley de cosenos
+# Funciones adicionales para datos extra
 # ----------------------------
+def calcular_medianas(a, b, c):
+    m_a = 0.5 * math.sqrt(2*(b**2 + c**2) - a**2)
+    m_b = 0.5 * math.sqrt(2*(a**2 + c**2) - b**2)
+    m_c = 0.5 * math.sqrt(2*(a**2 + b**2) - c**2)
+    return m_a, m_b, m_c
+
+def calcular_circumradius(a, b, c, area):
+    if area == 0:
+        return None
+    return (a * b * c) / (4 * area)
+
+def determinar_tipo_triangulo(a, b, c):
+    if abs(a - b) < 1e-5 and abs(b - c) < 1e-5:
+        return "Equilátero"
+    elif abs(a - b) < 1e-5 or abs(a - c) < 1e-5 or abs(b - c) < 1e-5:
+        return "Isósceles"
+    else:
+        return "Escaleno"
+
+# --------------------------------
+# Función que detecta el método a usar
+# --------------------------------
+def resolver_triangulo(a, b, c, A, B, C):
+    count_sides = sum(x is not None for x in [a, b, c])
+    count_angles = sum(x is not None for x in [A, B, C])
+    
+    if count_sides + count_angles < 3 or count_sides < 1:
+        raise ValueError("Se requieren al menos 3 datos (con al menos 1 lado) para resolver el triángulo.")
+    
+    # Si hay al menos dos ángulos conocidos, se usa ley de senos
+    if count_angles >= 2:
+        method = "senos"
+    # Si se conocen los 3 lados, se usa ley de cosenos
+    elif count_sides == 3:
+        method = "cosenos"
+    # En caso de SSA (2 lados y 1 ángulo) se elige el método adecuado
+    elif count_sides == 2 and count_angles == 1:
+        if (a is not None and b is not None and C is not None) or \
+           (a is not None and c is not None and B is not None) or \
+           (b is not None and c is not None and A is not None):
+            method = "cosenos"
+        else:
+            method = "senos"
+    elif count_sides == 1 and count_angles == 2:
+        method = "senos"
+    else:
+        method = "senos"
+    
+    if method == "senos":
+        return calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C,
+                                      lado_a=a, lado_b=b, lado_c=c), method
+    else:
+        return calcular_triangulo_cos(a=a, b=b, c=c, A=A, B=B, C=C), method
+
+# ---------------------------
+# Función para ley de cosenos (ya existente)
+# ---------------------------
 def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
     if sum(x is not None for x in [A, B, C]) == 2:
         if A is None:
@@ -238,72 +343,9 @@ def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
 
     raise ValueError("No se pudo resolver el triángulo con la información dada.")
 
-def graficar_triangulo_cos(a, b, c, A, B, C):
-    A_point = (0, 0)
-    B_point = (c, 0)
-    C_point = (b * math.cos(math.radians(A)), b * math.sin(math.radians(A)))
-    
-    plt.figure(figsize=(7,7))
-    plt.plot([A_point[0], B_point[0]], [A_point[1], B_point[1]], 'g-', label='Lado c')
-    plt.plot([A_point[0], C_point[0]], [A_point[1], C_point[1]], 'r-', label='Lado b')
-    plt.plot([B_point[0], C_point[0]], [B_point[1], C_point[1]], 'b-', label='Lado a')
-    
-    plt.text(A_point[0], A_point[1], 'α', fontsize=12, ha='right')
-    plt.text(B_point[0], B_point[1], 'β', fontsize=12, ha='left')
-    plt.text(C_point[0], C_point[1], 'γ', fontsize=12, ha='center')
-    
-    x_vals = [A_point[0], B_point[0], C_point[0]]
-    y_vals = [A_point[1], B_point[1], C_point[1]]
-    plt.xlim(min(x_vals) - 1, max(x_vals) + 1)
-    plt.ylim(min(y_vals) - 1, max(y_vals) + 1)
-    plt.gca().set_aspect('equal', adjustable='box')
-    plt.title('Triángulo Resuelto (Ley de Cosenos)')
-    plt.grid()
-    plt.legend()
-    
-    buf = io.BytesIO()
-    plt.savefig(buf, format='png')
-    buf.seek(0)
-    image_base64 = base64.b64encode(buf.getvalue()).decode('utf-8')
-    plt.close()
-    return image_base64
-
-# --------------------------------
-# Función que detecta el método a usar
-# --------------------------------
-def resolver_triangulo(a, b, c, A, B, C):
-    count_sides = sum(x is not None for x in [a, b, c])
-    count_angles = sum(x is not None for x in [A, B, C])
-    
-    if count_sides + count_angles < 3 or count_sides < 1:
-        raise ValueError("Se requieren al menos 3 datos (con al menos 1 lado) para resolver el triángulo.")
-    
-    if count_angles >= 2:
-        method = "senos"
-    elif count_sides == 3:
-        method = "cosenos"
-    elif count_sides == 2 and count_angles == 1:
-        if (a is not None and b is not None and C is not None) or \
-           (a is not None and c is not None and B is not None) or \
-           (b is not None and c is not None and A is not None):
-            method = "cosenos"
-        else:
-            method = "senos"
-    elif count_sides == 1 and count_angles == 2:
-        method = "senos"
-    else:
-        method = "senos"
-    
-    if method == "senos":
-        return calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C,
-                                      lado_a=a, lado_b=b, lado_c=c), method
-    else:
-        return calcular_triangulo_cos(a=a, b=b, c=c, A=A, B=B, C=C), method
-
 # ---------------------------
 # Rutas de la aplicación
 # ---------------------------
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -343,12 +385,19 @@ def index():
             B_val = get_val("angulo_B")
             C_val = get_val("angulo_C")
             
+            # Resolver el triángulo
             (res_a, res_b, res_c, res_A, res_B, res_C), metodo = resolver_triangulo(a_val, b_val, c_val, A_val, B_val, C_val)
             
             perimetro = res_a + res_b + res_c
             s = perimetro / 2
             area = math.sqrt(s * (s - res_a) * (s - res_b) * (s - res_c))
             
+            # Calcular medianas y circuncentro
+            mediana_a, mediana_b, mediana_c = calcular_medianas(res_a, res_b, res_c)
+            circumradius = calcular_circumradius(res_a, res_b, res_c, area)
+            tipo_triangulo = determinar_tipo_triangulo(res_a, res_b, res_c)
+            
+            # Elegir el método de graficado
             if metodo == "senos":
                 imagen = graficar_triangulo_sen(res_a, res_b, res_c, res_A, res_B, res_C)
             else:
@@ -363,6 +412,11 @@ def index():
                 'angulo_C': f"{res_C:.2f}",
                 'perimetro': f"{perimetro:.2f}",
                 'area': f"{area:.2f}",
+                'mediana_a': f"{mediana_a:.2f}",
+                'mediana_b': f"{mediana_b:.2f}",
+                'mediana_c': f"{mediana_c:.2f}",
+                'circumradius': f"{circumradius:.2f}" if circumradius is not None else "N/A",
+                'tipo_triangulo': tipo_triangulo,
                 'metodo': metodo
             }
             
