@@ -74,13 +74,15 @@ body {
   margin: 5px 0 15px 0;
 }
 
-/* Enlace de ecuaciones */
-.equation-link {
-  margin: 20px 0;
+/* Enlaces de ecuaciones y extras */
+.equation-link, .donation-link, .report-link {
+  margin: 10px 0;
   text-align: center;
 }
 
-.equation-link a {
+.equation-link a,
+.donation-link a,
+.report-link a {
   background-color: var(--equation-link-color);
   color: white;
   padding: 12px 20px;
@@ -92,13 +94,17 @@ body {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.equation-link a:hover {
+.equation-link a:hover,
+.donation-link a:hover,
+.report-link a:hover {
   background-color: var(--equation-link-hover);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.equation-link a i {
+.equation-link a i,
+.donation-link a i,
+.report-link a i {
   margin-right: 8px;
 }
 
@@ -222,7 +228,7 @@ body {
   margin: 0 auto;
 }
 
-/* Login container (usa contenedor blanco) */
+/* Login container (contenedor blanco) */
 .login-container {
   background: white;
   max-width: 400px;
