@@ -28,12 +28,13 @@ SMTP_PASSWORD = 'wkiqrqkcvhoirdyr'
 
 def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None, 
                              lado_a=None, lado_b=None, lado_c=None):
+    # Requiere al menos 2 ángulos y 1 lado
     known_angles = [angulo_A, angulo_B, angulo_C]
     num_angles = sum(x is not None for x in known_angles)
     known_sides = [lado_a, lado_b, lado_c]
     num_sides = sum(x is not None for x in known_sides)
     if num_angles + num_sides < 3 or num_sides < 1:
-        raise ValueError("Información insuficiente para resolver el triángulo (ley de senos).")
+        raise ValueError("Información insuficiente para resolver el triángulo (Ley de Senos).")
     if num_angles >= 2:
         if angulo_A is None:
             angulo_A = 180 - (angulo_B + angulo_C)
@@ -42,7 +43,7 @@ def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None,
         elif angulo_C is None:
             angulo_C = 180 - (angulo_A + angulo_B)
     if angulo_A is not None and angulo_B is not None and angulo_C is not None:
-        if abs(angulo_A + angulo_B + angulo_C - 180) > 1e-5:
+        if abs(angulo_A + angulo_B + angulo_C - 180) > 1e-2:
             raise ValueError("Los ángulos no suman 180°.")
         if angulo_A <= 0 or angulo_B <= 0 or angulo_C <= 0:
             raise ValueError("Los ángulos deben ser mayores que 0.")
@@ -68,7 +69,7 @@ def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None,
             if lado_b is None:
                 lado_b = ratio * math.sin(math.radians(angulo_B))
             return lado_a, lado_b, lado_c, angulo_A, angulo_B, angulo_C
-    raise ValueError("No se pudo determinar el triángulo con la ley de senos (verifica tus datos).")
+    raise ValueError("No se pudo determinar el triángulo con la Ley de Senos (verifica tus datos).")
 
 def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
     if a is not None and b is not None and c is not None:
@@ -78,70 +79,57 @@ def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
                 B = math.degrees(math.acos((a**2 + c**2 - b**2) / (2 * a * c)))
                 C = 180 - A - B
             except Exception as e:
-                raise ValueError("Error en la ley de cosenos: " + str(e))
+                raise ValueError("Error en la Ley de Cosenos: " + str(e))
             return a, b, c, A, B, C
         elif A is not None and B is not None and C is not None:
             if abs(A + B + C - 180) > 1e-2:
                 raise ValueError("Los ángulos proporcionados no suman 180°.")
             return a, b, c, A, B, C
-    raise ValueError("Para la ley de cosenos se requieren los 3 lados (y opcionalmente los ángulos).")
+    raise ValueError("Para la Ley de Cosenos se requieren los 3 lados (y opcionalmente los ángulos).")
 
 def calcular_triangulo_pitagoras(a=None, b=None, c=None, A=None, B=None, C=None):
-    if A is not None and abs(A - 90) < 1e-2:
-        a_calc = math.sqrt(b**2 + c**2)
-        return a_calc, b, c, 90, math.degrees(math.asin(b/a_calc)), math.degrees(math.asin(c/a_calc))
-    if B is not None and abs(B - 90) < 1e-2:
-        b_calc = math.sqrt(a**2 + c**2)
-        return a, b_calc, c, math.degrees(math.asin(a/b_calc)), 90, math.degrees(math.asin(c/b_calc))
-    if C is not None and abs(C - 90) < 1e-2:
-        c_calc = math.sqrt(a**2 + b**2)
-        return a, b, c_calc, math.degrees(math.asin(a/c_calc)), math.degrees(math.asin(b/c_calc)), 90
-    raise ValueError("No se detectó un ángulo recto para aplicar Pitágoras.")
+    # Esta función ya no se usará (opción eliminada)
+    raise ValueError("La opción Pitágoras ha sido eliminada.")
 
-def resolver_triangulo_altura(base, altura):
-    area = 0.5 * base * altura
-    return {"base": base, "altura": altura, "area": area}
+def resolver_triangulo_altura(base, altura=None, area_input=None):
+    # Si se ingresa base y altura, se calcula el área.
+    # Si se ingresa base y área, se calcula la altura.
+    if altura is not None:
+        area = 0.5 * base * altura
+        return {"base": base, "altura": altura, "area": area}
+    elif area_input is not None:
+        altura_calculada = (2 * area_input) / base
+        return {"base": base, "altura": altura_calculada, "area": area_input}
+    else:
+        raise ValueError("Se requiere proporcionar la altura o el área junto con la base.")
 
-def resolver_triangulo(a, b, c, A, B, C, metodo_sel="auto", altura_input=None):
+def resolver_triangulo(a, b, c, A, B, C, metodo_sel="auto", altura_input=None, area_input=None):
+    # Si se selecciona Altura y Área, se utiliza la función correspondiente
     if metodo_sel == "altura":
-        if a is not None and altura_input is not None:
-            res = resolver_triangulo_altura(a, altura_input)
+        if a is not None and (altura_input is not None or area_input is not None):
+            res = resolver_triangulo_altura(a, altura_input, area_input)
             return res, "Altura y Área"
         else:
-            raise ValueError("Para Altura y Área se requiere la base (lado a) y la altura.")
-    if metodo_sel == "pitagoras":
-        return calcular_triangulo_pitagoras(a, b, c, A, B, C), "Pitágoras"
+            raise ValueError("Para Altura y Área se requiere la base (lado a) y la altura o el área.")
+    # Sino, se utiliza el método automático (Ley de Senos o Cosenos)
     count_sides = sum(x is not None for x in [a, b, c])
     count_angles = sum(x is not None for x in [A, B, C])
     if count_sides == 3:
         try:
             result = calcular_triangulo_cos(a, b, c, A, B, C)
-            if result is None:
-                raise ValueError("No se pudo resolver con ley de cosenos.")
-            return result, "cosenos"
+            return result, "Ley de Senos o Cosenos"
         except Exception as e:
-            if (A is not None and abs(A-90)<1e-2) or (B is not None and abs(B-90)<1e-2) or (C is not None and abs(C-90)<1e-2):
-                result = calcular_triangulo_pitagoras(a, b, c, A, B, C)
-                if result is None:
-                    raise ValueError("No se pudo resolver con Pitágoras.")
-                return result, "Pitágoras"
-            else:
-                raise
+            result = calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C, 
+                                            lado_a=a, lado_b=b, lado_c=c)
+            return result, "Ley de Senos o Cosenos"
     elif count_angles >= 2:
-        result = calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C, lado_a=a, lado_b=b, lado_c=c)
-        if result is None:
-            raise ValueError("No se pudo resolver con ley de senos.")
-        return result, "senos"
-    elif count_sides == 2 and count_angles == 1:
-        result = calcular_triangulo_cos(a, b, c, A, B, C)
-        if result is None:
-            raise ValueError("No se pudo resolver con ley de cosenos (SSA).")
-        return result, "cosenos"
+        result = calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C, 
+                                        lado_a=a, lado_b=b, lado_c=c)
+        return result, "Ley de Senos o Cosenos"
     else:
-        result = calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C, lado_a=a, lado_b=b, lado_c=c)
-        if result is None:
-            raise ValueError("No se pudo resolver con ley de senos (mínimo).")
-        return result, "senos"
+        result = calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C, 
+                                        lado_a=a, lado_b=b, lado_c=c)
+        return result, "Ley de Senos o Cosenos"
 
 # ============================
 # Funciones adicionales
@@ -331,8 +319,16 @@ def index():
             altura_val = get_val("altura")
             metodo_sel = request.form.get("metodo_sel", "auto")
             
+            # Método Altura y Área: se permiten dos opciones: base+altura o base+área
             if metodo_sel == "altura":
-                res = resolver_triangulo_altura(a_val, altura_val)
+                # Se revisa si se ingresó altura o área
+                if altura_val is not None:
+                    res = resolver_triangulo_altura(a_val, altura_val)
+                elif c_val is None and request.form.get("area"):
+                    area_val = float(request.form.get("area"))
+                    res = resolver_triangulo_altura(a_val, None, area_val)
+                else:
+                    raise ValueError("Para Altura y Área se requiere ingresar la altura o el área junto con la base (lado a).")
                 resultados = {
                     'base': res['base'],
                     'altura': res['altura'],
@@ -374,7 +370,7 @@ def index():
                     'tipo_triangulo': tipo_tri,
                     'clasificacion': clasif_ang,
                     'pitagoras': pitagoras,
-                    'metodo': {"auto": "🏧 Automático", "pitagoras": "📐 Pitágoras", "altura": "📏 Altura y Área"}[metodo]
+                    'metodo': {"auto": "🏧 Ley de Senos o Cosenos", "altura": "📏 Altura y Área"}[metodo]
                 }
                 historial_item = {"metodo": resultados['metodo'], "resultados": resultados}
                 session.setdefault('history', []).append(historial_item)

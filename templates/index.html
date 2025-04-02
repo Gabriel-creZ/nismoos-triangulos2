@@ -75,18 +75,14 @@
             <strong>Instrucciones:</strong>
             <br>• Si conoces 3 lados, se usará la Ley de Cosenos.
             <br>• Si conoces 2 ángulos y 1 lado, se usará la Ley de Senos.
-            <br>• Para triángulos rectángulos, selecciona "📐 Pitágoras".
-            <br>• Si conoces la base y la altura, selecciona "📏 Altura y Área".
-            <br>• Si dejas el método en "🏧 Automático", se elegirá según tus datos.
+            <br>• Para resolver con Altura y Área, ingresa la base y la altura o la base y el área.
+            <br>• Si dejas el método en "🏧 Ley de Senos o Cosenos", se elegirá según tus datos.
           </div>
           <!-- Selector de método con iconos -->
           <div class="form-group" style="text-align: center;">
             <label><strong>Método de resolución:</strong></label><br>
             <input type="radio" name="metodo_sel" value="auto" id="metodo_auto" checked>
-            <label for="metodo_auto">🏧 Automático</label>
-            &nbsp;&nbsp;
-            <input type="radio" name="metodo_sel" value="pitagoras" id="metodo_pitagoras">
-            <label for="metodo_pitagoras">📐 Pitágoras</label>
+            <label for="metodo_auto">🏧 Ley de Senos o Cosenos</label>
             &nbsp;&nbsp;
             <input type="radio" name="metodo_sel" value="altura" id="metodo_altura">
             <label for="metodo_altura">📏 Altura y Área</label>
@@ -116,10 +112,14 @@
               <label for="angulo_C">Ángulo γ: (Gamma)</label>
               <input type="text" name="angulo_C" id="angulo_C" placeholder="Ingrese grados">
             </div>
-            <!-- Campo opcional para método Altura -->
+            <!-- Para Altura y Área se agregan dos recuadros: uno para altura y otro para área -->
             <div class="form-group" id="grupo_altura">
-              <label for="altura"><i class="fas fa-arrows-alt-v"></i> Altura (para Altura y Área):</label>
-              <input type="text" name="altura" id="altura" placeholder="Ingrese altura">
+              <label for="altura"><i class="fas fa-arrows-alt-v"></i> Altura:</label>
+              <input type="text" name="altura" id="altura" placeholder="Ingrese altura (opcional)">
+            </div>
+            <div class="form-group" id="grupo_area">
+              <label for="area">Área:</label>
+              <input type="text" name="area" id="area" placeholder="Ingrese área (opcional)">
             </div>
             <button type="submit" class="btn">
               <i class="fas fa-calculator"></i> Resolver Triángulo
@@ -154,10 +154,13 @@
     function actualizarMetodo() {
       var metodo = document.querySelector('input[name="metodo_sel"]:checked').value;
       var grupoAltura = document.getElementById("grupo_altura");
+      var grupoArea = document.getElementById("grupo_area");
       if(metodo === "altura") {
         grupoAltura.style.display = "block";
+        grupoArea.style.display = "block";
       } else {
         grupoAltura.style.display = "none";
+        grupoArea.style.display = "none";
       }
     }
     document.querySelectorAll('input[name="metodo_sel"]').forEach(function(elem) {
