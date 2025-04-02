@@ -28,7 +28,6 @@ SMTP_PASSWORD = 'wkiqrqkcvhoirdyr'
 
 def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None, 
                              lado_a=None, lado_b=None, lado_c=None):
-    # Requiere al menos 2 ángulos y 1 lado
     known_angles = [angulo_A, angulo_B, angulo_C]
     num_angles = sum(x is not None for x in known_angles)
     known_sides = [lado_a, lado_b, lado_c]
@@ -72,7 +71,6 @@ def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None,
     raise ValueError("No se pudo determinar el triángulo con la ley de senos (verifica tus datos).")
 
 def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
-    # Si se conocen los 3 lados y ninguno de los ángulos se proporciona, calcularlos
     if a is not None and b is not None and c is not None:
         if A is None and B is None and C is None:
             try:
@@ -83,7 +81,6 @@ def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
                 raise ValueError("Error en la ley de cosenos: " + str(e))
             return a, b, c, A, B, C
         elif A is not None and B is not None and C is not None:
-            # Si se proporcionan ángulos, validamos
             if abs(A + B + C - 180) > 1e-2:
                 raise ValueError("Los ángulos proporcionados no suman 180°.")
             return a, b, c, A, B, C
@@ -106,35 +103,45 @@ def resolver_triangulo_altura(base, altura):
     return {"base": base, "altura": altura, "area": area}
 
 def resolver_triangulo(a, b, c, A, B, C, metodo_sel="auto", altura_input=None):
-    # Método Altura
     if metodo_sel == "altura":
         if a is not None and altura_input is not None:
             res = resolver_triangulo_altura(a, altura_input)
             return res, "Altura y Área"
         else:
             raise ValueError("Para Altura y Área se requiere la base (lado a) y la altura.")
-    # Método Pitágoras
     if metodo_sel == "pitagoras":
         return calcular_triangulo_pitagoras(a, b, c, A, B, C), "Pitágoras"
-    # Método automático
     count_sides = sum(x is not None for x in [a, b, c])
     count_angles = sum(x is not None for x in [A, B, C])
     if count_sides == 3:
         try:
-            return calcular_triangulo_cos(a, b, c, A, B, C), "cosenos"
+            result = calcular_triangulo_cos(a, b, c, A, B, C)
+            if result is None:
+                raise ValueError("No se pudo resolver con ley de cosenos.")
+            return result, "cosenos"
         except Exception as e:
             if (A is not None and abs(A-90)<1e-2) or (B is not None and abs(B-90)<1e-2) or (C is not None and abs(C-90)<1e-2):
-                return calcular_triangulo_pitagoras(a, b, c, A, B, C), "Pitágoras"
+                result = calcular_triangulo_pitagoras(a, b, c, A, B, C)
+                if result is None:
+                    raise ValueError("No se pudo resolver con Pitágoras.")
+                return result, "Pitágoras"
             else:
                 raise
     elif count_angles >= 2:
-        return calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C, 
-                                       lado_a=a, lado_b=b, lado_c=c), "senos"
+        result = calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C, lado_a=a, lado_b=b, lado_c=c)
+        if result is None:
+            raise ValueError("No se pudo resolver con ley de senos.")
+        return result, "senos"
     elif count_sides == 2 and count_angles == 1:
-        return calcular_triangulo_cos(a, b, c, A, B, C), "cosenos"
+        result = calcular_triangulo_cos(a, b, c, A, B, C)
+        if result is None:
+            raise ValueError("No se pudo resolver con ley de cosenos (SSA).")
+        return result, "cosenos"
     else:
-        return calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C, 
-                                       lado_a=a, lado_b=b, lado_c=c), "senos"
+        result = calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C, lado_a=a, lado_b=b, lado_c=c)
+        if result is None:
+            raise ValueError("No se pudo resolver con ley de senos (mínimo).")
+        return result, "senos"
 
 # ============================
 # Funciones adicionales
@@ -213,7 +220,7 @@ def calcular_puntos_notables(a, b, c, A, B, C):
             m_alt = 0
         else:
             m_qr = (R[1]-Q[1])/(R[0]-Q[0])
-            m_alt = None if abs(m_qr)<1e-5 else -1/m_qr
+            m_alt = None if abs(m_qr) < 1e-5 else -1/m_qr
         return P, m_alt
     alt_A = altitud(A_point, B_point, C_point)
     alt_B = altitud(B_point, A_point, C_point)
@@ -331,7 +338,7 @@ def index():
                     'altura': res['altura'],
                     'area': res['area']
                 }
-                historial_item = {"metodo": "Altura y Área", "resultados": resultados}
+                historial_item = {"metodo": "📏 Altura y Área", "resultados": resultados}
                 session.setdefault('history', []).append(historial_item)
                 session.modified = True
                 return render_template("resultado.html", resultados=resultados, imagen_est=None, imagen_int=None)
