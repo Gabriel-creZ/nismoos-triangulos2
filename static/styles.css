@@ -7,9 +7,9 @@
   --success-color: #4cc9f0;
   --warning-color: #f72585;
   --background-color: #5ab361;
-  --equation-link-color: #4a6fa5; /* Azul para Ecuaciones */
+  --equation-link-color: #4a6fa5; /* Azul para el enlace de Ecuaciones */
   --donation-link-color: #2e7d32; /* Verde para Donar */
-  --report-link-color: #2e7d32;   /* Verde para Reportar */
+  --report-link-color: #2e7d32;   /* Verde para Reportar Error */
   --equation-link-hover: #3a5a8a;
   --button-hover: #81c784;
 }
@@ -76,7 +76,7 @@ body {
   margin: 5px 0 15px 0;
 }
 
-/* Enlaces (Ecuaciones, Donar, Reportar) */
+/* Enlaces */
 .equation-link, .donation-link, .report-link {
   margin: 10px 0;
   text-align: center;

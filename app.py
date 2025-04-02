@@ -28,12 +28,13 @@ SMTP_PASSWORD = 'wkiqrqkcvhoirdyr'
 
 def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None, 
                              lado_a=None, lado_b=None, lado_c=None):
+    # Requiere al menos 2 ángulos y 1 lado
     known_angles = [angulo_A, angulo_B, angulo_C]
     num_angles = sum(x is not None for x in known_angles)
     known_sides = [lado_a, lado_b, lado_c]
     num_sides = sum(x is not None for x in known_sides)
     if num_angles + num_sides < 3 or num_sides < 1:
-        raise ValueError("Información insuficiente para resolver el triángulo.")
+        raise ValueError("Información insuficiente para resolver el triángulo (ley de senos).")
     if num_angles >= 2:
         if angulo_A is None:
             angulo_A = 180 - (angulo_B + angulo_C)
@@ -68,18 +69,25 @@ def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None,
             if lado_b is None:
                 lado_b = ratio * math.sin(math.radians(angulo_B))
             return lado_a, lado_b, lado_c, angulo_A, angulo_B, angulo_C
-    raise ValueError("No se pudo determinar el triángulo (SSA).")
+    raise ValueError("No se pudo determinar el triángulo con la ley de senos (verifica tus datos).")
 
 def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
+    # Si se conocen los 3 lados y ninguno de los ángulos se proporciona, calcularlos
     if a is not None and b is not None and c is not None:
-        try:
-            A = math.degrees(math.acos((b**2 + c**2 - a**2) / (2 * b * c)))
-            B = math.degrees(math.acos((a**2 + c**2 - b**2) / (2 * a * c)))
-            C = 180 - A - B
+        if A is None and B is None and C is None:
+            try:
+                A = math.degrees(math.acos((b**2 + c**2 - a**2) / (2 * b * c)))
+                B = math.degrees(math.acos((a**2 + c**2 - b**2) / (2 * a * c)))
+                C = 180 - A - B
+            except Exception as e:
+                raise ValueError("Error en la ley de cosenos: " + str(e))
             return a, b, c, A, B, C
-        except Exception as e:
-            raise ValueError("Error en ley de cosenos: " + str(e))
-    raise ValueError("Para la ley de cosenos se requieren los 3 lados.")
+        elif A is not None and B is not None and C is not None:
+            # Si se proporcionan ángulos, validamos
+            if abs(A + B + C - 180) > 1e-2:
+                raise ValueError("Los ángulos proporcionados no suman 180°.")
+            return a, b, c, A, B, C
+    raise ValueError("Para la ley de cosenos se requieren los 3 lados (y opcionalmente los ángulos).")
 
 def calcular_triangulo_pitagoras(a=None, b=None, c=None, A=None, B=None, C=None):
     if A is not None and abs(A - 90) < 1e-2:
@@ -98,14 +106,16 @@ def resolver_triangulo_altura(base, altura):
     return {"base": base, "altura": altura, "area": area}
 
 def resolver_triangulo(a, b, c, A, B, C, metodo_sel="auto", altura_input=None):
+    # Método Altura
     if metodo_sel == "altura":
         if a is not None and altura_input is not None:
             res = resolver_triangulo_altura(a, altura_input)
-            return res, "altura"
+            return res, "Altura y Área"
         else:
-            raise ValueError("Para el método Altura se requiere la base (lado_a) y la altura.")
+            raise ValueError("Para Altura y Área se requiere la base (lado a) y la altura.")
+    # Método Pitágoras
     if metodo_sel == "pitagoras":
-        return calcular_triangulo_pitagoras(a, b, c, A, B, C), "pitagoras"
+        return calcular_triangulo_pitagoras(a, b, c, A, B, C), "Pitágoras"
     # Método automático
     count_sides = sum(x is not None for x in [a, b, c])
     count_angles = sum(x is not None for x in [A, B, C])
@@ -114,15 +124,17 @@ def resolver_triangulo(a, b, c, A, B, C, metodo_sel="auto", altura_input=None):
             return calcular_triangulo_cos(a, b, c, A, B, C), "cosenos"
         except Exception as e:
             if (A is not None and abs(A-90)<1e-2) or (B is not None and abs(B-90)<1e-2) or (C is not None and abs(C-90)<1e-2):
-                return calcular_triangulo_pitagoras(a, b, c, A, B, C), "pitagoras"
+                return calcular_triangulo_pitagoras(a, b, c, A, B, C), "Pitágoras"
             else:
                 raise
     elif count_angles >= 2:
-        return calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C, lado_a=a, lado_b=b, lado_c=c), "senos"
+        return calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C, 
+                                       lado_a=a, lado_b=b, lado_c=c), "senos"
     elif count_sides == 2 and count_angles == 1:
         return calcular_triangulo_cos(a, b, c, A, B, C), "cosenos"
     else:
-        return calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C, lado_a=a, lado_b=b, lado_c=c), "senos"
+        return calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C, 
+                                       lado_a=a, lado_b=b, lado_c=c), "senos"
 
 # ============================
 # Funciones adicionales
@@ -157,7 +169,6 @@ def clasificar_triangulo_por_angulo(A, B, C):
         return "Acutángulo"
 
 def convertir_unidades(valor, de, a):
-    # Se amplían opciones
     conversiones = {
         ("cm", "m"): 0.01,
         ("m", "cm"): 100,

@@ -23,7 +23,6 @@
         <a href="{{ url_for('reporte') }}" class="btn"><i class="fas fa-bug"></i> Reportar Error</a>
       </div>
     </header>
-    
     <div class="content">
       <div class="results-container">
         <h2 class="results-title"><i class="fas fa-chart-pie"></i> Resultados (Método: {{ resultados.metodo }})</h2>
@@ -96,7 +95,7 @@
           </div>
           {% endif %}
         {% endif %}
-        <!-- Sección de conversión de unidades -->
+        <!-- Formulario de conversión de unidades -->
         <div class="result-item">
           <h3>Conversión de Unidades</h3>
           <form method="POST" action="{{ url_for('index') }}">
@@ -142,7 +141,7 @@
         </div>
         <!-- Mostrar historial -->
         {% if session.history %}
-          <h3 style="text-align:center; margin-top:20px;">🔃 Historial de Cálculos</h3>
+          <h3 style="text-align:center; margin-top:20px;">Historial de Cálculos</h3>
           <ul>
             {% for item in session.history %}
               <li><strong>Método:</strong> {{ item.metodo }} - {{ item.resultados }}</li>
