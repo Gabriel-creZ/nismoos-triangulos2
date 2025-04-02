@@ -56,7 +56,6 @@
       <header class="header">
         <h1><i class="fas fa-triangle triangle-icon"></i> Instant Math Solver: Resolución de Triángulos 🧮 <i class="fas fa-triangle triangle-icon"></i></h1>
         <p class="creator">By: <em>gabriel_cre</em></p>
-        <!-- Se mueve el botón de ecuaciones a la parte inferior -->
       </header>
       {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -72,13 +71,13 @@
           <h2 class="form-title"><i class="fas fa-calculator"></i> Datos del Triángulo</h2>
           <div class="instruction">
             Ingresa al menos 3 datos (lados o ángulos) para resolver el triángulo.<br>
-            Ejemplo: α = 80°, β = 20°, b = 7 [También se puede usando la altura y área]
+            Ejemplo: α = 80°, β = 20°, b = 7
           </div>
-          <!-- Selector de método -->
+          <!-- Selector de método con iconos -->
           <div class="form-group" style="text-align: center;">
             <label><strong>Método de resolución:</strong></label><br>
             <input type="radio" name="metodo_sel" value="auto" id="metodo_auto" checked>
-            <label for="metodo_auto">🏧 Automatico</label>
+            <label for="metodo_auto">🏧 Automático</label>
             &nbsp;&nbsp;
             <input type="radio" name="metodo_sel" value="pitagoras" id="metodo_pitagoras">
             <label for="metodo_pitagoras">📐 Pitágoras</label>
@@ -111,9 +110,9 @@
               <label for="angulo_C"><i class="fas fa-angle-right"></i> Ángulo γ:</label>
               <input type="text" name="angulo_C" id="angulo_C" placeholder="Ingrese grados">
             </div>
-            <!-- Campo opcional para el método Altura -->
+            <!-- Campo opcional para método Altura -->
             <div class="form-group" id="grupo_altura">
-              <label for="altura"><i class="fas fa-arrows-alt-v"></i> Altura (para método Altura):</label>
+              <label for="altura"><i class="fas fa-arrows-alt-v"></i> Altura (para Altura y Área):</label>
               <input type="text" name="altura" id="altura" placeholder="Ingrese altura">
             </div>
             <button type="submit" class="btn">
@@ -122,7 +121,7 @@
           </form>
         </div>
       </div>
-      <!-- Botones en la parte inferior -->
+      <!-- Botón de ecuaciones y botones de Donar y Reportar Error en la parte inferior -->
       <div class="extra-links" style="text-align: center; margin-top: 20px;">
         <div class="equation-link">
           <a href="https://resolucion-rectas-nismoos.onrender.com" target="_blank">
@@ -140,47 +139,12 @@
           </a>
         </div>
       </div>
-      <!-- Sección de conversión de unidades -->
-      <div class="content" style="margin-top:20px;">
-        <div class="form-container">
-          <h2 class="form-title"><i class="fas fa-exchange-alt"></i> Conversión de Unidades</h2>
-          <form method="POST" action="{{ url_for('index') }}">
-            <div class="form-group">
-              <label for="valor_conv">Valor:</label>
-              <input type="text" name="valor_conv" id="valor_conv" placeholder="Ingrese valor">
-            </div>
-            <div class="form-group">
-              <label for="de">De:</label>
-              <select name="de" id="de">
-                <option value="cm">cm</option>
-                <option value="m">m</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="a">A:</label>
-              <select name="a" id="a">
-                <option value="m">m</option>
-                <option value="cm">cm</option>
-              </select>
-            </div>
-            <button type="submit" class="btn">Convertir</button>
-          </form>
-          {% if request.form.get('valor_conv') %}
-            {% set valor = request.form.get('valor_conv', type=float) %}
-            {% set de = request.form.get('de') %}
-            {% set a_unit = request.form.get('a') %}
-            {% set valor_conv = valor * (0.01 if de=='cm' and a_unit=='m' else 100 if de=='m' and a_unit=='cm' else 1) %}
-            <p>Resultado: {{ valor_conv }} {{ a_unit }}</p>
-          {% endif %}
-        </div>
-      </div>
       <div class="footer">
         <em>@ 2025 Instant Math Solver - Herramienta educativa desarrollada por Gabriel Castillo - Alumno AMRD</em>
       </div>
     </div>
   {% endif %}
   <script>
-    // Mostrar/ocultar campo Altura según método seleccionado
     function actualizarMetodo() {
       var metodo = document.querySelector('input[name="metodo_sel"]:checked').value;
       var grupoAltura = document.getElementById("grupo_altura");

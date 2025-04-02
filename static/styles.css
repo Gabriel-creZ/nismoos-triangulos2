@@ -7,9 +7,9 @@
   --success-color: #4cc9f0;
   --warning-color: #f72585;
   --background-color: #5ab361;
-  --equation-link-color: #4a6fa5; /* Azul para el enlace de ecuaciones */
+  --equation-link-color: #4a6fa5; /* Azul para Ecuaciones */
   --donation-link-color: #2e7d32; /* Verde para Donar */
-  --report-link-color: #2e7d32;   /* Verde para Reportar Error */
+  --report-link-color: #2e7d32;   /* Verde para Reportar */
   --equation-link-hover: #3a5a8a;
   --button-hover: #81c784;
 }
@@ -76,7 +76,7 @@ body {
   margin: 5px 0 15px 0;
 }
 
-/* Enlaces de ecuaciones y extras */
+/* Enlaces (Ecuaciones, Donar, Reportar) */
 .equation-link, .donation-link, .report-link {
   margin: 10px 0;
   text-align: center;
@@ -151,7 +151,8 @@ body {
 }
 
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select {
   width: 100%;
   padding: 12px 15px;
   border: 2px solid #e9ecef;
@@ -162,12 +163,13 @@ body {
 }
 
 .form-group input:focus,
-.form-group textarea:focus {
+.form-group textarea:focus,
+.form-group select:focus {
   border-color: var(--accent-color);
   outline: none;
 }
 
-/* Botones centrados */
+/* Botones */
 .login-btn,
 .btn {
   background-color: var(--primary-color);
@@ -294,7 +296,8 @@ body {
     font-size: 1.5rem;
   }
   .form-group input,
-  .form-group textarea {
+  .form-group textarea,
+  .form-group select {
     padding: 10px 12px;
   }
   .btn, .login-btn {

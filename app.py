@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import io
 import base64
 import plotly.graph_objects as go
+import smtplib
+from email.mime.text import MIMEText
 
 app = Flask(__name__)
 app.secret_key = 'j350z271123r'
@@ -14,7 +16,7 @@ app.secret_key = 'j350z271123r'
 app.config['SESSION_PERMANENT'] = True
 app.config['PERMANENT_SESSION_LIFETIME'] = 3600
 
-# Configuración SMTP para reporte de errores (modificar según tu servidor)
+# Configuración SMTP
 SMTP_SERVER = 'smtp.gmail.com'
 SMTP_PORT = 587
 SMTP_USER = 'castilloreyesgabriel4@gmail.com'
@@ -69,7 +71,6 @@ def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None,
     raise ValueError("No se pudo determinar el triángulo (SSA).")
 
 def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
-    # Se espera que se conozcan los tres lados
     if a is not None and b is not None and c is not None:
         try:
             A = math.degrees(math.acos((b**2 + c**2 - a**2) / (2 * b * c)))
@@ -81,7 +82,6 @@ def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
     raise ValueError("Para la ley de cosenos se requieren los 3 lados.")
 
 def calcular_triangulo_pitagoras(a=None, b=None, c=None, A=None, B=None, C=None):
-    # Si alguno de los ángulos es 90°, se resuelve como triángulo rectángulo
     if A is not None and abs(A - 90) < 1e-2:
         a_calc = math.sqrt(b**2 + c**2)
         return a_calc, b, c, 90, math.degrees(math.asin(b/a_calc)), math.degrees(math.asin(c/a_calc))
@@ -94,12 +94,10 @@ def calcular_triangulo_pitagoras(a=None, b=None, c=None, A=None, B=None, C=None)
     raise ValueError("No se detectó un ángulo recto para aplicar Pitágoras.")
 
 def resolver_triangulo_altura(base, altura):
-    # Se usa el lado dado como base y la altura para calcular el área.
     area = 0.5 * base * altura
     return {"base": base, "altura": altura, "area": area}
 
 def resolver_triangulo(a, b, c, A, B, C, metodo_sel="auto", altura_input=None):
-    # Si se selecciona el método "altura", se requiere base y altura.
     if metodo_sel == "altura":
         if a is not None and altura_input is not None:
             res = resolver_triangulo_altura(a, altura_input)
@@ -108,7 +106,7 @@ def resolver_triangulo(a, b, c, A, B, C, metodo_sel="auto", altura_input=None):
             raise ValueError("Para el método Altura se requiere la base (lado_a) y la altura.")
     if metodo_sel == "pitagoras":
         return calcular_triangulo_pitagoras(a, b, c, A, B, C), "pitagoras"
-    # Método automático:
+    # Método automático
     count_sides = sum(x is not None for x in [a, b, c])
     count_angles = sum(x is not None for x in [A, B, C])
     if count_sides == 3:
@@ -158,9 +156,20 @@ def clasificar_triangulo_por_angulo(A, B, C):
     else:
         return "Acutángulo"
 
-def convertir_unidades(valor, de="cm", a="m"):
-    conversiones = {("cm", "m"): 0.01, ("m", "cm"): 100}
-    return valor * conversiones.get((de, a), 1)
+def convertir_unidades(valor, de, a):
+    # Se amplían opciones
+    conversiones = {
+        ("cm", "m"): 0.01,
+        ("m", "cm"): 100,
+        ("m", "km"): 0.001,
+        ("km", "m"): 1000,
+        ("in", "cm"): 2.54,
+        ("cm", "in"): 1/2.54,
+        ("ft", "m"): 0.3048,
+        ("m", "ft"): 1/0.3048
+    }
+    factor = conversiones.get((de, a), 1)
+    return valor * factor
 
 def calcular_puntos_notables(a, b, c, A, B, C):
     A_point = (0, 0)
@@ -208,12 +217,10 @@ def graficar_triangulo_estatico(a, b, c, A, B, C):
     A_point = (0, 0)
     B_point = (c, 0)
     C_point = (b * math.cos(math.radians(A)), b * math.sin(math.radians(A)))
-    
     plt.figure(figsize=(7,7))
     plt.plot([A_point[0], B_point[0]], [A_point[1], B_point[1]], 'b-', label=f"Lado c = {c:.2f}")
     plt.plot([A_point[0], C_point[0]], [A_point[1], C_point[1]], 'r-', label=f"Lado b = {b:.2f}")
     plt.plot([B_point[0], C_point[0]], [B_point[1], C_point[1]], 'g-', label=f"Lado a = {a:.2f}")
-    # Dibujar medianas (con líneas punteadas)
     mAB = ((A_point[0]+B_point[0])/2, (A_point[1]+B_point[1])/2)
     mAC = ((A_point[0]+C_point[0])/2, (A_point[1]+C_point[1])/2)
     mBC = ((B_point[0]+C_point[0])/2, (B_point[1]+C_point[1])/2)
@@ -273,7 +280,6 @@ def login():
         if username == 'alumno' and password == 'amrd':
             session['logged_in'] = True
             session['user'] = username
-            # Inicializar historial si no existe
             if 'history' not in session:
                 session['history'] = []
             return redirect(url_for('index'))
@@ -288,7 +294,6 @@ def logout():
     flash("Sesión cerrada correctamente.")
     return redirect(url_for('login'))
 
-# Ruta principal con selector de método y conversión de unidades
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if not session.get('logged_in'):
@@ -298,6 +303,7 @@ def index():
             def get_val(field):
                 val = request.form.get(field)
                 return float(val) if val and val.strip() != "" else None
+
             a_val = get_val("lado_a")
             b_val = get_val("lado_b")
             c_val = get_val("lado_c")
@@ -308,15 +314,14 @@ def index():
             metodo_sel = request.form.get("metodo_sel", "auto")
             
             if metodo_sel == "altura":
-                # Se requiere base y altura (se usa lado_a como base)
                 res = resolver_triangulo_altura(a_val, altura_val)
                 resultados = {
                     'base': res['base'],
                     'altura': res['altura'],
                     'area': res['area']
                 }
-                historial_item = {"metodo": "altura", "resultados": resultados}
-                session['history'].append(historial_item)
+                historial_item = {"metodo": "Altura y Área", "resultados": resultados}
+                session.setdefault('history', []).append(historial_item)
                 session.modified = True
                 return render_template("resultado.html", resultados=resultados, imagen_est=None, imagen_int=None)
             else:
@@ -343,7 +348,7 @@ def index():
                     'angulo_C': res[5],
                     'perimetro': perimetro,
                     'area': area,
-                    'altura': altura_tri,
+                    'altura': altura_tri if altura_tri is not None else "N/A",
                     'mediana_a': mediana_a,
                     'mediana_b': mediana_b,
                     'mediana_c': mediana_c,
@@ -351,11 +356,10 @@ def index():
                     'tipo_triangulo': tipo_tri,
                     'clasificacion': clasif_ang,
                     'pitagoras': pitagoras,
-                    'metodo': metodo
+                    'metodo': {"auto": "🏧 Automático", "pitagoras": "📐 Pitágoras", "altura": "📏 Altura y Área"}[metodo]
                 }
-                # Guardar en historial
-                historial_item = {"metodo": metodo, "resultados": resultados}
-                session['history'].append(historial_item)
+                historial_item = {"metodo": resultados['metodo'], "resultados": resultados}
+                session.setdefault('history', []).append(historial_item)
                 session.modified = True
                 return render_template("resultado.html", resultados=resultados, imagen_est=imagen_est, imagen_int=imagen_int)
         except Exception as e:
@@ -363,7 +367,6 @@ def index():
             return redirect(url_for('index'))
     return render_template("index.html", resultados=None)
 
-# Ruta para mostrar historial
 @app.route('/historial')
 def historial():
     if not session.get('logged_in'):
@@ -381,8 +384,23 @@ def donar():
 @app.route('/reporte', methods=['GET', 'POST'])
 def reporte():
     if request.method == 'POST':
-        # Aquí implementarías el envío de correo (por ejemplo, usando SMTP)
-        flash("Reporte enviado correctamente. ¡Gracias por tus comentarios!")
+        email = request.form.get('email')
+        mensaje = request.form.get('mensaje')
+        asunto = "Reporte de error desde Instant Math Solver: Triángulos"
+        cuerpo = f"Reporte de: {email}\n\nMensaje:\n{mensaje}"
+        msg = MIMEText(cuerpo)
+        msg['Subject'] = asunto
+        msg['From'] = SMTP_USER
+        msg['To'] = SMTP_USER
+        try:
+            server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+            server.starttls()
+            server.login(SMTP_USER, SMTP_PASSWORD)
+            server.send_message(msg)
+            server.quit()
+            flash("Reporte enviado correctamente. ¡Gracias por tus comentarios!")
+        except Exception as e:
+            flash("Error al enviar reporte: " + str(e))
         return redirect(url_for('reporte'))
     return render_template("reporte.html")
 

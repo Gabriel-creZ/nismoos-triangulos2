@@ -27,7 +27,7 @@
     <div class="content">
       <div class="results-container">
         <h2 class="results-title"><i class="fas fa-chart-pie"></i> Resultados (Método: {{ resultados.metodo }})</h2>
-        {% if resultados.metodo == "altura" %}
+        {% if resultados.metodo == "Altura y Área" %}
           <div class="result-item">
             <span class="result-label">Base:</span>
             <span class="result-value">{{ resultados.base }} u</span>
@@ -96,29 +96,59 @@
           </div>
           {% endif %}
         {% endif %}
-        {% if imagen_est and imagen_int %}
-        <h3 style="text-align: center; margin-top: 25px;"><i class="fas fa-drafting-compass"></i> Gráfica del Triángulo</h3>
+        <!-- Sección de conversión de unidades -->
         <div class="result-item">
-          <strong>Gráfica Estática:</strong><br>
-          <img src="data:image/png;base64,{{ imagen_est }}" alt="Gráfica del triángulo" class="triangle-image">
+          <h3>Conversión de Unidades</h3>
+          <form method="POST" action="{{ url_for('index') }}">
+            <div class="form-group">
+              <label for="valor_conv">Valor:</label>
+              <input type="text" name="valor_conv" id="valor_conv" placeholder="Ingrese valor">
+            </div>
+            <div class="form-group">
+              <label for="de">De:</label>
+              <select name="de" id="de">
+                <option value="cm">cm</option>
+                <option value="m">m</option>
+                <option value="km">km</option>
+                <option value="in">in</option>
+                <option value="ft">ft</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="a_unit">A:</label>
+              <select name="a_unit" id="a_unit">
+                <option value="m">m</option>
+                <option value="cm">cm</option>
+                <option value="km">km</option>
+                <option value="in">in</option>
+                <option value="ft">ft</option>
+              </select>
+            </div>
+            <button type="submit" class="btn">Convertir</button>
+          </form>
+          {% if request.form.get('valor_conv') %}
+            {% set valor = request.form.get('valor_conv', type=float) %}
+            {% set de = request.form.get('de') %}
+            {% set a_unit = request.form.get('a_unit') %}
+            {% set conversiones = {'cm_m': 0.01, 'm_cm': 100, 'm_km': 0.001, 'km_m': 1000, 'in_cm': 2.54, 'cm_in': 1/2.54, 'ft_m': 0.3048, 'm_ft': 1/0.3048} %}
+            {% set key = de ~ "_" ~ a_unit %}
+            {% set factor = conversiones.get(key, 1) %}
+            {% set valor_conv = valor * factor %}
+            <p>Resultado: {{ valor_conv }} {{ a_unit }}</p>
+          {% endif %}
         </div>
         <div class="result-item">
-          <strong>Gráfica Interactiva:</strong><br>
-          {{ imagen_int|safe }}
+          <a href="{{ url_for('index') }}" class="btn"><i class="fas fa-arrow-left"></i> Realizar nuevo cálculo</a>
         </div>
-        {% endif %}
-        <!-- Historial de cálculos -->
+        <!-- Mostrar historial -->
         {% if session.history %}
-          <h3 style="text-align:center; margin-top:20px;">Historial de Cálculos</h3>
+          <h3 style="text-align:center; margin-top:20px;">🔃 Historial de Cálculos</h3>
           <ul>
             {% for item in session.history %}
               <li><strong>Método:</strong> {{ item.metodo }} - {{ item.resultados }}</li>
             {% endfor %}
           </ul>
         {% endif %}
-        <div class="result-item">
-          <a href="{{ url_for('index') }}" class="btn"><i class="fas fa-arrow-left"></i> Realizar nuevo cálculo</a>
-        </div>
       </div>
     </div>
     <div class="footer">
