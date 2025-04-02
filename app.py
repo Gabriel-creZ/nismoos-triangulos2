@@ -14,13 +14,18 @@ app.secret_key = 'j350z271123r'
 app.config['SESSION_PERMANENT'] = True
 app.config['PERMANENT_SESSION_LIFETIME'] = 3600
 
+# Configuración SMTP para reporte de errores (modificar según tu servidor)
+SMTP_SERVER = 'smtp.gmail.com'
+SMTP_PORT = 587
+SMTP_USER = 'castilloreyesgabriel4@gmail.com'
+SMTP_PASSWORD = 'wkiqrqkcvhoirdyr'
+
 # ============================
 # Funciones para resolución de triángulos
 # ============================
 
 def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None, 
                              lado_a=None, lado_b=None, lado_c=None):
-    # Se requiere al menos 2 ángulos y 1 lado o 2 lados y 1 ángulo
     known_angles = [angulo_A, angulo_B, angulo_C]
     num_angles = sum(x is not None for x in known_angles)
     known_sides = [lado_a, lado_b, lado_c]
@@ -61,11 +66,10 @@ def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None,
             if lado_b is None:
                 lado_b = ratio * math.sin(math.radians(angulo_B))
             return lado_a, lado_b, lado_c, angulo_A, angulo_B, angulo_C
-    # Para casos SSA, se puede agregar el código existente si se desea.
-    raise ValueError("No se pudo determinar el triángulo con la información proporcionada (SSA).")
+    raise ValueError("No se pudo determinar el triángulo (SSA).")
 
 def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
-    # Si se conocen los 3 lados, calcular ángulos con ley de cosenos:
+    # Se espera que se conozcan los tres lados
     if a is not None and b is not None and c is not None:
         try:
             A = math.degrees(math.acos((b**2 + c**2 - a**2) / (2 * b * c)))
@@ -73,27 +77,11 @@ def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
             C = 180 - A - B
             return a, b, c, A, B, C
         except Exception as e:
-            raise ValueError("Error al calcular ángulos con la ley de cosenos: " + str(e))
-    # Si se conocen 2 lados y el ángulo incluido:
-    if a is not None and b is not None and C is not None:
-        c = math.sqrt(a**2 + b**2 - 2*a*b*math.cos(math.radians(C)))
-        A = math.degrees(math.asin(a * math.sin(math.radians(C)) / c))
-        B = 180 - C - A
-        return a, b, c, A, B, C
-    if a is not None and c is not None and B is not None:
-        b = math.sqrt(a**2 + c**2 - 2*a*c*math.cos(math.radians(B)))
-        A = math.degrees(math.asin(a * math.sin(math.radians(B)) / b))
-        C = 180 - B - A
-        return a, b, c, A, B, C
-    if b is not None and c is not None and A is not None:
-        a = math.sqrt(b**2 + c**2 - 2*b*c*math.cos(math.radians(A)))
-        B = math.degrees(math.asin(b * math.sin(math.radians(A)) / a))
-        C = 180 - A - B
-        return a, b, c, A, B, C
-    raise ValueError("No se pudo calcular el triángulo con la ley de cosenos.")
+            raise ValueError("Error en ley de cosenos: " + str(e))
+    raise ValueError("Para la ley de cosenos se requieren los 3 lados.")
 
 def calcular_triangulo_pitagoras(a=None, b=None, c=None, A=None, B=None, C=None):
-    # Si se ingresa un ángulo de 90°, se resuelve como triángulo rectángulo.
+    # Si alguno de los ángulos es 90°, se resuelve como triángulo rectángulo
     if A is not None and abs(A - 90) < 1e-2:
         a_calc = math.sqrt(b**2 + c**2)
         return a_calc, b, c, 90, math.degrees(math.asin(b/a_calc)), math.degrees(math.asin(c/a_calc))
@@ -103,33 +91,30 @@ def calcular_triangulo_pitagoras(a=None, b=None, c=None, A=None, B=None, C=None)
     if C is not None and abs(C - 90) < 1e-2:
         c_calc = math.sqrt(a**2 + b**2)
         return a, b, c_calc, math.degrees(math.asin(a/c_calc)), math.degrees(math.asin(b/c_calc)), 90
-    raise ValueError("No se pudo identificar un triángulo rectángulo.")
+    raise ValueError("No se detectó un ángulo recto para aplicar Pitágoras.")
 
 def resolver_triangulo_altura(base, altura):
-    # Método basado en Altura y Área
+    # Se usa el lado dado como base y la altura para calcular el área.
     area = 0.5 * base * altura
-    return {'base': base, 'altura': altura, 'area': area}
+    return {"base": base, "altura": altura, "area": area}
 
 def resolver_triangulo(a, b, c, A, B, C, metodo_sel="auto", altura_input=None):
-    # Si se selecciona el método "altura" y se ingresó una altura, usar ese método.
+    # Si se selecciona el método "altura", se requiere base y altura.
     if metodo_sel == "altura":
-        if a is not None:
-            # Usamos el lado a como base
-            area = 0.5 * a * altura_input
-            return {"base": a, "altura": altura_input, "area": area}, "altura"
+        if a is not None and altura_input is not None:
+            res = resolver_triangulo_altura(a, altura_input)
+            return res, "altura"
         else:
-            raise ValueError("Para el método Altura se requiere al menos un lado (base) y la altura.")
-    # Si se selecciona el método "pitagoras"
+            raise ValueError("Para el método Altura se requiere la base (lado_a) y la altura.")
     if metodo_sel == "pitagoras":
         return calcular_triangulo_pitagoras(a, b, c, A, B, C), "pitagoras"
-    # Método automático: si se conocen 3 lados, se usa cosenos; sino, si hay 2 ángulos, se usa senos.
+    # Método automático:
     count_sides = sum(x is not None for x in [a, b, c])
     count_angles = sum(x is not None for x in [A, B, C])
     if count_sides == 3:
         try:
             return calcular_triangulo_cos(a, b, c, A, B, C), "cosenos"
         except Exception as e:
-            # En caso de error, intente pitagoras si corresponde
             if (A is not None and abs(A-90)<1e-2) or (B is not None and abs(B-90)<1e-2) or (C is not None and abs(C-90)<1e-2):
                 return calcular_triangulo_pitagoras(a, b, c, A, B, C), "pitagoras"
             else:
@@ -137,14 +122,12 @@ def resolver_triangulo(a, b, c, A, B, C, metodo_sel="auto", altura_input=None):
     elif count_angles >= 2:
         return calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C, lado_a=a, lado_b=b, lado_c=c), "senos"
     elif count_sides == 2 and count_angles == 1:
-        # Por defecto, usamos cosenos en este caso
         return calcular_triangulo_cos(a, b, c, A, B, C), "cosenos"
     else:
-        # Caso mínimo, intenta ley de senos
         return calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C, lado_a=a, lado_b=b, lado_c=c), "senos"
 
 # ============================
-# Funciones de cálculos adicionales
+# Funciones adicionales
 # ============================
 
 def calcular_medianas(a, b, c):
@@ -180,18 +163,16 @@ def convertir_unidades(valor, de="cm", a="m"):
     return valor * conversiones.get((de, a), 1)
 
 def calcular_puntos_notables(a, b, c, A, B, C):
-    # Usando el mismo esquema que antes: A en (0,0), B en (c,0) y C calculado.
     A_point = (0, 0)
     B_point = (c, 0)
     C_point = (b * math.cos(math.radians(A)), b * math.sin(math.radians(A)))
-    # Mediatrices para circuncentro
     def mediatriz(P, Q):
         mid = ((P[0]+Q[0])/2, (P[1]+Q[1])/2)
         if abs(P[0]-Q[0]) < 1e-5:
             slope = 0
         else:
             m = (Q[1]-P[1])/(Q[0]-P[0])
-            slope = None if abs(m)<1e-5 else -1/m
+            slope = None if abs(m) < 1e-5 else -1/m
         return mid, slope
     midAB, slopeAB = mediatriz(A_point, B_point)
     midAC, slopeAC = mediatriz(A_point, C_point)
@@ -207,7 +188,6 @@ def calcular_puntos_notables(a, b, c, A, B, C):
             y = m1*(x-P1[0]) + P1[1]
         return (x, y)
     circumcenter = interseccion(midAB, slopeAB, midAC, slopeAC)
-    # Altitudes para ortocentro
     def altitud(P, Q, R):
         if abs(Q[0]-R[0]) < 1e-5:
             m_alt = 0
@@ -230,33 +210,28 @@ def graficar_triangulo_estatico(a, b, c, A, B, C):
     C_point = (b * math.cos(math.radians(A)), b * math.sin(math.radians(A)))
     
     plt.figure(figsize=(7,7))
-    # Dibujar triángulo
     plt.plot([A_point[0], B_point[0]], [A_point[1], B_point[1]], 'b-', label=f"Lado c = {c:.2f}")
     plt.plot([A_point[0], C_point[0]], [A_point[1], C_point[1]], 'r-', label=f"Lado b = {b:.2f}")
     plt.plot([B_point[0], C_point[0]], [B_point[1], C_point[1]], 'g-', label=f"Lado a = {a:.2f}")
-    # Dibujar medianas
+    # Dibujar medianas (con líneas punteadas)
     mAB = ((A_point[0]+B_point[0])/2, (A_point[1]+B_point[1])/2)
     mAC = ((A_point[0]+C_point[0])/2, (A_point[1]+C_point[1])/2)
     mBC = ((B_point[0]+C_point[0])/2, (B_point[1]+C_point[1])/2)
     plt.plot([C_point[0], mAB[0]], [C_point[1], mAB[1]], 'm--', label="Medianas")
     plt.plot([B_point[0], mAC[0]], [B_point[1], mAC[1]], 'm--')
     plt.plot([A_point[0], mBC[0]], [A_point[1], mBC[1]], 'm--')
-    # Dibujar circuncentro y ortocentro
     circumcenter, ortocenter, _, _, _ = calcular_puntos_notables(a, b, c, A, B, C)
     plt.plot(circumcenter[0], circumcenter[1], 'ko', label="Circuncentro")
     plt.plot(ortocenter[0], ortocenter[1], 'ks', label="Ortocentro")
-    # Etiquetas
     plt.text(A_point[0]-0.2, A_point[1]-0.2, "A", fontsize=12)
     plt.text(B_point[0]+0.2, B_point[1]-0.2, "B", fontsize=12)
     plt.text(C_point[0], C_point[1]+0.2, "C", fontsize=12)
-    # Límites y aspecto
     plt.xlim(min(A_point[0], B_point[0], C_point[0]) - 1, max(A_point[0], B_point[0], C_point[0]) + 1)
     plt.ylim(min(A_point[1], B_point[1], C_point[1]) - 1, max(A_point[1], B_point[1], C_point[1]) + 1)
     plt.gca().set_aspect('equal', adjustable='box')
     plt.title("Triángulo Resuelto")
     plt.grid()
     plt.legend()
-    
     buf = io.BytesIO()
     plt.savefig(buf, format='png')
     buf.seek(0)
@@ -268,7 +243,6 @@ def graficar_triangulo_interactivo(a, b, c, A, B, C):
     A_point = (0, 0)
     B_point = (c, 0)
     C_point = (b * math.cos(math.radians(A)), b * math.sin(math.radians(A)))
-    
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=[A_point[0], B_point[0]], y=[A_point[1], B_point[1]],
                              mode='lines', name=f"Lado c = {c:.2f}", line=dict(color='blue')))
@@ -288,7 +262,7 @@ def graficar_triangulo_interactivo(a, b, c, A, B, C):
     return fig.to_html(full_html=False)
 
 # ================================
-# Rutas y páginas adicionales
+# Rutas y funcionalidades adicionales
 # ================================
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -299,6 +273,9 @@ def login():
         if username == 'alumno' and password == 'amrd':
             session['logged_in'] = True
             session['user'] = username
+            # Inicializar historial si no existe
+            if 'history' not in session:
+                session['history'] = []
             return redirect(url_for('index'))
         else:
             flash('Usuario o contraseña incorrectos, intente de nuevo.')
@@ -311,7 +288,7 @@ def logout():
     flash("Sesión cerrada correctamente.")
     return redirect(url_for('login'))
 
-# Ruta principal (index) con selector de método
+# Ruta principal con selector de método y conversión de unidades
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if not session.get('logged_in'):
@@ -321,33 +298,32 @@ def index():
             def get_val(field):
                 val = request.form.get(field)
                 return float(val) if val and val.strip() != "" else None
-
             a_val = get_val("lado_a")
             b_val = get_val("lado_b")
             c_val = get_val("lado_c")
             A_val = get_val("angulo_A")
             B_val = get_val("angulo_B")
             C_val = get_val("angulo_C")
-            altura_val = get_val("altura")  # Campo adicional para el método Altura
+            altura_val = get_val("altura")
             metodo_sel = request.form.get("metodo_sel", "auto")
             
             if metodo_sel == "altura":
-                res = resolver_triangulo_altura(a_val if a_val is not None else b_val or c_val, altura_val)
-                # Solo se calculan base, altura y área en este método.
+                # Se requiere base y altura (se usa lado_a como base)
+                res = resolver_triangulo_altura(a_val, altura_val)
                 resultados = {
-                    'base': f"{res['base']:.2f}",
-                    'altura': f"{res['altura']:.2f}",
-                    'area': f"{res['area']:.2f}"
+                    'base': res['base'],
+                    'altura': res['altura'],
+                    'area': res['area']
                 }
-                # No se grafican triángulos completos.
+                historial_item = {"metodo": "altura", "resultados": resultados}
+                session['history'].append(historial_item)
+                session.modified = True
                 return render_template("resultado.html", resultados=resultados, imagen_est=None, imagen_int=None)
             else:
                 res, metodo = resolver_triangulo(a_val, b_val, c_val, A_val, B_val, C_val, metodo_sel, altura_val)
-                # Calcular área usando Herón
                 perimetro = res[0] + res[1] + res[2]
                 s = perimetro / 2
                 area = math.sqrt(s * (s - res[0]) * (s - res[1]) * (s - res[2]))
-                # Altura respecto a lado c
                 altura_tri = (2 * area) / res[2] if res[2] != 0 else None
                 mediana_a, mediana_b, mediana_c = calcular_medianas(res[0], res[1], res[2])
                 circumradius = calcular_circumradius(res[0], res[1], res[2], area)
@@ -356,43 +332,44 @@ def index():
                 pitagoras = ""
                 if abs(max(res[3], res[4], res[5]) - 90) < 1e-2:
                     pitagoras = "Se cumple el teorema de Pitágoras."
-                
-                # Gráficas: se generan ambas (estática e interactiva)
                 imagen_est = graficar_triangulo_estatico(res[0], res[1], res[2], res[3], res[4], res[5])
                 imagen_int = graficar_triangulo_interactivo(res[0], res[1], res[2], res[3], res[4], res[5])
-                
                 resultados = {
-                    'lado_a': f"{res[0]:.2f}",
-                    'lado_b': f"{res[1]:.2f}",
-                    'lado_c': f"{res[2]:.2f}",
-                    'angulo_A': f"{res[3]:.2f}",
-                    'angulo_B': f"{res[4]:.2f}",
-                    'angulo_C': f"{res[5]:.2f}",
-                    'perimetro': f"{perimetro:.2f}",
-                    'area': f"{area:.2f}",
-                    'altura': f"{altura_tri:.2f}" if altura_tri is not None else "N/A",
-                    'mediana_a': f"{mediana_a:.2f}",
-                    'mediana_b': f"{mediana_b:.2f}",
-                    'mediana_c': f"{mediana_c:.2f}",
-                    'circumradius': f"{circumradius:.2f}" if circumradius is not None else "N/A",
+                    'lado_a': res[0],
+                    'lado_b': res[1],
+                    'lado_c': res[2],
+                    'angulo_A': res[3],
+                    'angulo_B': res[4],
+                    'angulo_C': res[5],
+                    'perimetro': perimetro,
+                    'area': area,
+                    'altura': altura_tri,
+                    'mediana_a': mediana_a,
+                    'mediana_b': mediana_b,
+                    'mediana_c': mediana_c,
+                    'circumradius': circumradius if circumradius is not None else "N/A",
                     'tipo_triangulo': tipo_tri,
                     'clasificacion': clasif_ang,
                     'pitagoras': pitagoras,
                     'metodo': metodo
                 }
+                # Guardar en historial
+                historial_item = {"metodo": metodo, "resultados": resultados}
+                session['history'].append(historial_item)
+                session.modified = True
                 return render_template("resultado.html", resultados=resultados, imagen_est=imagen_est, imagen_int=imagen_int)
         except Exception as e:
             flash(str(e))
             return redirect(url_for('index'))
     return render_template("index.html", resultados=None)
 
-# Ruta para comparar triángulos (opcional)
-@app.route('/comparar', methods=['GET', 'POST'])
-def comparar():
+# Ruta para mostrar historial
+@app.route('/historial')
+def historial():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
-    # Implementa la comparación según el código anterior...
-    return render_template("comparar.html", res1=None)
+    history = session.get('history', [])
+    return render_template("historial.html", history=history)
 
 # =============================
 # Rutas para Donar y Reportar Error
@@ -404,7 +381,7 @@ def donar():
 @app.route('/reporte', methods=['GET', 'POST'])
 def reporte():
     if request.method == 'POST':
-        # Implementa envío de reporte (por ejemplo, usando SMTP)
+        # Aquí implementarías el envío de correo (por ejemplo, usando SMTP)
         flash("Reporte enviado correctamente. ¡Gracias por tus comentarios!")
         return redirect(url_for('reporte'))
     return render_template("reporte.html")

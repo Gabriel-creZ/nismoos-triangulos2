@@ -7,7 +7,9 @@
   --success-color: #4cc9f0;
   --warning-color: #f72585;
   --background-color: #5ab361;
-  --equation-link-color: #4a6fa5;
+  --equation-link-color: #4a6fa5; /* Azul para el enlace de ecuaciones */
+  --donation-link-color: #2e7d32; /* Verde para Donar */
+  --report-link-color: #2e7d32;   /* Verde para Reportar Error */
   --equation-link-hover: #3a5a8a;
   --button-hover: #81c784;
 }
@@ -80,9 +82,7 @@ body {
   text-align: center;
 }
 
-.equation-link a,
-.donation-link a,
-.report-link a {
+.equation-link a {
   background-color: var(--equation-link-color);
   color: white;
   padding: 12px 20px;
@@ -94,10 +94,28 @@ body {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.equation-link a:hover,
+.equation-link a:hover {
+  background-color: var(--equation-link-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.donation-link a,
+.report-link a {
+  background-color: var(--donation-link-color);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s;
+  font-weight: 500;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
 .donation-link a:hover,
 .report-link a:hover {
-  background-color: var(--equation-link-hover);
+  background-color: var(--button-hover);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
@@ -228,7 +246,7 @@ body {
   margin: 0 auto;
 }
 
-/* Login container (contenedor blanco) */
+/* Login container */
 .login-container {
   background: white;
   max-width: 400px;

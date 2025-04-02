@@ -96,7 +96,6 @@
           </div>
           {% endif %}
         {% endif %}
-        
         {% if imagen_est and imagen_int %}
         <h3 style="text-align: center; margin-top: 25px;"><i class="fas fa-drafting-compass"></i> Gráfica del Triángulo</h3>
         <div class="result-item">
@@ -108,13 +107,20 @@
           {{ imagen_int|safe }}
         </div>
         {% endif %}
-        
+        <!-- Historial de cálculos -->
+        {% if session.history %}
+          <h3 style="text-align:center; margin-top:20px;">Historial de Cálculos</h3>
+          <ul>
+            {% for item in session.history %}
+              <li><strong>Método:</strong> {{ item.metodo }} - {{ item.resultados }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
         <div class="result-item">
           <a href="{{ url_for('index') }}" class="btn"><i class="fas fa-arrow-left"></i> Realizar nuevo cálculo</a>
         </div>
       </div>
     </div>
-    
     <div class="footer">
       <em>@ 2025 Instant Math Solver - Herramienta educativa desarrollada por Gabriel Castillo - Alumno AMRD</em>
     </div>

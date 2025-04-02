@@ -17,7 +17,7 @@
       <h2 class="login-title"><i class="fas fa-triangle"></i> Acceso para el Usuario AMRD 🦌</h2>
       <div class="equation-link">
         <a href="https://resolucion-rectas-nismoos.onrender.com" target="_blank">
-          <i class="fas fa-external-link-alt"></i> Da click aquí para resolver Ecuaciones 2x2 y graficarlas
+          <i class="fas fa-external-link-alt"></i> Da click aquí para resolver Ecuaciones y graficarlas
         </a>
       </div>
       {% with messages = get_flashed_messages() %}
@@ -56,6 +56,7 @@
       <header class="header">
         <h1><i class="fas fa-triangle triangle-icon"></i> Instant Math Solver: Resolución de Triángulos 🧮 <i class="fas fa-triangle triangle-icon"></i></h1>
         <p class="creator">By: <em>gabriel_cre</em></p>
+        <!-- Se mueve el botón de ecuaciones a la parte inferior -->
       </header>
       {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -110,7 +111,7 @@
               <label for="angulo_C"><i class="fas fa-angle-right"></i> Ángulo γ:</label>
               <input type="text" name="angulo_C" id="angulo_C" placeholder="Ingrese grados">
             </div>
-            <!-- Campo opcional para método Altura -->
+            <!-- Campo opcional para el método Altura -->
             <div class="form-group" id="grupo_altura">
               <label for="altura"><i class="fas fa-arrows-alt-v"></i> Altura (para método Altura):</label>
               <input type="text" name="altura" id="altura" placeholder="Ingrese altura">
@@ -121,11 +122,11 @@
           </form>
         </div>
       </div>
-      <!-- Botón de ecuaciones y botones de Donar y Reportar en la parte inferior -->
+      <!-- Botones en la parte inferior -->
       <div class="extra-links" style="text-align: center; margin-top: 20px;">
         <div class="equation-link">
           <a href="https://resolucion-rectas-nismoos.onrender.com" target="_blank">
-            <i class="fas fa-external-link-alt"></i> Da click aquí para resolver Ecuaciones 2x2 y graficarlas
+            <i class="fas fa-external-link-alt"></i> Da click aquí para resolver Ecuaciones y graficarlas
           </a>
         </div>
         <div class="donation-link" style="margin-top:10px;">
@@ -139,13 +140,47 @@
           </a>
         </div>
       </div>
+      <!-- Sección de conversión de unidades -->
+      <div class="content" style="margin-top:20px;">
+        <div class="form-container">
+          <h2 class="form-title"><i class="fas fa-exchange-alt"></i> Conversión de Unidades</h2>
+          <form method="POST" action="{{ url_for('index') }}">
+            <div class="form-group">
+              <label for="valor_conv">Valor:</label>
+              <input type="text" name="valor_conv" id="valor_conv" placeholder="Ingrese valor">
+            </div>
+            <div class="form-group">
+              <label for="de">De:</label>
+              <select name="de" id="de">
+                <option value="cm">cm</option>
+                <option value="m">m</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="a">A:</label>
+              <select name="a" id="a">
+                <option value="m">m</option>
+                <option value="cm">cm</option>
+              </select>
+            </div>
+            <button type="submit" class="btn">Convertir</button>
+          </form>
+          {% if request.form.get('valor_conv') %}
+            {% set valor = request.form.get('valor_conv', type=float) %}
+            {% set de = request.form.get('de') %}
+            {% set a_unit = request.form.get('a') %}
+            {% set valor_conv = valor * (0.01 if de=='cm' and a_unit=='m' else 100 if de=='m' and a_unit=='cm' else 1) %}
+            <p>Resultado: {{ valor_conv }} {{ a_unit }}</p>
+          {% endif %}
+        </div>
+      </div>
       <div class="footer">
         <em>@ 2025 Instant Math Solver - Herramienta educativa desarrollada por Gabriel Castillo - Alumno AMRD</em>
       </div>
     </div>
   {% endif %}
   <script>
-    // Mostrar u ocultar el grupo de altura según método seleccionado
+    // Mostrar/ocultar campo Altura según método seleccionado
     function actualizarMetodo() {
       var metodo = document.querySelector('input[name="metodo_sel"]:checked').value;
       var grupoAltura = document.getElementById("grupo_altura");
