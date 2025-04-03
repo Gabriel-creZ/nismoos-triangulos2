@@ -69,9 +69,10 @@ def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None,
             if lado_b is None:
                 lado_b = ratio * math.sin(math.radians(angulo_B))
             return lado_a, lado_b, lado_c, angulo_A, angulo_B, angulo_C
-    raise ValueError("No se pudo determinar el triángulo con la Ley de Senos (verifica tus datos).")
+    raise ValueError("No se pudo resolver el triángulo con la Ley de Senos (verifica tus datos).")
 
 def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
+    # Si se conocen los 3 lados y no se proporcionan ángulos, calcularlos
     if a is not None and b is not None and c is not None:
         if A is None and B is None and C is None:
             try:
@@ -87,13 +88,9 @@ def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
             return a, b, c, A, B, C
     raise ValueError("Para la Ley de Cosenos se requieren los 3 lados (y opcionalmente los ángulos).")
 
-def calcular_triangulo_pitagoras(a=None, b=None, c=None, A=None, B=None, C=None):
-    # Esta función ya no se usará (opción eliminada)
-    raise ValueError("La opción Pitágoras ha sido eliminada.")
-
 def resolver_triangulo_altura(base, altura=None, area_input=None):
-    # Si se ingresa base y altura, se calcula el área.
-    # Si se ingresa base y área, se calcula la altura.
+    # Si se ingresa altura, se calcula el área.
+    # Si se ingresa área, se calcula la altura.
     if altura is not None:
         area = 0.5 * base * altura
         return {"base": base, "altura": altura, "area": area}
@@ -101,17 +98,16 @@ def resolver_triangulo_altura(base, altura=None, area_input=None):
         altura_calculada = (2 * area_input) / base
         return {"base": base, "altura": altura_calculada, "area": area_input}
     else:
-        raise ValueError("Se requiere proporcionar la altura o el área junto con la base.")
+        raise ValueError("Debes proporcionar la altura o el área junto con la base.")
 
 def resolver_triangulo(a, b, c, A, B, C, metodo_sel="auto", altura_input=None, area_input=None):
-    # Si se selecciona Altura y Área, se utiliza la función correspondiente
     if metodo_sel == "altura":
         if a is not None and (altura_input is not None or area_input is not None):
             res = resolver_triangulo_altura(a, altura_input, area_input)
             return res, "Altura y Área"
         else:
             raise ValueError("Para Altura y Área se requiere la base (lado a) y la altura o el área.")
-    # Sino, se utiliza el método automático (Ley de Senos o Cosenos)
+    # Método automático: se usa Ley de Cosenos o Ley de Senos según los datos.
     count_sides = sum(x is not None for x in [a, b, c])
     count_angles = sum(x is not None for x in [A, B, C])
     if count_sides == 3:
@@ -286,8 +282,6 @@ def login():
         if username == 'alumno' and password == 'amrd':
             session['logged_in'] = True
             session['user'] = username
-            if 'history' not in session:
-                session['history'] = []
             return redirect(url_for('index'))
         else:
             flash('Usuario o contraseña incorrectos, intente de nuevo.')
@@ -317,29 +311,19 @@ def index():
             B_val = get_val("angulo_B")
             C_val = get_val("angulo_C")
             altura_val = get_val("altura")
+            area_val = get_val("area")
             metodo_sel = request.form.get("metodo_sel", "auto")
             
-            # Método Altura y Área: se permiten dos opciones: base+altura o base+área
             if metodo_sel == "altura":
-                # Se revisa si se ingresó altura o área
-                if altura_val is not None:
-                    res = resolver_triangulo_altura(a_val, altura_val)
-                elif c_val is None and request.form.get("area"):
-                    area_val = float(request.form.get("area"))
-                    res = resolver_triangulo_altura(a_val, None, area_val)
-                else:
-                    raise ValueError("Para Altura y Área se requiere ingresar la altura o el área junto con la base (lado a).")
+                res = resolver_triangulo_altura(a_val, altura_val, area_val)
                 resultados = {
                     'base': res['base'],
                     'altura': res['altura'],
                     'area': res['area']
                 }
-                historial_item = {"metodo": "📏 Altura y Área", "resultados": resultados}
-                session.setdefault('history', []).append(historial_item)
-                session.modified = True
                 return render_template("resultado.html", resultados=resultados, imagen_est=None, imagen_int=None)
             else:
-                res, metodo = resolver_triangulo(a_val, b_val, c_val, A_val, B_val, C_val, metodo_sel, altura_val)
+                res, metodo = resolver_triangulo(a_val, b_val, c_val, A_val, B_val, C_val, metodo_sel)
                 perimetro = res[0] + res[1] + res[2]
                 s = perimetro / 2
                 area = math.sqrt(s * (s - res[0]) * (s - res[1]) * (s - res[2]))
@@ -348,9 +332,6 @@ def index():
                 circumradius = calcular_circumradius(res[0], res[1], res[2], area)
                 tipo_tri = determinar_tipo_triangulo(res[0], res[1], res[2])
                 clasif_ang = clasificar_triangulo_por_angulo(res[3], res[4], res[5])
-                pitagoras = ""
-                if abs(max(res[3], res[4], res[5]) - 90) < 1e-2:
-                    pitagoras = "Se cumple el teorema de Pitágoras."
                 imagen_est = graficar_triangulo_estatico(res[0], res[1], res[2], res[3], res[4], res[5])
                 imagen_int = graficar_triangulo_interactivo(res[0], res[1], res[2], res[3], res[4], res[5])
                 resultados = {
@@ -369,28 +350,15 @@ def index():
                     'circumradius': circumradius if circumradius is not None else "N/A",
                     'tipo_triangulo': tipo_tri,
                     'clasificacion': clasif_ang,
-                    'pitagoras': pitagoras,
-                    'metodo': {"auto": "🏧 Ley de Senos o Cosenos", "altura": "📏 Altura y Área"}[metodo]
+                    'pitagoras': "",
+                    'metodo': "🏧 Ley de Senos o Cosenos"
                 }
-                historial_item = {"metodo": resultados['metodo'], "resultados": resultados}
-                session.setdefault('history', []).append(historial_item)
-                session.modified = True
                 return render_template("resultado.html", resultados=resultados, imagen_est=imagen_est, imagen_int=imagen_int)
         except Exception as e:
             flash(str(e))
             return redirect(url_for('index'))
     return render_template("index.html", resultados=None)
 
-@app.route('/historial')
-def historial():
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
-    history = session.get('history', [])
-    return render_template("historial.html", history=history)
-
-# =============================
-# Rutas para Donar y Reportar Error
-# =============================
 @app.route('/donar')
 def donar():
     return render_template("donar.html")

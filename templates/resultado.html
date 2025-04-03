@@ -88,12 +88,6 @@
             <span class="result-label"><span class="emoji">📊</span> Tipo de triángulo:</span>
             <span class="result-value">{{ resultados.tipo_triangulo }} - {{ resultados.clasificacion }}</span>
           </div>
-          {% if resultados.pitagoras %}
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">✅</span> Pitágoras:</span>
-            <span class="result-value">{{ resultados.pitagoras }}</span>
-          </div>
-          {% endif %}
         {% endif %}
         <!-- Formulario de conversión de unidades -->
         <div class="result-item">
@@ -139,14 +133,6 @@
         <div class="result-item">
           <a href="{{ url_for('index') }}" class="btn"><i class="fas fa-arrow-left"></i> Realizar nuevo cálculo</a>
         </div>
-        {% if session.history %}
-          <h3 style="text-align:center; margin-top:20px;">Historial de Cálculos</h3>
-          <ul>
-            {% for item in session.history %}
-              <li><strong>Método:</strong> {{ item.metodo }} - {{ item.resultados }}</li>
-            {% endfor %}
-          </ul>
-        {% endif %}
       </div>
     </div>
     <div class="footer">
