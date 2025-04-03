@@ -91,6 +91,10 @@
         </div>
         <div class="result-item">
           {{ imagen_interactivo|safe }}
+          <!-- Nota: Uso recomendado en PC o tablet -->
+          <p style="text-align:center; margin-top:10px; font-style:italic;">
+            Recomendamos visualizar la gráfica interactiva en PC o tablet.
+          </p>
         </div>
         
         <!-- Calculadora de conversión de unidades -->
@@ -107,6 +111,9 @@
                 <option value="Milímetros">Milímetros</option>
                 <option value="Centímetros" selected>Centímetros</option>
                 <option value="Decímetros">Decímetros</option>
+                <option value="Decámetros">Decámetros</option>
+                <option value="Hectómetros">Hectómetros</option>
+                <option value="Kilómetros">Kilómetros</option>
                 <option value="Metros">Metros</option>
                 <option value="Pulgadas">Pulgadas</option>
                 <option value="Pies">Pies</option>
@@ -120,6 +127,9 @@
                 <option value="Milímetros">Milímetros</option>
                 <option value="Centímetros" selected>Centímetros</option>
                 <option value="Decímetros">Decímetros</option>
+                <option value="Decámetros">Decámetros</option>
+                <option value="Hectómetros">Hectómetros</option>
+                <option value="Kilómetros">Kilómetros</option>
                 <option value="Metros">Metros</option>
                 <option value="Pulgadas">Pulgadas</option>
                 <option value="Pies">Pies</option>
@@ -167,7 +177,13 @@
         "Yardas_Metros": 0.9144,
         "Metros_Yardas": 1.09361,
         "Millas_Metros": 1609.34,
-        "Metros_Millas": 0.000621371
+        "Metros_Millas": 0.000621371,
+        "Decámetros_Metros": 10,
+        "Metros_Decámetros": 0.1,
+        "Hectómetros_Metros": 100,
+        "Metros_Hectómetros": 0.01,
+        "Kilómetros_Metros": 1000,
+        "Metros_Kilómetros": 0.001
       };
       const key = de + "_" + a;
       const factor = conversion[key];

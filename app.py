@@ -23,10 +23,10 @@ SMTP_USER = 'castilloreyesgabriel4@gmail.com'
 SMTP_PASSWORD = 'wkiqrqkcvhoirdyr'
 
 # -----------------------------------------------------------
-# Funciones para resolver triángulos: ley de senos y cosenos (opción base/altura eliminada)
+# Funciones para resolver triángulos (ley de senos y cosenos)
 # -----------------------------------------------------------
 def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None, 
-                             lado_a=None, lado_b=None, lado_c=None):
+                           lado_a=None, lado_b=None, lado_c=None):
     known_angles = [angulo_A, angulo_B, angulo_C]
     num_angles = sum(1 for x in known_angles if x is not None)
     known_sides = [lado_a, lado_b, lado_c]
@@ -34,6 +34,7 @@ def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None,
     if num_angles + num_sides < 3 or num_sides < 1:
         raise ValueError("Información insuficiente para resolver el triángulo.")
     if num_angles >= 2:
+        # Completar el ángulo faltante
         if angulo_A is None:
             angulo_A = 180 - (angulo_B + angulo_C)
         elif angulo_B is None:
@@ -41,11 +42,13 @@ def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None,
         elif angulo_C is None:
             angulo_C = 180 - (angulo_A + angulo_B)
     if angulo_A is not None and angulo_B is not None and angulo_C is not None:
+        # Verificar que sumen 180°
         if abs(angulo_A + angulo_B + angulo_C - 180) > 1e-5:
             raise ValueError("Los ángulos no suman 180°.")
         if angulo_A <= 0 or angulo_B <= 0 or angulo_C <= 0:
             raise ValueError("Los ángulos deben ser mayores que 0.")
     if num_angles >= 2 and num_sides >= 1:
+        # Ley de senos con un lado conocido
         if lado_a is not None:
             ratio = lado_a / math.sin(math.radians(angulo_A))
             if lado_b is None:
@@ -67,6 +70,8 @@ def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None,
             if lado_b is None:
                 lado_b = ratio * math.sin(math.radians(angulo_B))
             return lado_a, lado_b, lado_c, angulo_A, angulo_B, angulo_C
+
+    # Caso SSA: 2 lados y 1 ángulo
     if num_angles == 1 and num_sides == 2:
         if angulo_A is not None and lado_a is not None:
             if lado_b is not None:
@@ -85,6 +90,7 @@ def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None,
                 angulo_B = 180 - angulo_A - angulo_C
                 lado_b = (lado_a * math.sin(math.radians(angulo_B))) / math.sin(math.radians(angulo_A))
                 return lado_a, lado_b, lado_c, angulo_A, angulo_B, angulo_C
+
     raise ValueError("No se pudo determinar el triángulo con la información proporcionada.")
 
 def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
@@ -95,11 +101,14 @@ def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
             B = 180 - A - C
         elif C is None:
             C = 180 - A - B
+
     if all(x is not None for x in [a, b, c]):
+        # Si se conocen los 3 lados, calculamos los ángulos
         A = math.degrees(math.acos((b**2 + c**2 - a**2) / (2 * b * c)))
         B = math.degrees(math.acos((a**2 + c**2 - b**2) / (2 * a * c)))
         C = 180 - A - B
         return a, b, c, A, B, C
+
     if a is not None and b is not None and C is not None:
         c = math.sqrt(a**2 + b**2 - 2*a*b*math.cos(math.radians(C)))
         A = math.degrees(math.asin(a * math.sin(math.radians(C)) / c))
@@ -115,26 +124,30 @@ def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
         B = math.degrees(math.asin(b * math.sin(math.radians(A)) / a))
         C = 180 - A - B
         return a, b, c, A, B, C
+
     raise ValueError("No se pudo resolver el triángulo con la información dada.")
 
-def resolver_triangulo(a, b, c, A, B, C, base=None, altura=None):
-    # Se elimina la opción de base y altura
+def resolver_triangulo(a, b, c, A, B, C):
+    # Se determina el método (senos o cosenos) en base a los datos
     count_sides = sum(x is not None for x in [a, b, c])
     count_angles = sum(x is not None for x in [A, B, C])
     if count_sides + count_angles < 3 or count_sides < 1:
         raise ValueError("Se requieren al menos 3 datos (con al menos 1 lado) para resolver el triángulo.")
+
     if count_angles >= 2:
         metodo = "senos"
-        return calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C, lado_a=a, lado_b=b, lado_c=c), metodo
+        return calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C,
+                                      lado_a=a, lado_b=b, lado_c=c), metodo
     elif count_sides == 3:
         metodo = "cosenos"
         return calcular_triangulo_cos(a=a, b=b, c=c, A=A, B=B, C=C), metodo
     else:
         metodo = "senos"
-        return calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C, lado_a=a, lado_b=b, lado_c=c), metodo
+        return calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C,
+                                      lado_a=a, lado_b=b, lado_c=c), metodo
 
 # -----------------------------------------------------------
-# Funciones adicionales: medianas (m₁, m₂, m₃), circuncentro, ortocentro, tipo de triángulo, clasificación y conversión de unidades
+# Funciones adicionales: medianas, circuncentro, ortocentro, tipo y clasificación, conversión de unidades
 # -----------------------------------------------------------
 def calcular_medianas(a, b, c):
     m1 = 0.5 * math.sqrt(2*(b**2 + c**2) - a**2)
@@ -164,9 +177,12 @@ def determinar_clasificacion_angulo(A, B, C):
         return "Acutángulo"
 
 def convertir_unidades(valor, de_unidad, a_unidad):
+    # Tabla de conversiones ampliada
     conversion = {
         ("Milímetros", "Centímetros"): 0.1,
         ("Centímetros", "Milímetros"): 10,
+        ("Centímetros", "Decímetros"): 0.1,
+        ("Decímetros", "Centímetros"): 10,
         ("Centímetros", "Metros"): 0.01,
         ("Metros", "Centímetros"): 100,
         ("Milímetros", "Metros"): 0.001,
@@ -179,8 +195,12 @@ def convertir_unidades(valor, de_unidad, a_unidad):
         ("Metros", "Yardas"): 1.09361,
         ("Millas", "Metros"): 1609.34,
         ("Metros", "Millas"): 0.000621371,
-        ("Decímetros", "Centímetros"): 10,
-        ("Centímetros", "Decímetros"): 0.1
+        ("Decámetros", "Metros"): 10,
+        ("Metros", "Decámetros"): 0.1,
+        ("Hectómetros", "Metros"): 100,
+        ("Metros", "Hectómetros"): 0.01,
+        ("Kilómetros", "Metros"): 1000,
+        ("Metros", "Kilómetros"): 0.001
     }
     factor = conversion.get((de_unidad, a_unidad))
     if factor is None:
@@ -212,19 +232,20 @@ def graficar_triangulo_estatico(a, b, c, A, B, C, metodo):
     C_point = (b * math.cos(math.radians(A)), b * math.sin(math.radians(A)))
     
     plt.figure(figsize=(7,7))
+    # Lados
     plt.plot([A_point[0], B_point[0]], [A_point[1], B_point[1]], 'b-', label=f"Lado c = {c:.2f}")
     plt.plot([A_point[0], C_point[0]], [A_point[1], C_point[1]], 'r-', label=f"Lado b = {b:.2f}")
     plt.plot([B_point[0], C_point[0]], [B_point[1], C_point[1]], 'g-', label=f"Lado a = {a:.2f}")
-    # Dibujar todas las medianas con etiquetas m₁, m₂, m₃
+    # Medianas: m₁, m₂, m₃
     mid_AB = ((A_point[0]+B_point[0])/2, (A_point[1]+B_point[1])/2)
     mid_BC = ((B_point[0]+C_point[0])/2, (B_point[1]+C_point[1])/2)
     mid_AC = ((A_point[0]+C_point[0])/2, (A_point[1]+C_point[1])/2)
     plt.plot([C_point[0], mid_AB[0]], [C_point[1], mid_AB[1]], 'k--', label="m₁")
     plt.plot([A_point[0], mid_BC[0]], [A_point[1], mid_BC[1]], 'k--', label="m₂")
     plt.plot([B_point[0], mid_AC[0]], [B_point[1], mid_AC[1]], 'k--', label="m₃")
-    # Dibujar altura vertical desde C a AB
+    # Altura vertical
     plt.plot([C_point[0], C_point[0]], [C_point[1], 0], 'm--', label="Altura")
-    # Marcar circuncentro y ortocentro
+    # Circuncentro y ortocentro
     circ = calcular_circuncentro(A_point, B_point, C_point)
     orto = calcular_ortocentro(A_point, B_point, C_point)
     if circ:
@@ -233,7 +254,7 @@ def graficar_triangulo_estatico(a, b, c, A, B, C, metodo):
     if orto:
         plt.plot(orto[0], orto[1], 'mo', markersize=8, label="Ortocentro")
         plt.text(orto[0]+0.1, orto[1], "Orto.", color='magenta')
-    # Etiquetar vértices
+    # Etiquetas
     plt.text(A_point[0]-0.2, A_point[1]-0.2, "A", fontsize=12)
     plt.text(B_point[0]+0.2, B_point[1]-0.2, "B", fontsize=12)
     plt.text(C_point[0], C_point[1]+0.2, "C", fontsize=12)
@@ -257,6 +278,7 @@ def graficar_triangulo_interactivo(a, b, c, A, B, C):
     B_point = (c, 0)
     C_point = (b * math.cos(math.radians(A)), b * math.sin(math.radians(A)))
     fig = go.Figure()
+    # Lados
     fig.add_trace(go.Scatter(x=[A_point[0], B_point[0]], y=[A_point[1], B_point[1]],
                              mode='lines', name=f"Lado c = {c:.2f}", line=dict(color='blue')))
     fig.add_trace(go.Scatter(x=[A_point[0], C_point[0]], y=[A_point[1], C_point[1]],
@@ -273,21 +295,21 @@ def graficar_triangulo_interactivo(a, b, c, A, B, C):
                              mode='lines', name="m₂", line=dict(color='black', dash='dash')))
     fig.add_trace(go.Scatter(x=[B_point[0], mid_AC[0]], y=[B_point[1], mid_AC[1]],
                              mode='lines', name="m₃", line=dict(color='black', dash='dash')))
-    # Altura vertical desde C
+    # Altura
     fig.add_trace(go.Scatter(x=[C_point[0], C_point[0]], y=[C_point[1], 0],
                              mode='lines', name="Altura", line=dict(color='magenta', dash='dot')))
-    # Circuncentro y ortocentro
+    # Circuncentro y ortocentro (con sus nombres correctos)
     circ = calcular_circuncentro(A_point, B_point, C_point)
     orto = calcular_ortocentro(A_point, B_point, C_point)
     if circ:
         fig.add_trace(go.Scatter(x=[circ[0]], y=[circ[1]], mode='markers+text',
-                                 marker=dict(color='cyan', size=10), text=["Punto a"],
+                                 marker=dict(color='cyan', size=10), text=["Circuncentro"],
                                  textposition="top right", name="Circuncentro"))
     if orto:
         fig.add_trace(go.Scatter(x=[orto[0]], y=[orto[1]], mode='markers+text',
-                                 marker=dict(color='magenta', size=10), text=["Punto b"],
+                                 marker=dict(color='magenta', size=10), text=["Ortocentro"],
                                  textposition="top left", name="Ortocentro"))
-    # Etiquetar vértices con nombres Punto a, Punto b, Punto c
+    # Etiquetar vértices como Punto a, b, c
     fig.add_trace(go.Scatter(x=[A_point[0]], y=[A_point[1]], mode='markers+text',
                              text=["Punto a"], textposition="top left", marker=dict(color='black', size=8)))
     fig.add_trace(go.Scatter(x=[B_point[0]], y=[B_point[1]], mode='markers+text',
@@ -389,24 +411,24 @@ def index():
             A_val = get_val("angulo_A")
             B_val = get_val("angulo_B")
             C_val = get_val("angulo_C")
-            # Se eliminó base y altura
+
             (res_a, res_b, res_c, res_A, res_B, res_C), metodo = resolver_triangulo(a_val, b_val, c_val, A_val, B_val, C_val)
             perimetro = res_a + res_b + res_c
             s = perimetro / 2
             area = math.sqrt(s * (s - res_a) * (s - res_b) * (s - res_c))
-            
+
             mediana_1, mediana_2, mediana_3 = calcular_medianas(res_a, res_b, res_c)
             circumradius = calcular_circumradius(res_a, res_b, res_c, area)
             tipo_triangulo = determinar_tipo_triangulo(res_a, res_b, res_c)
             clasificacion_angulo = determinar_clasificacion_angulo(res_A, res_B, res_C)
-            # Altura vertical: componente vertical del vértice C (usamos lado_b y angulo_A)
+            # Altura vertical (lado_b * sin(A))
             altura_vertical = res_b * math.sin(math.radians(res_A))
-            
+
             img_estatico, A_pt, B_pt, C_pt = graficar_triangulo_estatico(res_a, res_b, res_c, res_A, res_B, res_C, metodo)
             img_interactivo = graficar_triangulo_interactivo(res_a, res_b, res_c, res_A, res_B, res_C)
             circ = calcular_circuncentro(A_pt, B_pt, C_pt)
             orto = calcular_ortocentro(A_pt, B_pt, C_pt)
-            
+
             resultados = {
                 'lado_a': f"{res_a:.2f}",
                 'lado_b': f"{res_b:.2f}",
@@ -434,6 +456,3 @@ def index():
             flash(str(e))
             return redirect(url_for('index'))
     return render_template("index.html", resultados=None)
-
-if __name__ == "__main__":
-    app.run(debug=True)
