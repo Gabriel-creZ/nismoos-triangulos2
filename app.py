@@ -3,6 +3,9 @@ import math
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+# Pre-cargar caché de fuentes
+plt.figure()
+plt.close()
 import io
 import base64
 import plotly.graph_objects as go
