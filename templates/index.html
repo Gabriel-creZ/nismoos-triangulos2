@@ -61,8 +61,8 @@
         <div class="form-container">
           <h2 class="form-title"><i class="fas fa-calculator"></i> Datos del Triángulo</h2>
           <div class="instruction">
-            Ingresa al menos 3 datos para resolver el triángulo. Puedes proporcionar lados, ángulos o incluso la base y la altura (para triángulos rectángulos).<br>
-            Ejemplo: α = 80°, β = 20°, b = 7 / Base = 6, Altura = 4
+            Ingresa al menos 3 datos para resolver el triángulo. Puedes proporcionar lados o ángulos.<br>
+            Ejemplo: α = 80°, β = 20°, b = 7
           </div>
           <form method="POST">
             <div class="form-group">
@@ -89,21 +89,13 @@
               <label for="angulo_C"><i class="fas fa-angle-right"></i> Ángulo γ (gamma):</label>
               <input type="text" name="angulo_C" id="angulo_C" placeholder="Ingrese grados">
             </div>
-            <div class="form-group">
-              <label for="base"><i class="fas fa-arrows-alt-h"></i> Base (opcional):</label>
-              <input type="text" name="base" id="base" placeholder="Ingrese la base">
-            </div>
-            <div class="form-group">
-              <label for="altura"><i class="fas fa-arrow-up"></i> Altura (opcional):</label>
-              <input type="text" name="altura" id="altura" placeholder="Ingrese la altura">
-            </div>
             <button type="submit" class="btn">
               <i class="fas fa-calculator"></i> Resolver Triángulo
             </button>
           </form>
-          <!-- Enlace de ecuaciones en la parte inferior (azul) sin recuadro extra -->
-          <div class="equation-link" style="margin-top: 20px;">
-            <a href="https://resolucion-rectas-nismoos.onrender.com" target="_blank" style="background-color: blue;">
+          <!-- Enlace de ecuaciones en la parte inferior (azul, sin recuadro extra) -->
+          <div class="equation-link" style="margin-top: 20px; background-color: blue;">
+            <a href="https://resolucion-rectas-nismoos.onrender.com" target="_blank">
               <i class="fas fa-external-link-alt"></i> Da click aquí para resolver Ecuaciones y graficarlas
             </a>
           </div>

@@ -93,9 +93,6 @@
           {{ imagen_interactivo|safe }}
         </div>
         
-        <!-- Nota para la gráfica interactiva -->
-        <p style="text-align:center; font-size:0.9rem; color:gray;">Se recomienda usar la gráfica interactiva en PC o tablet.</p>
-        
         <!-- Calculadora de conversión de unidades -->
         <div class="result-item" style="background: #e9ecef; padding: 15px;">
           <h3 style="text-align: center;">Calculadora de Unidades</h3>
@@ -107,27 +104,27 @@
             <div class="form-group">
               <label for="de_unidad">De:</label>
               <select name="de_unidad" id="de_unidad" required>
-                <option value="mm">Milímetros (mm)</option>
-                <option value="cm" selected>Centímetros (cm)</option>
-                <option value="dm">Decímetros (dm)</option>
-                <option value="m">Metros (m)</option>
-                <option value="in">Pulgadas (in)</option>
-                <option value="ft">Pies (ft)</option>
-                <option value="yd">Yardas (yd)</option>
-                <option value="mi">Millas (mi)</option>
+                <option value="Milímetros">Milímetros</option>
+                <option value="Centímetros" selected>Centímetros</option>
+                <option value="Decímetros">Decímetros</option>
+                <option value="Metros">Metros</option>
+                <option value="Pulgadas">Pulgadas</option>
+                <option value="Pies">Pies</option>
+                <option value="Yardas">Yardas</option>
+                <option value="Millas">Millas</option>
               </select>
             </div>
             <div class="form-group">
               <label for="a_unidad">A:</label>
               <select name="a_unidad" id="a_unidad" required>
-                <option value="mm">Milímetros (mm)</option>
-                <option value="cm" selected>Centímetros (cm)</option>
-                <option value="dm">Decímetros (dm)</option>
-                <option value="m">Metros (m)</option>
-                <option value="in">Pulgadas (in)</option>
-                <option value="ft">Pies (ft)</option>
-                <option value="yd">Yardas (yd)</option>
-                <option value="mi">Millas (mi)</option>
+                <option value="Milímetros">Milímetros</option>
+                <option value="Centímetros" selected>Centímetros</option>
+                <option value="Decímetros">Decímetros</option>
+                <option value="Metros">Metros</option>
+                <option value="Pulgadas">Pulgadas</option>
+                <option value="Pies">Pies</option>
+                <option value="Yardas">Yardas</option>
+                <option value="Millas">Millas</option>
               </select>
             </div>
             <button type="submit" class="btn">
@@ -155,24 +152,22 @@
       const de = document.getElementById("de_unidad").value;
       const a = document.getElementById("a_unidad").value;
       const conversion = {
-        "mm_cm": 0.1,
-        "cm_mm": 10,
-        "cm_m": 0.01,
-        "m_cm": 100,
-        "mm_m": 0.001,
-        "m_mm": 1000,
-        "in_cm": 2.54,
-        "cm_in": 0.393701,
-        "ft_m": 0.3048,
-        "m_ft": 3.28084,
-        "yd_cm": 91.44,
-        "cm_yd": 1/91.44,
-        "yd_m": 0.9144,
-        "m_yd": 1/0.9144,
-        "mi_m": 1609.34,
-        "m_mi": 1/1609.34,
-        "dm_cm": 10,
-        "cm_dm": 0.1
+        "Milímetros_Centímetros": 0.1,
+        "Centímetros_Milímetros": 10,
+        "Centímetros_Decímetros": 0.1,
+        "Decímetros_Centímetros": 10,
+        "Centímetros_Metros": 0.01,
+        "Metros_Centímetros": 100,
+        "Milímetros_Metros": 0.001,
+        "Metros_Milímetros": 1000,
+        "Pulgadas_Centímetros": 2.54,
+        "Centímetros_Pulgadas": 0.393701,
+        "Pies_Metros": 0.3048,
+        "Metros_Pies": 3.28084,
+        "Yardas_Metros": 0.9144,
+        "Metros_Yardas": 1.09361,
+        "Millas_Metros": 1609.34,
+        "Metros_Millas": 0.000621371
       };
       const key = de + "_" + a;
       const factor = conversion[key];

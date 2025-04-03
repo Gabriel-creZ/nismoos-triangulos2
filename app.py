@@ -23,7 +23,7 @@ SMTP_USER = 'castilloreyesgabriel4@gmail.com'
 SMTP_PASSWORD = 'wkiqrqkcvhoirdyr'
 
 # -----------------------------------------------------------
-# Funciones para resolver triángulos: ley de senos, cosenos y opción base/altura
+# Funciones para resolver triángulos: ley de senos y cosenos (opción base/altura eliminada)
 # -----------------------------------------------------------
 def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None, 
                              lado_a=None, lado_b=None, lado_c=None):
@@ -118,15 +118,7 @@ def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
     raise ValueError("No se pudo resolver el triángulo con la información dada.")
 
 def resolver_triangulo(a, b, c, A, B, C, base=None, altura=None):
-    if base is not None and altura is not None:
-        # Se asume: base es el lado inferior y altura es la altura vertical.
-        a_r = base
-        area = 0.5 * base * altura
-        c_r = math.sqrt(base**2 + altura**2)
-        A_r = math.degrees(math.atan(altura/base))
-        B_r = 90.0
-        C_r = 180 - A_r - B_r
-        return (a_r, altura, c_r, A_r, B_r, C_r), "base/altura"
+    # Se elimina la opción de base y altura
     count_sides = sum(x is not None for x in [a, b, c])
     count_angles = sum(x is not None for x in [A, B, C])
     if count_sides + count_angles < 3 or count_sides < 1:
@@ -142,7 +134,7 @@ def resolver_triangulo(a, b, c, A, B, C, base=None, altura=None):
         return calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C, lado_a=a, lado_b=b, lado_c=c), metodo
 
 # -----------------------------------------------------------
-# Funciones adicionales: medianas, circuncentro, ortocentro, tipo y conversión
+# Funciones adicionales: medianas (m₁, m₂, m₃), circuncentro, ortocentro, tipo de triángulo, clasificación y conversión de unidades
 # -----------------------------------------------------------
 def calcular_medianas(a, b, c):
     m1 = 0.5 * math.sqrt(2*(b**2 + c**2) - a**2)
@@ -173,24 +165,22 @@ def determinar_clasificacion_angulo(A, B, C):
 
 def convertir_unidades(valor, de_unidad, a_unidad):
     conversion = {
-        ("mm", "cm"): 0.1,
-        ("cm", "mm"): 10,
-        ("cm", "m"): 0.01,
-        ("m", "cm"): 100,
-        ("mm", "m"): 0.001,
-        ("m", "mm"): 1000,
-        ("in", "cm"): 2.54,
-        ("cm", "in"): 0.393701,
-        ("ft", "m"): 0.3048,
-        ("m", "ft"): 3.28084,
-        ("yd", "cm"): 91.44,
-        ("cm", "yd"): 1/91.44,
-        ("yd", "m"): 0.9144,
-        ("m", "yd"): 1/0.9144,
-        ("mi", "m"): 1609.34,
-        ("m", "mi"): 1/1609.34,
-        ("dm", "cm"): 10,
-        ("cm", "dm"): 0.1
+        ("Milímetros", "Centímetros"): 0.1,
+        ("Centímetros", "Milímetros"): 10,
+        ("Centímetros", "Metros"): 0.01,
+        ("Metros", "Centímetros"): 100,
+        ("Milímetros", "Metros"): 0.001,
+        ("Metros", "Milímetros"): 1000,
+        ("Pulgadas", "Centímetros"): 2.54,
+        ("Centímetros", "Pulgadas"): 0.393701,
+        ("Pies", "Metros"): 0.3048,
+        ("Metros", "Pies"): 3.28084,
+        ("Yardas", "Metros"): 0.9144,
+        ("Metros", "Yardas"): 1.09361,
+        ("Millas", "Metros"): 1609.34,
+        ("Metros", "Millas"): 0.000621371,
+        ("Decímetros", "Centímetros"): 10,
+        ("Centímetros", "Decímetros"): 0.1
     }
     factor = conversion.get((de_unidad, a_unidad))
     if factor is None:
@@ -225,14 +215,14 @@ def graficar_triangulo_estatico(a, b, c, A, B, C, metodo):
     plt.plot([A_point[0], B_point[0]], [A_point[1], B_point[1]], 'b-', label=f"Lado c = {c:.2f}")
     plt.plot([A_point[0], C_point[0]], [A_point[1], C_point[1]], 'r-', label=f"Lado b = {b:.2f}")
     plt.plot([B_point[0], C_point[0]], [B_point[1], C_point[1]], 'g-', label=f"Lado a = {a:.2f}")
-    # Dibujar medianas y etiquetarlas como m₁, m₂, m₃
+    # Dibujar todas las medianas con etiquetas m₁, m₂, m₃
     mid_AB = ((A_point[0]+B_point[0])/2, (A_point[1]+B_point[1])/2)
     mid_BC = ((B_point[0]+C_point[0])/2, (B_point[1]+C_point[1])/2)
     mid_AC = ((A_point[0]+C_point[0])/2, (A_point[1]+C_point[1])/2)
     plt.plot([C_point[0], mid_AB[0]], [C_point[1], mid_AB[1]], 'k--', label="m₁")
     plt.plot([A_point[0], mid_BC[0]], [A_point[1], mid_BC[1]], 'k--', label="m₂")
     plt.plot([B_point[0], mid_AC[0]], [B_point[1], mid_AC[1]], 'k--', label="m₃")
-    # Dibujar altura vertical desde C a la base AB
+    # Dibujar altura vertical desde C a AB
     plt.plot([C_point[0], C_point[0]], [C_point[1], 0], 'm--', label="Altura")
     # Marcar circuncentro y ortocentro
     circ = calcular_circuncentro(A_point, B_point, C_point)
@@ -297,7 +287,7 @@ def graficar_triangulo_interactivo(a, b, c, A, B, C):
         fig.add_trace(go.Scatter(x=[orto[0]], y=[orto[1]], mode='markers+text',
                                  marker=dict(color='magenta', size=10), text=["Punto b"],
                                  textposition="top left", name="Ortocentro"))
-    # Vértices
+    # Etiquetar vértices con nombres Punto a, Punto b, Punto c
     fig.add_trace(go.Scatter(x=[A_point[0]], y=[A_point[1]], mode='markers+text',
                              text=["Punto a"], textposition="top left", marker=dict(color='black', size=8)))
     fig.add_trace(go.Scatter(x=[B_point[0]], y=[B_point[1]], mode='markers+text',
@@ -310,13 +300,7 @@ def graficar_triangulo_interactivo(a, b, c, A, B, C):
                       legend_title="Leyenda",
                       template="plotly_white",
                       autosize=True,
-                      margin=dict(l=20, r=20, t=50, b=20),
-                      responsive=True)
-    # Nota debajo de la gráfica
-    fig.add_annotation(text="Se recomienda usar la gráfica interactiva en PC o tablet.",
-                       xref="paper", yref="paper",
-                       x=0.5, y=-0.15, showarrow=False,
-                       font=dict(size=12, color="gray"))
+                      margin=dict(l=20, r=20, t=50, b=20))
     return fig.to_html(full_html=False)
 
 # -----------------------------------------------------------
@@ -328,33 +312,8 @@ def convertir():
         valor = float(request.form.get('valor'))
         de_unidad = request.form.get('de_unidad')
         a_unidad = request.form.get('a_unidad')
-        conversion = {
-            ("mm", "cm"): 0.1,
-            ("cm", "mm"): 10,
-            ("cm", "m"): 0.01,
-            ("m", "cm"): 100,
-            ("mm", "m"): 0.001,
-            ("m", "mm"): 1000,
-            ("in", "cm"): 2.54,
-            ("cm", "in"): 0.393701,
-            ("ft", "m"): 0.3048,
-            ("m", "ft"): 3.28084,
-            ("yd", "cm"): 91.44,
-            ("cm", "yd"): 1/91.44,
-            ("yd", "m"): 0.9144,
-            ("m", "yd"): 1/0.9144,
-            ("mi", "m"): 1609.34,
-            ("m", "mi"): 1/1609.34,
-            ("dm", "cm"): 10,
-            ("cm", "dm"): 0.1
-        }
-        key = (de_unidad, a_unidad)
-        factor = conversion.get(key)
-        if factor is None:
-            flash("Conversión no soportada.")
-        else:
-            resultado_conv = valor * factor
-            flash(f"Resultado: {resultado_conv} {a_unidad}")
+        resultado_conv = convertir_unidades(valor, de_unidad, a_unidad)
+        flash(f"Resultado: {resultado_conv} {a_unidad}")
     except Exception as e:
         flash(str(e))
     return redirect(url_for('index'))
@@ -415,7 +374,6 @@ def logout():
 # -----------------------------------------------------------
 # Ruta principal
 # -----------------------------------------------------------
-# Ruta principal
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if not session.get('logged_in'):
@@ -425,26 +383,14 @@ def index():
             def get_val(field):
                 val = request.form.get(field)
                 return float(val) if val and val.strip() != "" else None
-            # Obtener todos los valores
             a_val = get_val("lado_a")
             b_val = get_val("lado_b")
             c_val = get_val("lado_c")
             A_val = get_val("angulo_A")
             B_val = get_val("angulo_B")
             C_val = get_val("angulo_C")
-            base_val = get_val("base")
-            altura_val = get_val("altura")
-            
-            # Si se ingresaron base y altura (no vacíos), se utiliza esa rama
-            if base_val is not None and altura_val is not None:
-                (res_a, res_b, res_c, res_A, res_B, res_C), metodo = resolver_triangulo(
-                    None, None, None, None, None, None, base=base_val, altura=altura_val
-                )
-            else:
-                # Se requiere al menos 3 datos en las otras variables
-                (res_a, res_b, res_c, res_A, res_B, res_C), metodo = resolver_triangulo(
-                    a_val, b_val, c_val, A_val, B_val, C_val
-                )
+            # Se eliminó base y altura
+            (res_a, res_b, res_c, res_A, res_B, res_C), metodo = resolver_triangulo(a_val, b_val, c_val, A_val, B_val, C_val)
             perimetro = res_a + res_b + res_c
             s = perimetro / 2
             area = math.sqrt(s * (s - res_a) * (s - res_b) * (s - res_c))
@@ -453,7 +399,7 @@ def index():
             circumradius = calcular_circumradius(res_a, res_b, res_c, area)
             tipo_triangulo = determinar_tipo_triangulo(res_a, res_b, res_c)
             clasificacion_angulo = determinar_clasificacion_angulo(res_A, res_B, res_C)
-            # Altura vertical: la componente vertical del vértice C (en la gráfica, C = (b*cos(A), b*sin(A)))
+            # Altura vertical: componente vertical del vértice C (usamos lado_b y angulo_A)
             altura_vertical = res_b * math.sin(math.radians(res_A))
             
             img_estatico, A_pt, B_pt, C_pt = graficar_triangulo_estatico(res_a, res_b, res_c, res_A, res_B, res_C, metodo)
