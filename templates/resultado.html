@@ -94,7 +94,7 @@
           <span class="result-label">📏 Altura vertical:</span>
           <span class="result-value">{{ resultados.altura }} u</span>
         </div>
-
+        
         <h3 class="results-title" style="margin-top: 25px;"><i class="fas fa-drafting-compass"></i> Gráficas del Triángulo</h3>
         <div class="result-item">
           <img src="data:image/png;base64,{{ imagen_estatico }}" alt="Gráfica estática del triángulo" class="triangle-image">
@@ -102,7 +102,7 @@
         <div class="result-item">
           {{ imagen_interactivo|safe }}
         </div>
-
+        
         <!-- Calculadora de Unidades -->
         <div class="result-item" style="background: #e9ecef; padding: 15px;">
           <h3 style="text-align: center;">Calculadora de Unidades</h3>
@@ -132,7 +132,7 @@
             </button>
           </form>
         </div>
-
+        
         <div class="result-item">
           <a href="{{ url_for('index') }}" class="btn"><i class="fas fa-arrow-left"></i> Realizar nuevo cálculo</a>
         </div>

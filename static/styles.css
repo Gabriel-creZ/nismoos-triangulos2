@@ -32,7 +32,7 @@ body {
   margin: 40px auto;
   padding: 20px 30px;
   border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   box-sizing: border-box;
 }
 
@@ -51,7 +51,7 @@ body {
 
 .label-image:hover {
   transform: scale(1.05);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
 .header {
@@ -84,13 +84,13 @@ body {
   display: inline-block;
   transition: all 0.3s;
   font-weight: 500;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .equation-link a:hover {
   background-color: var(--equation-link-hover);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
 .equation-link a i {
@@ -161,7 +161,7 @@ body {
 .btn:hover {
   background-color: var(--button-hover);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .content {
@@ -222,7 +222,7 @@ body {
   margin: 50px auto;
   padding: 30px;
   border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   text-align: center;
   box-sizing: border-box;
 }

@@ -7,8 +7,6 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}?v=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-  <!-- Script para mostrar spinner de carga -->
   <script>
     function mostrarSpinner() {
       document.getElementById('spinner').style.display = 'block';
@@ -81,7 +79,6 @@
             Ingresa al menos 3 datos para resolver el triángulo (lados, ángulos o base y altura).<br>
             Ejemplo: α = 80°, β = 20°, b = 7 o Base = 6, Altura = 4
           </div>
-          <!-- Spinner de carga -->
           <div id="spinner" style="display: none; text-align:center; margin-bottom:15px;">
             <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary-color);"></i>
             <p>Calculando, por favor espere...</p>
@@ -143,5 +140,11 @@
       </div>
     </div>
   {% endif %}
+  <script>
+    function mostrarSpinner(){
+      document.getElementById('spinner').style.display = 'block';
+      document.getElementById('triangulo-form').submit();
+    }
+  </script>
 </body>
 </html>
