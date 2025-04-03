@@ -415,6 +415,7 @@ def logout():
 # -----------------------------------------------------------
 # Ruta principal
 # -----------------------------------------------------------
+# Ruta principal
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if not session.get('logged_in'):
@@ -424,6 +425,7 @@ def index():
             def get_val(field):
                 val = request.form.get(field)
                 return float(val) if val and val.strip() != "" else None
+            # Obtener todos los valores
             a_val = get_val("lado_a")
             b_val = get_val("lado_b")
             c_val = get_val("lado_c")
@@ -433,7 +435,16 @@ def index():
             base_val = get_val("base")
             altura_val = get_val("altura")
             
-            (res_a, res_b, res_c, res_A, res_B, res_C), metodo = resolver_triangulo(a_val, b_val, c_val, A_val, B_val, C_val, base=base_val, altura=altura_val)
+            # Si se ingresaron base y altura (no vacíos), se utiliza esa rama
+            if base_val is not None and altura_val is not None:
+                (res_a, res_b, res_c, res_A, res_B, res_C), metodo = resolver_triangulo(
+                    None, None, None, None, None, None, base=base_val, altura=altura_val
+                )
+            else:
+                # Se requiere al menos 3 datos en las otras variables
+                (res_a, res_b, res_c, res_A, res_B, res_C), metodo = resolver_triangulo(
+                    a_val, b_val, c_val, A_val, B_val, C_val
+                )
             perimetro = res_a + res_b + res_c
             s = perimetro / 2
             area = math.sqrt(s * (s - res_a) * (s - res_b) * (s - res_c))
@@ -442,7 +453,7 @@ def index():
             circumradius = calcular_circumradius(res_a, res_b, res_c, area)
             tipo_triangulo = determinar_tipo_triangulo(res_a, res_b, res_c)
             clasificacion_angulo = determinar_clasificacion_angulo(res_A, res_B, res_C)
-            # Altura vertical: se toma la componente vertical del vértice C
+            # Altura vertical: la componente vertical del vértice C (en la gráfica, C = (b*cos(A), b*sin(A)))
             altura_vertical = res_b * math.sin(math.radians(res_A))
             
             img_estatico, A_pt, B_pt, C_pt = graficar_triangulo_estatico(res_a, res_b, res_c, res_A, res_B, res_C, metodo)
