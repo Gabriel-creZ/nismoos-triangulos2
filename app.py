@@ -23,7 +23,7 @@ SMTP_USER = 'castilloreyesgabriel4@gmail.com'
 SMTP_PASSWORD = 'wkiqrqkcvhoirdyr'
 
 # -----------------------------------------------------------
-# Funciones para resolver triángulos: senos, cosenos y opción base/altura
+# Funciones para resolver triángulos: ley de senos, cosenos y opción base/altura
 # -----------------------------------------------------------
 def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None, 
                              lado_a=None, lado_b=None, lado_c=None):
@@ -119,7 +119,7 @@ def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
 
 def resolver_triangulo(a, b, c, A, B, C, base=None, altura=None):
     if base is not None and altura is not None:
-        # Se asume: base es el lado inferior y altura es la altura vertical desde el vértice opuesto.
+        # Se asume: base es el lado inferior y altura es la altura vertical.
         a_r = base
         area = 0.5 * base * altura
         c_r = math.sqrt(base**2 + altura**2)
@@ -142,7 +142,7 @@ def resolver_triangulo(a, b, c, A, B, C, base=None, altura=None):
         return calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C, lado_a=a, lado_b=b, lado_c=c), metodo
 
 # -----------------------------------------------------------
-# Funciones adicionales: medianas, circuncentro, ortocentro, tipo de triángulo, clasificación y conversión de unidades
+# Funciones adicionales: medianas, circuncentro, ortocentro, tipo y conversión
 # -----------------------------------------------------------
 def calcular_medianas(a, b, c):
     m1 = 0.5 * math.sqrt(2*(b**2 + c**2) - a**2)
@@ -182,7 +182,15 @@ def convertir_unidades(valor, de_unidad, a_unidad):
         ("in", "cm"): 2.54,
         ("cm", "in"): 0.393701,
         ("ft", "m"): 0.3048,
-        ("m", "ft"): 3.28084
+        ("m", "ft"): 3.28084,
+        ("yd", "cm"): 91.44,
+        ("cm", "yd"): 1/91.44,
+        ("yd", "m"): 0.9144,
+        ("m", "yd"): 1/0.9144,
+        ("mi", "m"): 1609.34,
+        ("m", "mi"): 1/1609.34,
+        ("dm", "cm"): 10,
+        ("cm", "dm"): 0.1
     }
     factor = conversion.get((de_unidad, a_unidad))
     if factor is None:
@@ -217,14 +225,14 @@ def graficar_triangulo_estatico(a, b, c, A, B, C, metodo):
     plt.plot([A_point[0], B_point[0]], [A_point[1], B_point[1]], 'b-', label=f"Lado c = {c:.2f}")
     plt.plot([A_point[0], C_point[0]], [A_point[1], C_point[1]], 'r-', label=f"Lado b = {b:.2f}")
     plt.plot([B_point[0], C_point[0]], [B_point[1], C_point[1]], 'g-', label=f"Lado a = {a:.2f}")
-    # Dibujar todas las medianas con etiquetas m₁, m₂, m₃
+    # Dibujar medianas y etiquetarlas como m₁, m₂, m₃
     mid_AB = ((A_point[0]+B_point[0])/2, (A_point[1]+B_point[1])/2)
     mid_BC = ((B_point[0]+C_point[0])/2, (B_point[1]+C_point[1])/2)
     mid_AC = ((A_point[0]+C_point[0])/2, (A_point[1]+C_point[1])/2)
     plt.plot([C_point[0], mid_AB[0]], [C_point[1], mid_AB[1]], 'k--', label="m₁")
     plt.plot([A_point[0], mid_BC[0]], [A_point[1], mid_BC[1]], 'k--', label="m₂")
     plt.plot([B_point[0], mid_AC[0]], [B_point[1], mid_AC[1]], 'k--', label="m₃")
-    # Dibujar altura vertical desde C a AB
+    # Dibujar altura vertical desde C a la base AB
     plt.plot([C_point[0], C_point[0]], [C_point[1], 0], 'm--', label="Altura")
     # Marcar circuncentro y ortocentro
     circ = calcular_circuncentro(A_point, B_point, C_point)
@@ -283,30 +291,36 @@ def graficar_triangulo_interactivo(a, b, c, A, B, C):
     orto = calcular_ortocentro(A_point, B_point, C_point)
     if circ:
         fig.add_trace(go.Scatter(x=[circ[0]], y=[circ[1]], mode='markers+text',
-                                 marker=dict(color='cyan', size=10), text=["Circuncentro"],
+                                 marker=dict(color='cyan', size=10), text=["Punto a"],
                                  textposition="top right", name="Circuncentro"))
     if orto:
         fig.add_trace(go.Scatter(x=[orto[0]], y=[orto[1]], mode='markers+text',
-                                 marker=dict(color='magenta', size=10), text=["Ortocentro"],
+                                 marker=dict(color='magenta', size=10), text=["Punto b"],
                                  textposition="top left", name="Ortocentro"))
     # Vértices
     fig.add_trace(go.Scatter(x=[A_point[0]], y=[A_point[1]], mode='markers+text',
-                             text=["A"], textposition="top left", marker=dict(color='black', size=8)))
+                             text=["Punto a"], textposition="top left", marker=dict(color='black', size=8)))
     fig.add_trace(go.Scatter(x=[B_point[0]], y=[B_point[1]], mode='markers+text',
-                             text=["B"], textposition="top right", marker=dict(color='black', size=8)))
+                             text=["Punto b"], textposition="top right", marker=dict(color='black', size=8)))
     fig.add_trace(go.Scatter(x=[C_point[0]], y=[C_point[1]], mode='markers+text',
-                             text=["C"], textposition="bottom center", marker=dict(color='black', size=8)))
+                             text=["Punto c"], textposition="bottom center", marker=dict(color='black', size=8)))
     fig.update_layout(title="Grafica Interactiva del Triángulo",
                       xaxis_title="Eje X",
                       yaxis_title="Eje Y",
                       legend_title="Leyenda",
                       template="plotly_white",
                       autosize=True,
-                      margin=dict(l=20, r=20, t=50, b=20))
+                      margin=dict(l=20, r=20, t=50, b=20),
+                      responsive=True)
+    # Nota debajo de la gráfica
+    fig.add_annotation(text="Se recomienda usar la gráfica interactiva en PC o tablet.",
+                       xref="paper", yref="paper",
+                       x=0.5, y=-0.15, showarrow=False,
+                       font=dict(size=12, color="gray"))
     return fig.to_html(full_html=False)
 
 # -----------------------------------------------------------
-# Ruta para conversión de unidades (calculadora interactiva con select)
+# Ruta para conversión de unidades (calculadora interactiva)
 # -----------------------------------------------------------
 @app.route('/convertir', methods=['POST'])
 def convertir():
@@ -314,7 +328,6 @@ def convertir():
         valor = float(request.form.get('valor'))
         de_unidad = request.form.get('de_unidad')
         a_unidad = request.form.get('a_unidad')
-        # Ampliamos la tabla de conversión a más unidades
         conversion = {
             ("mm", "cm"): 0.1,
             ("cm", "mm"): 10,
@@ -325,9 +338,18 @@ def convertir():
             ("in", "cm"): 2.54,
             ("cm", "in"): 0.393701,
             ("ft", "m"): 0.3048,
-            ("m", "ft"): 3.28084
+            ("m", "ft"): 3.28084,
+            ("yd", "cm"): 91.44,
+            ("cm", "yd"): 1/91.44,
+            ("yd", "m"): 0.9144,
+            ("m", "yd"): 1/0.9144,
+            ("mi", "m"): 1609.34,
+            ("m", "mi"): 1/1609.34,
+            ("dm", "cm"): 10,
+            ("cm", "dm"): 0.1
         }
-        factor = conversion.get((de_unidad, a_unidad))
+        key = (de_unidad, a_unidad)
+        factor = conversion.get(key)
         if factor is None:
             flash("Conversión no soportada.")
         else:
@@ -420,7 +442,7 @@ def index():
             circumradius = calcular_circumradius(res_a, res_b, res_c, area)
             tipo_triangulo = determinar_tipo_triangulo(res_a, res_b, res_c)
             clasificacion_angulo = determinar_clasificacion_angulo(res_A, res_B, res_C)
-            # Altura vertical: componente vertical del vértice C
+            # Altura vertical: se toma la componente vertical del vértice C
             altura_vertical = res_b * math.sin(math.radians(res_A))
             
             img_estatico, A_pt, B_pt, C_pt = graficar_triangulo_estatico(res_a, res_b, res_c, res_A, res_B, res_C, metodo)
