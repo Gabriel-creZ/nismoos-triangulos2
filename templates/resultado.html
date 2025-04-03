@@ -84,12 +84,8 @@
           <span class="result-label"><span class="emoji">📏</span> Altura vertical:</span>
           <span class="result-value">{{ resultados.altura }} u</span>
         </div>
-        <div class="result-item">
-          <span class="result-label"><span class="emoji">🔄</span> Conversión de área:</span>
-          <span class="result-value">{{ resultados.conversion }}</span>
-        </div>
         
-        <h3 style="text-align: center; margin-top: 25px;"><i class="fas fa-drafting-compass"></i> Gráfica del Triángulo</h3>
+        <h3 style="text-align: center; margin-top: 25px;"><i class="fas fa-drafting-compass"></i> Gráficas del Triángulo</h3>
         <div class="result-item">
           <img src="data:image/png;base64,{{ imagen_estatico }}" alt="Gráfica estática del triángulo" class="triangle-image">
         </div>
@@ -97,8 +93,8 @@
           {{ imagen_interactivo|safe }}
         </div>
         
-        <!-- Calculadora de conversión de unidades -->
-        <div class="result-item" style="background: #e9ecef;">
+        <!-- Calculadora de Conversión de Unidades -->
+        <div class="result-item" style="background: #e9ecef; padding: 15px;">
           <h3 style="text-align: center;">Calculadora de Unidades</h3>
           <form method="POST" action="{{ url_for('convertir') }}">
             <div class="form-group">
@@ -106,12 +102,20 @@
               <input type="text" name="valor" id="valor" placeholder="Ingrese valor" required>
             </div>
             <div class="form-group">
-              <label for="de_unidad">De (unidad):</label>
-              <input type="text" name="de_unidad" id="de_unidad" placeholder="Ej. cm" required>
+              <label for="de_unidad">De:</label>
+              <select name="de_unidad" id="de_unidad" required>
+                <option value="mm">mm</option>
+                <option value="cm" selected>cm</option>
+                <option value="m">m</option>
+              </select>
             </div>
             <div class="form-group">
-              <label for="a_unidad">A (unidad):</label>
-              <input type="text" name="a_unidad" id="a_unidad" placeholder="Ej. m" required>
+              <label for="a_unidad">A:</label>
+              <select name="a_unidad" id="a_unidad" required>
+                <option value="mm">mm</option>
+                <option value="cm" selected>cm</option>
+                <option value="m">m</option>
+              </select>
             </div>
             <button type="submit" class="btn">
               <i class="fas fa-exchange-alt"></i> Convertir

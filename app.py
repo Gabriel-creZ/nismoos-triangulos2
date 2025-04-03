@@ -16,14 +16,14 @@ app.secret_key = 'j350z271123r'
 app.config['SESSION_PERMANENT'] = True
 app.config['PERMANENT_SESSION_LIFETIME'] = 3600  # 1 hora
 
-# Configuración SMTP para reporte de errores
+# Configuración SMTP para Reporte de Errores
 SMTP_SERVER = 'smtp.gmail.com'
 SMTP_PORT = 587
 SMTP_USER = 'castilloreyesgabriel4@gmail.com'
 SMTP_PASSWORD = 'wkiqrqkcvhoirdyr'
 
 # -----------------------------------------------------------
-# Funciones para resolver triángulos: ley de senos, cosenos y opción base/altura
+# Funciones para resolver triángulos
 # -----------------------------------------------------------
 def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None, 
                              lado_a=None, lado_b=None, lado_c=None):
@@ -118,7 +118,7 @@ def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
     raise ValueError("No se pudo resolver el triángulo con la información dada.")
 
 def resolver_triangulo(a, b, c, A, B, C, base=None, altura=None):
-    # Si se proporcionan base y altura, asumimos triángulo rectángulo con esos datos
+    # Si se proporcionan base y altura, asumimos triángulo rectángulo
     if base is not None and altura is not None:
         a_r = base
         b_r = altura
@@ -142,7 +142,7 @@ def resolver_triangulo(a, b, c, A, B, C, base=None, altura=None):
         return calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C, lado_a=a, lado_b=b, lado_c=c), metodo
 
 # -----------------------------------------------------------
-# Funciones adicionales: medianas, circuncentro, ortocentro, tipo de triángulo, clasificación de ángulos y conversión de unidades
+# Funciones adicionales: medianas, circuncentro, ortocentro, tipo de triángulo, clasificación y conversión de unidades
 # -----------------------------------------------------------
 def calcular_medianas(a, b, c):
     m_a = 0.5 * math.sqrt(2*(b**2 + c**2) - a**2)
@@ -205,21 +205,23 @@ def calcular_ortocentro(A, B, C):
 # Funciones de graficado
 # -----------------------------------------------------------
 def graficar_triangulo_estatico(a, b, c, A, B, C, metodo):
-    # Usamos la convención: A=(0,0), B=(c,0) y C=(b*cos(A), b*sin(A))
     A_point = (0, 0)
     B_point = (c, 0)
     C_point = (b * math.cos(math.radians(A)), b * math.sin(math.radians(A)))
     
     plt.figure(figsize=(7,7))
-    # Dibujar lados
+    # Lados
     plt.plot([A_point[0], B_point[0]], [A_point[1], B_point[1]], 'b-', label=f"Lado c = {c:.2f}")
     plt.plot([A_point[0], C_point[0]], [A_point[1], C_point[1]], 'r-', label=f"Lado b = {b:.2f}")
     plt.plot([B_point[0], C_point[0]], [B_point[1], C_point[1]], 'g-', label=f"Lado a = {a:.2f}")
-    # Dibujar mediana (solo se dibuja la principal: desde C al medio de AB)
+    # Medianas: desde A, B y C (etiquetadas mₐ, m_b, m_c)
+    mid_BC = ((B_point[0]+C_point[0])/2, (B_point[1]+C_point[1])/2)
+    mid_AC = ((A_point[0]+C_point[0])/2, (A_point[1]+C_point[1])/2)
     mid_AB = ((A_point[0]+B_point[0])/2, (A_point[1]+B_point[1])/2)
-    plt.plot([C_point[0], mid_AB[0]], [C_point[1], mid_AB[1]], 'k--', label="Mediana")
-    # Dibujar la altura principal: desde C perpendicular a AB (base horizontal)
-    altura_vertical = C_point[1]  # ya que AB es horizontal en y=0
+    plt.plot([A_point[0], mid_BC[0]], [A_point[1], mid_BC[1]], 'k--', label="mₐ")
+    plt.plot([B_point[0], mid_AC[0]], [B_point[1], mid_AC[1]], 'k--', label="m_b")
+    plt.plot([C_point[0], mid_AB[0]], [C_point[1], mid_AB[1]], 'k--', label="m_c")
+    # Altura principal: desde C a AB (y=0)
     plt.plot([C_point[0], C_point[0]], [C_point[1], 0], 'm--', label="Altura")
     # Marcar circuncentro y ortocentro
     circ = calcular_circuncentro(A_point, B_point, C_point)
@@ -254,18 +256,23 @@ def graficar_triangulo_interactivo(a, b, c, A, B, C):
     B_point = (c, 0)
     C_point = (b * math.cos(math.radians(A)), b * math.sin(math.radians(A)))
     fig = go.Figure()
-    # Lados
     fig.add_trace(go.Scatter(x=[A_point[0], B_point[0]], y=[A_point[1], B_point[1]],
                              mode='lines', name=f"Lado c = {c:.2f}", line=dict(color='blue')))
     fig.add_trace(go.Scatter(x=[A_point[0], C_point[0]], y=[A_point[1], C_point[1]],
                              mode='lines', name=f"Lado b = {b:.2f}", line=dict(color='red')))
     fig.add_trace(go.Scatter(x=[B_point[0], C_point[0]], y=[B_point[1], C_point[1]],
                              mode='lines', name=f"Lado a = {a:.2f}", line=dict(color='green')))
-    # Mediana desde C al punto medio de AB
+    # Medianas
+    mid_BC = ((B_point[0]+C_point[0])/2, (B_point[1]+C_point[1])/2)
+    mid_AC = ((A_point[0]+C_point[0])/2, (A_point[1]+C_point[1])/2)
     mid_AB = ((A_point[0]+B_point[0])/2, (A_point[1]+B_point[1])/2)
+    fig.add_trace(go.Scatter(x=[A_point[0], mid_BC[0]], y=[A_point[1], mid_BC[1]],
+                             mode='lines', name="mₐ", line=dict(color='black', dash='dash')))
+    fig.add_trace(go.Scatter(x=[B_point[0], mid_AC[0]], y=[B_point[1], mid_AC[1]],
+                             mode='lines', name="m_b", line=dict(color='black', dash='dash')))
     fig.add_trace(go.Scatter(x=[C_point[0], mid_AB[0]], y=[C_point[1], mid_AB[1]],
-                             mode='lines', name="Mediana", line=dict(color='black', dash='dash')))
-    # Altura principal desde C a la base (y=0)
+                             mode='lines', name="m_c", line=dict(color='black', dash='dash')))
+    # Altura principal desde C a la base
     fig.add_trace(go.Scatter(x=[C_point[0], C_point[0]], y=[C_point[1], 0],
                              mode='lines', name="Altura", line=dict(color='magenta', dash='dot')))
     # Circuncentro y ortocentro
@@ -279,7 +286,7 @@ def graficar_triangulo_interactivo(a, b, c, A, B, C):
         fig.add_trace(go.Scatter(x=[orto[0]], y=[orto[1]], mode='markers+text',
                                  marker=dict(color='magenta', size=10), text=["Ortocentro"],
                                  textposition="top left", name="Ortocentro"))
-    # Etiquetar vértices
+    # Vértices
     fig.add_trace(go.Scatter(x=[A_point[0]], y=[A_point[1]], mode='markers+text',
                              text=["A"], textposition="top left", marker=dict(color='black', size=8)))
     fig.add_trace(go.Scatter(x=[B_point[0]], y=[B_point[1]], mode='markers+text',
@@ -296,7 +303,7 @@ def graficar_triangulo_interactivo(a, b, c, A, B, C):
     return fig.to_html(full_html=False)
 
 # -----------------------------------------------------------
-# Ruta para conversión de unidades (calculadora de conversión)
+# Ruta para la Calculadora de Conversión de Unidades
 # -----------------------------------------------------------
 @app.route('/convertir', methods=['POST'])
 def convertir():
@@ -305,7 +312,7 @@ def convertir():
         de_unidad = request.form.get('de_unidad')
         a_unidad = request.form.get('a_unidad')
         resultado_conv = convertir_unidades(valor, de_unidad, a_unidad)
-        flash(f"Resultado: {resultado_conv} {a_unidad}")
+        flash(f"Conversión: {valor} {de_unidad} = {resultado_conv} {a_unidad}")
     except Exception as e:
         flash(str(e))
     return redirect(url_for('index'))
@@ -327,7 +334,7 @@ def reporte():
         msg = MIMEText(cuerpo)
         msg['Subject'] = asunto
         msg['From'] = SMTP_USER
-        msg['To'] = SMTP_USER  # Puedes cambiar a otro correo receptor
+        msg['To'] = SMTP_USER
         try:
             server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
             server.starttls()
@@ -341,7 +348,7 @@ def reporte():
     return render_template("reporte.html")
 
 # -----------------------------------------------------------
-# Ruta de login (endpoint especificado para evitar BuildError)
+# Ruta de login (endpoint definido para evitar BuildError)
 # -----------------------------------------------------------
 @app.route('/login', methods=['GET', 'POST'], endpoint='login')
 def login_route():
@@ -364,13 +371,14 @@ def logout():
     return redirect(url_for('login'))
 
 # -----------------------------------------------------------
-# Ruta principal
+# Ruta principal con indicador de carga
 # -----------------------------------------------------------
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
     if request.method == 'POST':
+        flash("Calculando, por favor espere...")
         try:
             def get_val(field):
                 val = request.form.get(field)
@@ -393,16 +401,13 @@ def index():
             circumradius = calcular_circumradius(res_a, res_b, res_c, area)
             tipo_triangulo = determinar_tipo_triangulo(res_a, res_b, res_c)
             clasificacion_angulo = determinar_clasificacion_angulo(res_A, res_B, res_C)
-            # Altura vertical (la altura desde el vértice C a la base AB)
+            # Altura vertical: se calcula desde C al eje horizontal
             altura_vertical = res_b * math.sin(math.radians(res_A))
             
             img_estatico, A_pt, B_pt, C_pt = graficar_triangulo_estatico(res_a, res_b, res_c, res_A, res_B, res_C, metodo)
             img_interactivo = graficar_triangulo_interactivo(res_a, res_b, res_c, res_A, res_B, res_C)
             circ = calcular_circuncentro(A_pt, B_pt, C_pt)
             orto = calcular_ortocentro(A_pt, B_pt, C_pt)
-            
-            # Ejemplo de conversión: se incluye un formulario en resultados para convertir unidades
-            conversion_text = ""  # se mostrará en la calculadora de conversión (implementada en resultados)
             
             resultados = {
                 'lado_a': f"{res_a:.2f}",
@@ -423,7 +428,7 @@ def index():
                 'circuncentro': f"({circ[0]:.2f}, {circ[1]:.2f})" if circ else "N/A",
                 'ortocentro': f"({orto[0]:.2f}, {orto[1]:.2f})" if orto else "N/A",
                 'altura': f"{altura_vertical:.2f}",
-                'conversion': conversion_text
+                'conversion': ""  # La calculadora de conversión funciona por separado
             }
             return render_template("resultado.html", resultados=resultados, 
                                    imagen_estatico=img_estatico, 

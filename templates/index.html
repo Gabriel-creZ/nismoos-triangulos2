@@ -97,17 +97,17 @@
               <label for="altura"><i class="fas fa-arrow-up"></i> Altura (opcional):</label>
               <input type="text" name="altura" id="altura" placeholder="Ingrese la altura">
             </div>
-            <button type="submit" class="btn">
+            <button type="submit" class="btn" onclick="mostrarCarga()">
               <i class="fas fa-calculator"></i> Resolver Triángulo
             </button>
           </form>
-          <!-- Enlace para ecuaciones, ubicado abajo y de color azul -->
+          <!-- Enlace para ecuaciones, en color azul, en la parte inferior -->
           <div class="equation-link" style="margin-top: 20px;">
             <a href="https://resolucion-rectas-nismoos.onrender.com" target="_blank" style="background-color: blue;">
               <i class="fas fa-external-link-alt"></i> Da click aquí para resolver Ecuaciones y graficarlas
             </a>
           </div>
-          <!-- Botones de Donar y Reportar Error (verdes) se mostrarán abajo -->
+          <!-- Botones de Donar y Reportar Error en la parte inferior -->
           <div class="extra-links" style="text-align: center; margin-top: 20px;">
             <a href="{{ url_for('donar') }}" class="btn">
               <i class="fas fa-donate"></i> Donar
@@ -123,5 +123,10 @@
       </div>
     </div>
   {% endif %}
+  <script>
+    function mostrarCarga(){
+      alert("Calculando, por favor espere...");
+    }
+  </script>
 </body>
 </html>
