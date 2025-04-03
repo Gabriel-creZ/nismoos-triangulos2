@@ -12,7 +12,6 @@
   --button-hover: #81c784;
 }
 
-/* Fondo general con color verde */
 body {
   font-family: 'Poppins', sans-serif;
   background-color: var(--background-color);
@@ -26,7 +25,6 @@ body {
   align-items: center;
 }
 
-/* Contenedor blanco central */
 .container {
   background: white;
   max-width: 600px;
@@ -38,7 +36,6 @@ body {
   box-sizing: border-box;
 }
 
-/* Imagen label-image centrada */
 .label-image-container {
   text-align: center;
   margin-bottom: 20px;
@@ -57,7 +54,6 @@ body {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Header */
 .header {
   text-align: center;
   margin-bottom: 20px;
@@ -74,7 +70,6 @@ body {
   margin: 5px 0 15px 0;
 }
 
-/* Enlace de ecuaciones */
 .equation-link {
   margin: 20px 0;
   text-align: center;
@@ -102,7 +97,6 @@ body {
   margin-right: 8px;
 }
 
-/* Mensajes de error */
 .error-message {
   background-color: #fee2e2;
   color: #dc2626;
@@ -112,7 +106,6 @@ body {
   text-align: center;
 }
 
-/* Formularios */
 .login-form .form-group,
 .form-group {
   margin-bottom: 15px;
@@ -145,7 +138,6 @@ body {
   outline: none;
 }
 
-/* Botones centrados */
 .login-btn,
 .btn {
   background-color: var(--primary-color);
@@ -172,7 +164,6 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Contenido y resultados */
 .content {
   display: flex;
   flex-direction: column;
@@ -224,7 +215,6 @@ body {
   margin: 0 auto;
 }
 
-/* Login container (usa contenedor blanco) */
 .login-container {
   background: white;
   max-width: 400px;
@@ -237,7 +227,6 @@ body {
   box-sizing: border-box;
 }
 
-/* Pie de página */
 .footer {
   text-align: center;
   margin-top: 30px;
@@ -254,7 +243,6 @@ body {
   color: var(--primary-color);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .container {
     padding: 20px;

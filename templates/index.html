@@ -7,6 +7,14 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}?v=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <!-- Script para mostrar spinner de carga -->
+  <script>
+    function mostrarSpinner() {
+      document.getElementById('spinner').style.display = 'block';
+      document.getElementById('triangulo-form').submit();
+    }
+  </script>
 </head>
 <body>
   {% if not session.get('logged_in') %}
@@ -57,14 +65,28 @@
         <h1><i class="fas fa-triangle triangle-icon"></i> Instant Math Solver: Resolución de Triángulos 🧮 <i class="fas fa-triangle triangle-icon"></i></h1>
         <p class="creator">By: <em>gabriel_cre</em></p>
       </header>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div class="error-message">
+            {% for msg in messages %}
+              <p><i class="fas fa-exclamation-circle"></i> {{ msg }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
       <div class="content">
         <div class="form-container">
           <h2 class="form-title"><i class="fas fa-calculator"></i> Datos del Triángulo</h2>
           <div class="instruction">
-            Ingresa al menos 3 datos para resolver el triángulo. Puedes proporcionar lados, ángulos o incluso la base y la altura (para triángulos rectángulos).<br>
+            Ingresa al menos 3 datos para resolver el triángulo (lados, ángulos o base y altura).<br>
             Ejemplo: α = 80°, β = 20°, b = 7 o Base = 6, Altura = 4
           </div>
-          <form method="POST">
+          <!-- Spinner de carga -->
+          <div id="spinner" style="display: none; text-align:center; margin-bottom:15px;">
+            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary-color);"></i>
+            <p>Calculando, por favor espere...</p>
+          </div>
+          <form method="POST" action="{{ url_for('index') }}" id="triangulo-form">
             <div class="form-group">
               <label for="lado_a"><i class="fas fa-ruler-horizontal"></i> Lado a:</label>
               <input type="text" name="lado_a" id="lado_a" placeholder="Ingrese longitud">
@@ -97,17 +119,15 @@
               <label for="altura"><i class="fas fa-arrow-up"></i> Altura (opcional):</label>
               <input type="text" name="altura" id="altura" placeholder="Ingrese la altura">
             </div>
-            <button type="submit" class="btn" onclick="mostrarCarga()">
+            <button type="button" class="btn" onclick="mostrarSpinner()">
               <i class="fas fa-calculator"></i> Resolver Triángulo
             </button>
           </form>
-          <!-- Enlace para ecuaciones, en color azul, en la parte inferior -->
           <div class="equation-link" style="margin-top: 20px;">
             <a href="https://resolucion-rectas-nismoos.onrender.com" target="_blank" style="background-color: blue;">
               <i class="fas fa-external-link-alt"></i> Da click aquí para resolver Ecuaciones y graficarlas
             </a>
           </div>
-          <!-- Botones de Donar y Reportar Error en la parte inferior -->
           <div class="extra-links" style="text-align: center; margin-top: 20px;">
             <a href="{{ url_for('donar') }}" class="btn">
               <i class="fas fa-donate"></i> Donar
@@ -123,10 +143,5 @@
       </div>
     </div>
   {% endif %}
-  <script>
-    function mostrarCarga(){
-      alert("Calculando, por favor espere...");
-    }
-  </script>
 </body>
 </html>
