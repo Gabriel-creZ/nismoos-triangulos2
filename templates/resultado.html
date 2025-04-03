@@ -24,78 +24,68 @@
       </div>
     </header>
     
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <div class="error-message">
-          {% for msg in messages %}
-            <p><i class="fas fa-exclamation-circle"></i> {{ msg }}</p>
-          {% endfor %}
-        </div>
-      {% endif %}
-    {% endwith %}
-
     <div class="content">
       <div class="results-container">
         <h2 class="results-title"><i class="fas fa-chart-pie"></i> Resultados (Método: {{ resultados.metodo }})</h2>
         
         <div class="result-item">
-          <span class="result-label">📏 Lado a:</span>
+          <span class="result-label"><span class="emoji">📏</span> Lado a:</span>
           <span class="result-value">{{ resultados.lado_a }} u</span>
         </div>
         <div class="result-item">
-          <span class="result-label">📏 Lado b:</span>
+          <span class="result-label"><span class="emoji">📏</span> Lado b:</span>
           <span class="result-value">{{ resultados.lado_b }} u</span>
         </div>
         <div class="result-item">
-          <span class="result-label">📏 Lado c:</span>
+          <span class="result-label"><span class="emoji">📏</span> Lado c:</span>
           <span class="result-value">{{ resultados.lado_c }} u</span>
         </div>
         <div class="result-item">
-          <span class="result-label">📐 Ángulo α:</span>
+          <span class="result-label"><span class="emoji">📐</span> Ángulo α:</span>
           <span class="result-value">{{ resultados.angulo_A }}°</span>
         </div>
         <div class="result-item">
-          <span class="result-label">📐 Ángulo β:</span>
+          <span class="result-label"><span class="emoji">📐</span> Ángulo β:</span>
           <span class="result-value">{{ resultados.angulo_B }}°</span>
         </div>
         <div class="result-item">
-          <span class="result-label">📐 Ángulo γ:</span>
+          <span class="result-label"><span class="emoji">📐</span> Ángulo γ:</span>
           <span class="result-value">{{ resultados.angulo_C }}°</span>
         </div>
         <div class="result-item">
-          <span class="result-label">⏱️ Perímetro:</span>
+          <span class="result-label"><span class="emoji">⏱️</span> Perímetro:</span>
           <span class="result-value">{{ resultados.perimetro }} u</span>
         </div>
         <div class="result-item">
-          <span class="result-label">🔵 Área (Herón):</span>
+          <span class="result-label"><span class="emoji">🔵</span> Área (Herón):</span>
           <span class="result-value">{{ resultados.area }} u²</span>
         </div>
         <div class="result-item">
-          <span class="result-label">🧮 Medianas:</span>
+          <span class="result-label"><span class="emoji">🧮</span> Medianas:</span>
           <span class="result-value">mₐ = {{ resultados.mediana_a }} u, mᵦ = {{ resultados.mediana_b }} u, m𝒸 = {{ resultados.mediana_c }} u</span>
         </div>
         <div class="result-item">
-          <span class="result-label">⚪ Radio del circuncentro:</span>
+          <span class="result-label"><span class="emoji">⚪</span> Radio del circuncentro:</span>
           <span class="result-value">{{ resultados.circumradius }} u</span>
         </div>
         <div class="result-item">
-          <span class="result-label">📊 Tipo de triángulo:</span>
+          <span class="result-label"><span class="emoji">📊</span> Tipo de triángulo:</span>
           <span class="result-value">{{ resultados.tipo_triangulo }} ({{ resultados.clasificacion_angulo }})</span>
         </div>
         <div class="result-item">
-          <span class="result-label">📌 Circuncentro:</span>
+          <span class="result-label"><span class="emoji">📌</span> Circuncentro:</span>
           <span class="result-value">{{ resultados.circuncentro }}</span>
         </div>
         <div class="result-item">
-          <span class="result-label">📌 Ortocentro:</span>
+          <span class="result-label"><span class="emoji">📌</span> Ortocentro:</span>
           <span class="result-value">{{ resultados.ortocentro }}</span>
         </div>
         <div class="result-item">
-          <span class="result-label">📏 Altura vertical:</span>
+          <span class="result-label"><span class="emoji">📏</span> Altura vertical:</span>
           <span class="result-value">{{ resultados.altura }} u</span>
         </div>
         
-        <h3 class="results-title" style="margin-top: 25px;"><i class="fas fa-drafting-compass"></i> Gráficas del Triángulo</h3>
+        <h3 style="text-align: center; margin-top: 25px;"><i class="fas fa-drafting-compass"></i> Gráficas del Triángulo</h3>
         <div class="result-item">
           <img src="data:image/png;base64,{{ imagen_estatico }}" alt="Gráfica estática del triángulo" class="triangle-image">
         </div>
@@ -103,13 +93,13 @@
           {{ imagen_interactivo|safe }}
         </div>
         
-        <!-- Calculadora de Unidades -->
+        <!-- Calculadora de conversión de unidades -->
         <div class="result-item" style="background: #e9ecef; padding: 15px;">
           <h3 style="text-align: center;">Calculadora de Unidades</h3>
-          <form method="POST" action="{{ url_for('convertir') }}">
+          <form id="conversionForm">
             <div class="form-group">
               <label for="valor">Valor:</label>
-              <input type="text" name="valor" id="valor" placeholder="Ingrese valor" required>
+              <input type="number" step="any" name="valor" id="valor" placeholder="Ingrese valor" required>
             </div>
             <div class="form-group">
               <label for="de_unidad">De:</label>
@@ -123,14 +113,15 @@
               <label for="a_unidad">A:</label>
               <select name="a_unidad" id="a_unidad" required>
                 <option value="mm">mm</option>
-                <option value="cm">cm</option>
-                <option value="m" selected>m</option>
+                <option value="cm" selected>cm</option>
+                <option value="m">m</option>
               </select>
             </div>
             <button type="submit" class="btn">
               <i class="fas fa-exchange-alt"></i> Convertir
             </button>
           </form>
+          <div id="conversionResult" style="margin-top:10px; font-weight:bold; text-align:center;"></div>
         </div>
         
         <div class="result-item">
@@ -138,9 +129,35 @@
         </div>
       </div>
     </div>
+    
     <div class="footer">
       <em>@ 2025 Instant Math Solver - Herramienta educativa desarrollada por Gabriel Castillo - Alumno AMRD</em>
     </div>
   </div>
+  <script>
+    // Calculadora de conversión de unidades en JavaScript
+    document.getElementById("conversionForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const valor = parseFloat(document.getElementById("valor").value);
+      const de = document.getElementById("de_unidad").value;
+      const a = document.getElementById("a_unidad").value;
+      const conversion = {
+        "mm_cm": 0.1,
+        "cm_mm": 10,
+        "cm_m": 0.01,
+        "m_cm": 100,
+        "mm_m": 0.001,
+        "m_mm": 1000
+      };
+      const key = de + "_" + a;
+      const factor = conversion[key];
+      if (factor === undefined) {
+        document.getElementById("conversionResult").innerText = "Conversión no soportada.";
+      } else {
+        const resultado = valor * factor;
+        document.getElementById("conversionResult").innerText = `Resultado: ${resultado} ${a}`;
+      }
+    });
+  </script>
 </body>
 </html>

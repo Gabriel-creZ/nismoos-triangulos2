@@ -12,6 +12,7 @@
   --button-hover: #81c784;
 }
 
+/* Fondo general con color verde */
 body {
   font-family: 'Poppins', sans-serif;
   background-color: var(--background-color);
@@ -25,6 +26,7 @@ body {
   align-items: center;
 }
 
+/* Contenedor blanco central */
 .container {
   background: white;
   max-width: 600px;
@@ -32,10 +34,11 @@ body {
   margin: 40px auto;
   padding: 20px 30px;
   border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
 }
 
+/* Imagen label-image centrada */
 .label-image-container {
   text-align: center;
   margin-bottom: 20px;
@@ -51,9 +54,10 @@ body {
 
 .label-image:hover {
   transform: scale(1.05);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
+/* Header */
 .header {
   text-align: center;
   margin-bottom: 20px;
@@ -70,6 +74,7 @@ body {
   margin: 5px 0 15px 0;
 }
 
+/* Enlace de ecuaciones */
 .equation-link {
   margin: 20px 0;
   text-align: center;
@@ -84,19 +89,20 @@ body {
   display: inline-block;
   transition: all 0.3s;
   font-weight: 500;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .equation-link a:hover {
   background-color: var(--equation-link-hover);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .equation-link a i {
   margin-right: 8px;
 }
 
+/* Mensajes de error */
 .error-message {
   background-color: #fee2e2;
   color: #dc2626;
@@ -106,6 +112,7 @@ body {
   text-align: center;
 }
 
+/* Formularios */
 .login-form .form-group,
 .form-group {
   margin-bottom: 15px;
@@ -138,6 +145,7 @@ body {
   outline: none;
 }
 
+/* Botones centrados */
 .login-btn,
 .btn {
   background-color: var(--primary-color);
@@ -161,9 +169,10 @@ body {
 .btn:hover {
   background-color: var(--button-hover);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Contenido y resultados */
 .content {
   display: flex;
   flex-direction: column;
@@ -215,6 +224,7 @@ body {
   margin: 0 auto;
 }
 
+/* Login container (usa contenedor blanco) */
 .login-container {
   background: white;
   max-width: 400px;
@@ -222,11 +232,12 @@ body {
   margin: 50px auto;
   padding: 30px;
   border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   text-align: center;
   box-sizing: border-box;
 }
 
+/* Pie de página */
 .footer {
   text-align: center;
   margin-top: 30px;
@@ -243,6 +254,7 @@ body {
   color: var(--primary-color);
 }
 
+/* Responsive */
 @media (max-width: 768px) {
   .container {
     padding: 20px;
