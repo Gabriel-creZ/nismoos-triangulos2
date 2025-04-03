@@ -7,9 +7,7 @@
   --success-color: #4cc9f0;
   --warning-color: #f72585;
   --background-color: #5ab361;
-  --equation-link-color: #4a6fa5; /* Azul para Ecuaciones */
-  --donation-link-color: #2e7d32; /* Verde para Donar */
-  --report-link-color: #2e7d32;   /* Verde para Reportar Error */
+  --equation-link-color: #4a6fa5;
   --equation-link-hover: #3a5a8a;
   --button-hover: #81c784;
 }
@@ -76,9 +74,9 @@ body {
   margin: 5px 0 15px 0;
 }
 
-/* Enlaces */
-.equation-link, .donation-link, .report-link {
-  margin: 10px 0;
+/* Enlace de ecuaciones */
+.equation-link {
+  margin: 20px 0;
   text-align: center;
 }
 
@@ -100,29 +98,7 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.donation-link a,
-.report-link a {
-  background-color: var(--donation-link-color);
-  color: white;
-  padding: 12px 20px;
-  border-radius: 8px;
-  text-decoration: none;
-  display: inline-block;
-  transition: all 0.3s;
-  font-weight: 500;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.donation-link a:hover,
-.report-link a:hover {
-  background-color: var(--button-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.equation-link a i,
-.donation-link a i,
-.report-link a i {
+.equation-link a i {
   margin-right: 8px;
 }
 
@@ -151,8 +127,7 @@ body {
 }
 
 .form-group input,
-.form-group textarea,
-.form-group select {
+.form-group textarea {
   width: 100%;
   padding: 12px 15px;
   border: 2px solid #e9ecef;
@@ -163,13 +138,12 @@ body {
 }
 
 .form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
+.form-group textarea:focus {
   border-color: var(--accent-color);
   outline: none;
 }
 
-/* Botones */
+/* Botones centrados */
 .login-btn,
 .btn {
   background-color: var(--primary-color);
@@ -248,7 +222,7 @@ body {
   margin: 0 auto;
 }
 
-/* Login container */
+/* Login container (usa contenedor blanco) */
 .login-container {
   background: white;
   max-width: 400px;
@@ -296,8 +270,7 @@ body {
     font-size: 1.5rem;
   }
   .form-group input,
-  .form-group textarea,
-  .form-group select {
+  .form-group textarea {
     padding: 10px 12px;
   }
   .btn, .login-btn {

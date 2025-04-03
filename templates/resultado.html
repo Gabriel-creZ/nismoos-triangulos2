@@ -18,123 +18,85 @@
     <header class="header">
       <h1><i class="fas fa-triangle triangle-icon"></i> Instant Math Solver: Resolución de Triángulos 🧮 <i class="fas fa-triangle triangle-icon"></i></h1>
       <p class="creator">By: <em>gabriel_cre</em></p>
+      <!-- Aquí se han agregado los botones de Donar y Reportar Error -->
       <div class="extra-links" style="text-align: center; margin-top: 10px;">
         <a href="{{ url_for('donar') }}" class="btn"><i class="fas fa-donate"></i> Donar</a>
         <a href="{{ url_for('reporte') }}" class="btn"><i class="fas fa-bug"></i> Reportar Error</a>
       </div>
     </header>
+    
     <div class="content">
       <div class="results-container">
         <h2 class="results-title"><i class="fas fa-chart-pie"></i> Resultados (Método: {{ resultados.metodo }})</h2>
-        {% if resultados.metodo == "Altura y Área" %}
-          <div class="result-item">
-            <span class="result-label">Base:</span>
-            <span class="result-value">{{ resultados.base }} u</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label">Altura:</span>
-            <span class="result-value">{{ resultados.altura }} u</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label">Área:</span>
-            <span class="result-value">{{ resultados.area }} u²</span>
-          </div>
-        {% else %}
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">📏</span> Lado a:</span>
-            <span class="result-value">{{ resultados.lado_a }} u</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">📏</span> Lado b:</span>
-            <span class="result-value">{{ resultados.lado_b }} u</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">📏</span> Lado c:</span>
-            <span class="result-value">{{ resultados.lado_c }} u</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label">Ángulo α: (Alfa)</span>
-            <span class="result-value">{{ resultados.angulo_A }}°</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label">Ángulo β: (Beta)</span>
-            <span class="result-value">{{ resultados.angulo_B }}°</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label">Ángulo γ: (Gamma)</span>
-            <span class="result-value">{{ resultados.angulo_C }}°</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">⏱️</span> Perímetro:</span>
-            <span class="result-value">{{ resultados.perimetro }} u</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">🔵</span> Área (Herón):</span>
-            <span class="result-value">{{ resultados.area }} u²</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">📏</span> Altura (sobre c):</span>
-            <span class="result-value">{{ resultados.altura }} u</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">🧮</span> Medianas:</span>
-            <span class="result-value">mₐ = {{ resultados.mediana_a }} u, m_b = {{ resultados.mediana_b }} u, m_c = {{ resultados.mediana_c }} u</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">⚪</span> Radio del circuncentro:</span>
-            <span class="result-value">{{ resultados.circumradius }} u</span>
-          </div>
-          <div class="result-item">
-            <span class="result-label"><span class="emoji">📊</span> Tipo de triángulo:</span>
-            <span class="result-value">{{ resultados.tipo_triangulo }} - {{ resultados.clasificacion }}</span>
-          </div>
-        {% endif %}
-        <!-- Formulario de conversión de unidades -->
+        
         <div class="result-item">
-          <h3>Conversión de Unidades</h3>
-          <form method="POST" action="{{ url_for('index') }}">
-            <div class="form-group">
-              <label for="valor_conv">Valor:</label>
-              <input type="text" name="valor_conv" id="valor_conv" placeholder="Ingrese valor">
-            </div>
-            <div class="form-group">
-              <label for="de">De:</label>
-              <select name="de" id="de">
-                <option value="cm">cm</option>
-                <option value="m">m</option>
-                <option value="km">km</option>
-                <option value="in">in</option>
-                <option value="ft">ft</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="a_unit">A:</label>
-              <select name="a_unit" id="a_unit">
-                <option value="m">m</option>
-                <option value="cm">cm</option>
-                <option value="km">km</option>
-                <option value="in">in</option>
-                <option value="ft">ft</option>
-              </select>
-            </div>
-            <button type="submit" class="btn">Convertir</button>
-          </form>
-          {% if request.form.get('valor_conv') %}
-            {% set valor = request.form.get('valor_conv', type=float) %}
-            {% set de = request.form.get('de') %}
-            {% set a_unit = request.form.get('a_unit') %}
-            {% set conversiones = {'cm_m': 0.01, 'm_cm': 100, 'm_km': 0.001, 'km_m': 1000, 'in_cm': 2.54, 'cm_in': 1/2.54, 'ft_m': 0.3048, 'm_ft': 1/0.3048} %}
-            {% set key = de ~ "_" ~ a_unit %}
-            {% set factor = conversiones.get(key, 1) %}
-            {% set valor_conv = valor * factor %}
-            <p>Resultado: {{ valor_conv }} {{ a_unit }}</p>
-          {% endif %}
+          <span class="result-label"><span class="emoji">📏</span> Lado a:</span>
+          <span class="result-value">{{ resultados.lado_a }} u</span>
         </div>
+        <div class="result-item">
+          <span class="result-label"><span class="emoji">📏</span> Lado b:</span>
+          <span class="result-value">{{ resultados.lado_b }} u</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label"><span class="emoji">📏</span> Lado c:</span>
+          <span class="result-value">{{ resultados.lado_c }} u</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label"><span class="emoji">📐</span> Ángulo α:</span>
+          <span class="result-value">{{ resultados.angulo_A }}°</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label"><span class="emoji">📐</span> Ángulo β:</span>
+          <span class="result-value">{{ resultados.angulo_B }}°</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label"><span class="emoji">📐</span> Ángulo γ:</span>
+          <span class="result-value">{{ resultados.angulo_C }}°</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label"><span class="emoji">⏱️</span> Perímetro:</span>
+          <span class="result-value">{{ resultados.perimetro }} u</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label"><span class="emoji">🔵</span> Área (Herón):</span>
+          <span class="result-value">{{ resultados.area }} u²</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label"><span class="emoji">🧮</span> Medianas:</span>
+          <span class="result-value">mₐ = {{ resultados.mediana_a }} u, m_b = {{ resultados.mediana_b }} u, m_c = {{ resultados.mediana_c }} u</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label"><span class="emoji">⚪</span> Radio del circuncentro:</span>
+          <span class="result-value">{{ resultados.circumradius }} u</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label"><span class="emoji">📊</span> Tipo de triángulo:</span>
+          <span class="result-value">{{ resultados.tipo_triangulo }} ({{ resultados.clasificacion_angulo }})</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label"><span class="emoji">📌</span> Circuncentro:</span>
+          <span class="result-value">{{ resultados.circuncentro }}</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label"><span class="emoji">📌</span> Ortocentro:</span>
+          <span class="result-value">{{ resultados.ortocentro }}</span>
+        </div>
+        
+        <h3 style="text-align: center; margin-top: 25px;"><i class="fas fa-drafting-compass"></i> Gráfica del Triángulo</h3>
+        <div class="result-item">
+          <img src="data:image/png;base64,{{ imagen_estatico }}" alt="Gráfica estática del triángulo" class="triangle-image">
+        </div>
+        <div class="result-item">
+          <!-- Gráfica interactiva -->
+          {{ imagen_interactivo|safe }}
+        </div>
+        
         <div class="result-item">
           <a href="{{ url_for('index') }}" class="btn"><i class="fas fa-arrow-left"></i> Realizar nuevo cálculo</a>
         </div>
       </div>
     </div>
+    
     <div class="footer">
       <em>@ 2025 Instant Math Solver - Herramienta educativa desarrollada por Gabriel Castillo - Alumno AMRD</em>
     </div>
