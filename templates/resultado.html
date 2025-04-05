@@ -91,7 +91,6 @@
         </div>
         <div class="result-item">
           {{ imagen_interactivo|safe }}
-          <!-- Nota: Uso recomendado en PC o tablet -->
           <p style="text-align:center; margin-top:10px; font-style:italic;">
             Recomendamos visualizar la gráfica interactiva en PC o tablet.
           </p>
@@ -155,10 +154,15 @@
     </div>
   </div>
   <script>
-    // Calculadora de conversión de unidades en JavaScript
+    // Calculadora de conversión de unidades en JavaScript, compatible con decimales y números grandes
     document.getElementById("conversionForm").addEventListener("submit", function(e) {
       e.preventDefault();
-      const valor = parseFloat(document.getElementById("valor").value);
+      const valorInput = document.getElementById("valor").value;
+      const valor = Number(valorInput);
+      if (isNaN(valor)) {
+         document.getElementById("conversionResult").innerText = "Por favor, ingresa un número válido.";
+         return;
+      }
       const de = document.getElementById("de_unidad").value;
       const a = document.getElementById("a_unidad").value;
       const conversion = {
@@ -191,7 +195,7 @@
         document.getElementById("conversionResult").innerText = "Conversión no soportada.";
       } else {
         const resultado = valor * factor;
-        document.getElementById("conversionResult").innerText = `Resultado: ${resultado} ${a}`;
+        document.getElementById("conversionResult").innerText = `Resultado: ${resultado.toLocaleString()} ${a}`;
       }
     });
   </script>
