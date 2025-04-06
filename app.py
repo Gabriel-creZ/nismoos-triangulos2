@@ -177,35 +177,27 @@ def determinar_clasificacion_angulo(A, B, C):
         return "Acutángulo"
 
 def convertir_unidades(valor, de_unidad, a_unidad):
-    # Tabla de conversiones ampliada
-    conversion = {
-        ("Milímetros", "Centímetros"): 0.1,
-        ("Centímetros", "Milímetros"): 10,
-        ("Centímetros", "Decímetros"): 0.1,
-        ("Decímetros", "Centímetros"): 10,
-        ("Centímetros", "Metros"): 0.01,
-        ("Metros", "Centímetros"): 100,
-        ("Milímetros", "Metros"): 0.001,
-        ("Metros", "Milímetros"): 1000,
-        ("Pulgadas", "Centímetros"): 2.54,
-        ("Centímetros", "Pulgadas"): 0.393701,
-        ("Pies", "Metros"): 0.3048,
-        ("Metros", "Pies"): 3.28084,
-        ("Yardas", "Metros"): 0.9144,
-        ("Metros", "Yardas"): 1.09361,
-        ("Millas", "Metros"): 1609.34,
-        ("Metros", "Millas"): 0.000621371,
-        ("Decámetros", "Metros"): 10,
-        ("Metros", "Decámetros"): 0.1,
-        ("Hectómetros", "Metros"): 100,
-        ("Metros", "Hectómetros"): 0.01,
-        ("Kilómetros", "Metros"): 1000,
-        ("Metros", "Kilómetros"): 0.001
+    # Factor de cada unidad a metros
+    factores = {
+        "Milímetros": 0.001,
+        "Centímetros": 0.01,
+        "Decímetros": 0.1,
+        "Metros": 1,
+        "Decámetros": 10,
+        "Hectómetros": 100,
+        "Kilómetros": 1000,
+        "Pulgadas": 0.0254,
+        "Pies": 0.3048,
+        "Yardas": 0.9144,
+        "Millas": 1609.34
     }
-    factor = conversion.get((de_unidad, a_unidad))
-    if factor is None:
+    try:
+        factor_de = factores[de_unidad]
+        factor_a = factores[a_unidad]
+    except KeyError:
         raise ValueError("Conversión no soportada.")
-    return valor * factor
+    return valor * (factor_de / factor_a)
+
 
 def calcular_circuncentro(A, B, C):
     d = 2*(A[0]*(B[1]-C[1]) + B[0]*(C[1]-A[1]) + C[0]*(A[1]-B[1]))

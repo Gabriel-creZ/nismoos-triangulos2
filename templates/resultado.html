@@ -165,39 +165,27 @@
       }
       const de = document.getElementById("de_unidad").value;
       const a = document.getElementById("a_unidad").value;
-      const conversion = {
-        "Milímetros_Centímetros": 0.1,
-        "Centímetros_Milímetros": 10,
-        "Centímetros_Decímetros": 0.1,
-        "Decímetros_Centímetros": 10,
-        "Centímetros_Metros": 0.01,
-        "Metros_Centímetros": 100,
-        "Milímetros_Metros": 0.001,
-        "Metros_Milímetros": 1000,
-        "Pulgadas_Centímetros": 2.54,
-        "Centímetros_Pulgadas": 0.393701,
-        "Pies_Metros": 0.3048,
-        "Metros_Pies": 3.28084,
-        "Yardas_Metros": 0.9144,
-        "Metros_Yardas": 1.09361,
-        "Millas_Metros": 1609.34,
-        "Metros_Millas": 0.000621371,
-        "Decámetros_Metros": 10,
-        "Metros_Decámetros": 0.1,
-        "Hectómetros_Metros": 100,
-        "Metros_Hectómetros": 0.01,
-        "Kilómetros_Metros": 1000,
-        "Metros_Kilómetros": 0.001
+      // Factores de cada unidad a metros
+      const factores = {
+        "Milímetros": 0.001,
+        "Centímetros": 0.01,
+        "Decímetros": 0.1,
+        "Metros": 1,
+        "Decámetros": 10,
+        "Hectómetros": 100,
+        "Kilómetros": 1000,
+        "Pulgadas": 0.0254,
+        "Pies": 0.3048,
+        "Yardas": 0.9144,
+        "Millas": 1609.34
       };
-      const key = de + "_" + a;
-      const factor = conversion[key];
-      if (factor === undefined) {
+      if (!(de in factores) || !(a in factores)) {
         document.getElementById("conversionResult").innerText = "Conversión no soportada.";
-      } else {
-        const resultado = valor * factor;
-        document.getElementById("conversionResult").innerText = `Resultado: ${resultado.toLocaleString()} ${a}`;
+        return;
       }
+      const resultado = valor * (factores[de] / factores[a]);
+      document.getElementById("conversionResult").innerText = `Resultado: ${resultado.toLocaleString()} ${a}`;
     });
-  </script>
+  </script>  
 </body>
 </html>
