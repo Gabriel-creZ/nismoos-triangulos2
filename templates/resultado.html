@@ -28,6 +28,7 @@
       <div class="results-container">
         <h2 class="results-title"><i class="fas fa-chart-pie"></i> Resultados (Método: {{ resultados.metodo }})</h2>
         
+        <!-- Datos calculados -->
         <div class="result-item">
           <span class="result-label"><span class="emoji">📏</span> Lado a:</span>
           <span class="result-value">{{ resultados.lado_a }} u</span>
@@ -96,51 +97,88 @@
           </p>
         </div>
         
-        <!-- Calculadora de conversión de unidades -->
-        <div class="result-item" style="background: #e9ecef; padding: 15px;">
-          <h3 style="text-align: center;">Calculadora de Unidades</h3>
-          <form id="conversionForm">
+        <!-- Calculadora de Conversión (se activa con botón) -->
+        <button id="toggleConversion" class="btn" style="margin-top:20px;">Mostrar/Ocultar Calculadora de Unidades</button>
+        <div id="conversionSection" style="display:none;">
+          <div class="result-item" style="background: #e9ecef; padding: 15px;">
+            <h3 style="text-align: center;">Calculadora de Unidades</h3>
+            <form id="conversionForm">
+              <div class="form-group">
+                <label for="valor">Valor:</label>
+                <input type="number" step="any" name="valor" id="valor" placeholder="Ingrese valor" required>
+              </div>
+              <div class="form-group">
+                <label for="de_unidad">De:</label>
+                <select name="de_unidad" id="de_unidad" required>
+                  <option value="Milímetros">Milímetros (mm)</option>
+                  <option value="Centímetros" selected>Centímetros (cm)</option>
+                  <option value="Decímetros">Decímetros (dm)</option>
+                  <option value="Decámetros">Decámetros (dam)</option>
+                  <option value="Hectómetros">Hectómetros (hm)</option>
+                  <option value="Kilómetros">Kilómetros (km)</option>
+                  <option value="Metros">Metros (m)</option>
+                  <option value="Pulgadas">Pulgadas (in)</option>
+                  <option value="Pies">Pies (ft)</option>
+                  <option value="Yardas">Yardas (yd)</option>
+                  <option value="Millas">Millas (mi)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="a_unidad">A:</label>
+                <select name="a_unidad" id="a_unidad" required>
+                  <option value="Milímetros">Milímetros (mm)</option>
+                  <option value="Centímetros" selected>Centímetros (cm)</option>
+                  <option value="Decímetros">Decímetros (dm)</option>
+                  <option value="Decámetros">Decámetros (dam)</option>
+                  <option value="Hectómetros">Hectómetros (hm)</option>
+                  <option value="Kilómetros">Kilómetros (km)</option>
+                  <option value="Metros">Metros (m)</option>
+                  <option value="Pulgadas">Pulgadas (in)</option>
+                  <option value="Pies">Pies (ft)</option>
+                  <option value="Yardas">Yardas (yd)</option>
+                  <option value="Millas">Millas (mi)</option>
+                </select>
+              </div>
+              <button type="submit" class="btn">
+                <i class="fas fa-exchange-alt"></i> Convertir
+              </button>
+            </form>
+            <div id="conversionResult" style="margin-top:10px; font-weight:bold; text-align:center;"></div>
+          </div>
+        </div>
+        
+        <!-- Calculadora de Distancia entre 3 Puntos (se activa con botón) -->
+        <button id="toggleDistance" class="btn" style="margin-top:20px;">Mostrar/Ocultar Calculadora de Distancia</button>
+        <div id="distanceCalculator" style="display:none; background: #e9ecef; padding: 15px;">
+          <h3 style="text-align: center;">Calculadora de Distancia entre 3 Puntos</h3>
+          <form id="distanceForm">
             <div class="form-group">
-              <label for="valor">Valor:</label>
-              <input type="number" step="any" name="valor" id="valor" placeholder="Ingrese valor" required>
+              <label for="x1">Coordenada X1:</label>
+              <input type="number" step="any" id="x1" required>
             </div>
             <div class="form-group">
-              <label for="de_unidad">De:</label>
-              <select name="de_unidad" id="de_unidad" required>
-                <option value="Milímetros">Milímetros</option>
-                <option value="Centímetros" selected>Centímetros</option>
-                <option value="Decímetros">Decímetros</option>
-                <option value="Decámetros">Decámetros</option>
-                <option value="Hectómetros">Hectómetros</option>
-                <option value="Kilómetros">Kilómetros</option>
-                <option value="Metros">Metros</option>
-                <option value="Pulgadas">Pulgadas</option>
-                <option value="Pies">Pies</option>
-                <option value="Yardas">Yardas</option>
-                <option value="Millas">Millas</option>
-              </select>
+              <label for="y1">Coordenada Y1:</label>
+              <input type="number" step="any" id="y1" required>
             </div>
             <div class="form-group">
-              <label for="a_unidad">A:</label>
-              <select name="a_unidad" id="a_unidad" required>
-                <option value="Milímetros">Milímetros</option>
-                <option value="Centímetros" selected>Centímetros</option>
-                <option value="Decímetros">Decímetros</option>
-                <option value="Decámetros">Decámetros</option>
-                <option value="Hectómetros">Hectómetros</option>
-                <option value="Kilómetros">Kilómetros</option>
-                <option value="Metros">Metros</option>
-                <option value="Pulgadas">Pulgadas</option>
-                <option value="Pies">Pies</option>
-                <option value="Yardas">Yardas</option>
-                <option value="Millas">Millas</option>
-              </select>
+              <label for="x2">Coordenada X2:</label>
+              <input type="number" step="any" id="x2" required>
             </div>
-            <button type="submit" class="btn">
-              <i class="fas fa-exchange-alt"></i> Convertir
-            </button>
+            <div class="form-group">
+              <label for="y2">Coordenada Y2:</label>
+              <input type="number" step="any" id="y2" required>
+            </div>
+            <div class="form-group">
+              <label for="x3">Coordenada X3:</label>
+              <input type="number" step="any" id="x3" required>
+            </div>
+            <div class="form-group">
+              <label for="y3">Coordenada Y3:</label>
+              <input type="number" step="any" id="y3" required>
+            </div>
+            <button type="submit" class="btn"><i class="fas fa-calculator"></i> Calcular Distancias</button>
           </form>
-          <div id="conversionResult" style="margin-top:10px; font-weight:bold; text-align:center;"></div>
+          <div id="distanceResult" style="margin-top:10px; font-weight:bold; text-align:center;"></div>
         </div>
         
         <div class="result-item">
@@ -154,26 +192,30 @@
     </div>
   </div>
   <script>
-    // Calculadora de conversión de unidades en JavaScript, compatible con decimales y números grandes
+    // Toggle de la calculadora de conversión
+    document.getElementById("toggleConversion").addEventListener("click", function() {
+      const section = document.getElementById("conversionSection");
+      section.style.display = (section.style.display === "none" ? "block" : "none");
+    });
+    
+    // Calculadora de conversión de unidades en JavaScript, usando factores a metros
     document.getElementById("conversionForm").addEventListener("submit", function(e) {
       e.preventDefault();
-      const valorInput = document.getElementById("valor").value;
-      const valor = Number(valorInput);
+      const valor = Number(document.getElementById("valor").value);
       if (isNaN(valor)) {
          document.getElementById("conversionResult").innerText = "Por favor, ingresa un número válido.";
          return;
       }
       const de = document.getElementById("de_unidad").value;
       const a = document.getElementById("a_unidad").value;
-      // Factores de cada unidad a metros
       const factores = {
         "Milímetros": 0.001,
         "Centímetros": 0.01,
         "Decímetros": 0.1,
-        "Metros": 1,
         "Decámetros": 10,
         "Hectómetros": 100,
         "Kilómetros": 1000,
+        "Metros": 1,
         "Pulgadas": 0.0254,
         "Pies": 0.3048,
         "Yardas": 0.9144,
@@ -186,6 +228,50 @@
       const resultado = valor * (factores[de] / factores[a]);
       document.getElementById("conversionResult").innerText = `Resultado: ${resultado.toLocaleString()} ${a}`;
     });
-  </script>  
+    
+    // Toggle de la calculadora de distancias
+    document.getElementById("toggleDistance").addEventListener("click", function() {
+      const section = document.getElementById("distanceCalculator");
+      section.style.display = (section.style.display === "none" ? "block" : "none");
+    });
+    
+    // Calculadora de distancia entre 3 puntos
+    document.getElementById("distanceForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const x1 = Number(document.getElementById("x1").value);
+      const y1 = Number(document.getElementById("y1").value);
+      const x2 = Number(document.getElementById("x2").value);
+      const y2 = Number(document.getElementById("y2").value);
+      const x3 = Number(document.getElementById("x3").value);
+      const y3 = Number(document.getElementById("y3").value);
+      
+      // Función para calcular distancia y mostrar procedimiento
+      function distancia(xa, ya, xb, yb) {
+        const dx = xb - xa;
+        const dy = yb - ya;
+        const paso1 = `(${xb} - ${xa}) = ${dx}`;
+        const paso2 = `(${yb} - ${ya}) = ${dy}`;
+        const cuadrado1 = dx * dx;
+        const cuadrado2 = dy * dy;
+        const suma = cuadrado1 + cuadrado2;
+        const d = Math.sqrt(suma);
+        return {
+          distancia: d,
+          procedimiento: `Distancia = √((${dx})² + (${dy})²) = √(${cuadrado1} + ${cuadrado2}) = √(${suma}) = ${d.toFixed(4)}`
+        };
+      }
+      
+      const res1 = distancia(x1, y1, x2, y2);
+      const res2 = distancia(x2, y2, x3, y3);
+      const res3 = distancia(x1, y1, x3, y3);
+      
+      const resultadoTexto = 
+        "Distancia entre Punto 1 y Punto 2:\n" + res1.procedimiento + "\n\n" +
+        "Distancia entre Punto 2 y Punto 3:\n" + res2.procedimiento + "\n\n" +
+        "Distancia entre Punto 1 y Punto 3:\n" + res3.procedimiento;
+      
+      document.getElementById("distanceResult").innerText = resultadoTexto;
+    });
+  </script>
 </body>
 </html>
