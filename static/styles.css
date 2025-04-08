@@ -10,7 +10,7 @@
   --equation-link-color: #4a6fa5;
   --equation-link-hover: #3a5a8a;
   --button-hover: #81c784;
-  --golden-color: #DAA520;
+  --golden-color: #D4AF37; /* Tono dorado */
 }
 
 /* Fondo general con color verde */
@@ -173,8 +173,8 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Botones dorados para Toggle */
-.golden-btn {
+/* Botones dorados para toggle */
+.gold-btn {
   background-color: var(--golden-color);
   color: white;
   border: none;
@@ -184,18 +184,12 @@ body {
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s;
-  display: inline-block;
-  text-align: center;
-  text-decoration: none;
-  margin: 10px auto;
-  box-sizing: border-box;
-  width: auto;
+  margin: 10px 0;
 }
-
-.golden-btn:hover {
-  background-color: #C49E2B;
+.gold-btn:hover {
+  background-color: #cfae32;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Contenido y resultados */
@@ -250,7 +244,7 @@ body {
   margin: 0 auto;
 }
 
-/* Login container */
+/* Login container (usa contenedor blanco) */
 .login-container {
   background: white;
   max-width: 400px;
@@ -263,7 +257,7 @@ body {
   box-sizing: border-box;
 }
 
-/* Footer */
+/* Pie de página */
 .footer {
   text-align: center;
   margin-top: 30px;
@@ -302,7 +296,7 @@ body {
   .form-group select {
     padding: 10px 12px;
   }
-  .btn, .login-btn, .golden-btn {
+  .btn, .login-btn, .gold-btn {
     padding: 12px 20px;
     font-size: 1rem;
   }
