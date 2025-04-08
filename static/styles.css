@@ -10,6 +10,7 @@
   --equation-link-color: #4a6fa5;
   --equation-link-hover: #3a5a8a;
   --button-hover: #81c784;
+  --golden-color: #DAA520;
 }
 
 /* Fondo general con color verde */
@@ -145,7 +146,7 @@ body {
   outline: none;
 }
 
-/* Botones centrados */
+/* Botones */
 .login-btn,
 .btn {
   background-color: var(--primary-color);
@@ -170,6 +171,31 @@ body {
   background-color: var(--button-hover);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Botones dorados para Toggle */
+.golden-btn {
+  background-color: var(--golden-color);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+  margin: 10px auto;
+  box-sizing: border-box;
+  width: auto;
+}
+
+.golden-btn:hover {
+  background-color: #C49E2B;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 /* Contenido y resultados */
@@ -224,7 +250,7 @@ body {
   margin: 0 auto;
 }
 
-/* Login container (usa contenedor blanco) */
+/* Login container */
 .login-container {
   background: white;
   max-width: 400px;
@@ -237,7 +263,7 @@ body {
   box-sizing: border-box;
 }
 
-/* Pie de página */
+/* Footer */
 .footer {
   text-align: center;
   margin-top: 30px;
@@ -276,7 +302,7 @@ body {
   .form-group select {
     padding: 10px 12px;
   }
-  .btn, .login-btn {
+  .btn, .login-btn, .golden-btn {
     padding: 12px 20px;
     font-size: 1rem;
   }
