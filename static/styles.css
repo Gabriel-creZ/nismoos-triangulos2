@@ -10,7 +10,7 @@
   --equation-link-color: #4a6fa5;
   --equation-link-hover: #3a5a8a;
   --button-hover: #81c784;
-  --golden-color: #D4AF37; /* Tono dorado */
+  --golden-color: #D4AF37;
 }
 
 /* Fondo general con color verde */
@@ -173,7 +173,7 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Botones dorados para toggle */
+/* Botones dorados */
 .gold-btn {
   background-color: var(--golden-color);
   color: white;
@@ -184,7 +184,8 @@ body {
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s;
-  margin: 10px 0;
+  margin: 10px auto;
+  display: block;
 }
 .gold-btn:hover {
   background-color: #cfae32;
@@ -236,6 +237,7 @@ body {
   margin-bottom: 15px;
   border-radius: 8px;
   box-sizing: border-box;
+  white-space: pre-wrap;
 }
 
 .triangle-image {
@@ -244,7 +246,7 @@ body {
   margin: 0 auto;
 }
 
-/* Login container (usa contenedor blanco) */
+/* Login container */
 .login-container {
   background: white;
   max-width: 400px;
@@ -252,7 +254,7 @@ body {
   margin: 50px auto;
   padding: 30px;
   border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   text-align: center;
   box-sizing: border-box;
 }

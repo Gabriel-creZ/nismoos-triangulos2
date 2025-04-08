@@ -93,15 +93,17 @@
               <i class="fas fa-calculator"></i> Resolver Triángulo
             </button>
           </form>
-          <!-- Botón Mostrar/Ocultar Calculadora de Distancia (tono dorado con ícono) -->
-          <button id="toggleDistance" class="gold-btn">
-            <i class="fas fa-route"></i> Mostrar/Ocultar Calculadora de Distancia
-          </button>
-          <!-- Calculadora de Distancia -->
+          <!-- Botón Mostrar/Ocultar Calculadora de Distancia (centrado, tono dorado e ícono) -->
+          <div style="text-align:center; margin-top:20px;">
+            <button id="toggleDistance" class="gold-btn">
+              <i class="fas fa-route"></i> Mostrar/Ocultar Calculadora de Distancia
+            </button>
+          </div>
+          <!-- Bloque Calculadora de Distancia -->
           <div id="distanceCalculator" style="display:none; background: #e9ecef; padding: 15px;">
             <h3 style="text-align: center;">Calculadora de Distancia</h3>
             <p style="font-size:0.9rem; text-align:center; margin-bottom:10px;">
-              Ingresa las coordenadas de 2 o 3 puntos. Si se ingresan 3 puntos (no colineales), se calculará además el área y perímetro del triángulo formado y se graficará.
+              Ingresa las coordenadas de 2 o 3 puntos. Si se ingresan 3 puntos (no colineales), se calcularán las 3 distancias, el perímetro y el área del triángulo formado, y se generará la gráfica.
             </p>
             <form id="distanceForm">
               <div class="form-group">
@@ -130,12 +132,12 @@
               </div>
               <button type="submit" class="btn"><i class="fas fa-calculator"></i> Calcular Distancias</button>
             </form>
-            <div id="distanceResult" style="margin-top:10px; font-weight:bold; text-align:center;"></div>
+            <div id="distanceResult" style="margin-top:10px; white-space: pre-wrap; font-weight:bold; text-align:center;"></div>
             <div id="triangleGraph" style="margin-top:15px;"></div>
           </div>
-          <!-- Botón de ecuaciones (rediseñado, mismo icono y color) -->
-          <div class="equation-link" style="margin-top: 20px; background-color: blue;">
-            <a href="https://resolucion-rectas-nismoos.onrender.com" target="_blank">
+          <!-- Botón de ecuaciones rediseñado: fondo blanco -->
+          <div class="equation-link" style="margin-top: 20px; background-color: white; box-shadow: none;">
+            <a href="https://resolucion-rectas-nismoos.onrender.com" target="_blank" style="color: var(--equation-link-color); text-decoration: none; display: inline-block; padding: 12px 20px; border: 2px solid var(--equation-link-color); border-radius: 8px;">
               <i class="fas fa-external-link-alt"></i> Da click aquí para resolver Ecuaciones y graficarlas
             </a>
           </div>
@@ -155,6 +157,7 @@
       </div>
     </div>
   {% endif %}
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <script>
     // Toggle para Calculadora de Distancia
     document.getElementById("toggleDistance").addEventListener("click", function() {
@@ -174,69 +177,58 @@
       const x3 = x3Field.value ? Number(x3Field.value) : null;
       const y3 = y3Field.value ? Number(y3Field.value) : null;
       
-      function distancia(xa, ya, xb, yb) {
+      function calcularDistancia(xa, ya, xb, yb) {
         const dx = xb - xa;
         const dy = yb - ya;
-        const res = Math.sqrt(dx * dx + dy * dy);
-        return res;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        const procedimiento = `Distancia = √[(${xb} - ${xa})² + (${yb} - ${ya})²] = √[${(dx*dx).toFixed(4)} + ${(dy*dy).toFixed(4)}] = √[${(dx*dx+dy*dy).toFixed(4)}] = ${d.toFixed(4)}`;
+        return { d, procedimiento };
       }
       
       let resultadoTexto = "";
-      
+      let perimetroTri = "";
+      let areaTri = "";
+      // Si se ingresan solo 2 puntos
       if (x3 === null || y3 === null) {
-        // Calcular distancia entre 2 puntos
-        const d = distancia(x1, y1, x2, y2);
-        resultadoTexto = `Distancia entre Punto 1 y Punto 2: ${d.toFixed(4)}`;
-        document.getElementById("distanceResult").innerText = resultadoTexto;
-        document.getElementById("triangleGraph").innerHTML = "";
+        const res = calcularDistancia(x1, y1, x2, y2);
+        resultadoTexto = `Distancia entre Punto 1 y Punto 2:\n${res.procedimiento}`;
       } else {
-        // Calcular las 3 distancias
-        const d1 = distancia(x1, y1, x2, y2);
-        const d2 = distancia(x2, y2, x3, y3);
-        const d3 = distancia(x1, y1, x3, y3);
-        resultadoTexto =
-          "Distancia entre Punto 1 y Punto 2: " + d1.toFixed(4) + "\n" +
-          "Distancia entre Punto 2 y Punto 3: " + d2.toFixed(4) + "\n" +
-          "Distancia entre Punto 1 y Punto 3: " + d3.toFixed(4);
-        
-        // Calcular área y perímetro si los 3 puntos forman un triángulo (no colineales)
+        const res1 = calcularDistancia(x1, y1, x2, y2);
+        const res2 = calcularDistancia(x2, y2, x3, y3);
+        const res3 = calcularDistancia(x1, y1, x3, y3);
+        resultadoTexto = 
+          "Distancia entre Punto 1 y Punto 2:\n" + res1.procedimiento + "\n\n" +
+          "Distancia entre Punto 2 y Punto 3:\n" + res2.procedimiento + "\n\n" +
+          "Distancia entre Punto 1 y Punto 3:\n" + res3.procedimiento;
+        const d1 = res1.d, d2 = res2.d, d3 = res3.d;
         const s = (d1 + d2 + d3) / 2;
-        const areaTri = Math.sqrt(s * (s - d1) * (s - d2) * (s - d3));
-        let infoTri = "";
-        if (areaTri > 0) {
-          infoTri = "\n\nPerímetro del triángulo: " + (d1+d2+d3).toFixed(4) +
-                    "\nÁrea del triángulo: " + areaTri.toFixed(4);
-        } else {
-          infoTri = "\n\nLos puntos son colineales; no se forma triángulo.";
-        }
-        document.getElementById("distanceResult").innerText = resultadoTexto + infoTri;
+        const areaCalc = Math.sqrt(s * (s - d1) * (s - d2) * (s - d3));
+        perimetroTri = `\n\nPerímetro del triángulo: ${(d1+d2+d3).toFixed(4)}`;
+        areaTri = `\nÁrea del triángulo: ${areaCalc.toFixed(4)}`;
+        resultadoTexto += perimetroTri + areaTri;
         
-        // Graficar el triángulo (si es que se forma)
-        if (areaTri > 0) {
-          var trace1 = {
-            x: [x1, x2, x3, x1],
-            y: [y1, y2, y3, y1],
-            mode: 'lines+markers',
-            marker: {color: 'blue'},
-            line: {width: 2},
-            name: 'Triángulo'
-          };
-          var data = [trace1];
-          var layout = {
-            title: 'Gráfica del Triángulo',
-            xaxis: {title: 'Eje X'},
-            yaxis: {title: 'Eje Y'},
-            autosize: true,
-            margin: {l: 40, r: 40, t: 40, b: 40}
-          };
-          Plotly.newPlot('triangleGraph', data, layout, {responsive: true});
-        } else {
-          document.getElementById("triangleGraph").innerHTML = "";
-        }
+        // Graficar triángulo con Plotly
+        const trace = {
+          x: [x1, x2, x3, x1],
+          y: [y1, y2, y3, y1],
+          mode: 'lines+markers',
+          marker: {color: 'blue'},
+          line: {width: 2},
+          name: 'Triángulo'
+        };
+        const data = [trace];
+        const layout = {
+          title: 'Gráfica del Triángulo',
+          xaxis: {title: 'Eje X'},
+          yaxis: {title: 'Eje Y'},
+          autosize: true,
+          margin: {l: 40, r: 40, t: 40, b: 40}
+        };
+        Plotly.newPlot('triangleGraph', data, layout, {responsive: true});
       }
+      
+      document.getElementById("distanceResult").innerText = resultadoTexto;
     });
   </script>
-  <!-- Incluir Plotly si aún no está incluido -->
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </body>
 </html>
