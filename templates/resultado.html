@@ -7,6 +7,16 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}?v=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script>
+    function toggleSection(id) {
+      var section = document.getElementById(id);
+      if (section.style.display === "none" || section.style.display === "") {
+        section.style.display = "block";
+      } else {
+        section.style.display = "none";
+      }
+    }
+  </script>
 </head>
 <body>
   <div class="container">
@@ -25,38 +35,6 @@
     </header>
     
     <div class="content">
-      <!-- Sección de cálculo de distancia -->
-      <div class="result-item" style="border: 1px solid gold; padding:10px; border-radius:5px; text-align:center;">
-        <button id="toggleDistancia" class="btn" style="background-color: gold;">
-          <i class="fas fa-arrows-alt"></i> Calcular Distancia entre Puntos
-        </button>
-        <div id="distanciaSection" style="display:none; margin-top:15px;">
-          <h3>Calcular Distancia</h3>
-          <form id="distanciaForm">
-            <div class="form-group">
-              <label for="Ax">Punto A (x, y):</label>
-              <input type="text" name="Ax" id="Ax" placeholder="Ej: -6" required> 
-              <input type="text" name="Ay" id="Ay" placeholder="Ej: 0" required>
-            </div>
-            <div class="form-group">
-              <label for="Bx">Punto B (x, y):</label>
-              <input type="text" name="Bx" id="Bx" placeholder="Ej: -8" required> 
-              <input type="text" name="By" id="By" placeholder="Ej: -2" required>
-            </div>
-            <div class="form-group">
-              <label for="Cx">Punto C (opcional) (x, y):</label>
-              <input type="text" name="Cx" id="Cx" placeholder="Ej: -6">
-              <input type="text" name="Cy" id="Cy" placeholder="Ej: 1">
-            </div>
-            <button type="submit" class="btn">
-              <i class="fas fa-arrows-alt-h"></i> Calcular Distancia
-            </button>
-          </form>
-          <div id="distanciaResult" style="margin-top:10px; font-weight:bold;"></div>
-        </div>
-      </div>
-      
-      <!-- Resto de resultados de cálculo del triángulo -->
       <div class="results-container">
         <h2 class="results-title"><i class="fas fa-chart-pie"></i> Resultados (Método: {{ resultados.metodo }})</h2>
         
@@ -117,6 +95,34 @@
           <span class="result-value">{{ resultados.altura }} u</span>
         </div>
         
+        <!-- Botón dorado para mostrar/ocultar la sección de cálculo de distancias -->
+        <button type="button" onclick="toggleSection('distanciaSection')" style="background-color:gold; color:black; border:none; padding:10px 15px; border-radius:8px; margin-top:20px; display:block; margin-left:auto; margin-right:auto;">
+          <i class="fas fa-arrows-alt-h"></i> Mostrar/Ocultar Cálculo de Distancias
+        </button>
+        <div id="distanciaSection" style="display:none; margin-top:20px;">
+          <h3 style="text-align: center;">Cálculo de Distancias entre Puntos</h3>
+          <form method="POST" action="{{ url_for('calcular_distancia') }}">
+            <div class="form-group">
+              <label>Coordenadas A (x, y):</label>
+              <input type="text" name="A_x" placeholder="x">
+              <input type="text" name="A_y" placeholder="y">
+            </div>
+            <div class="form-group">
+              <label>Coordenadas B (x, y):</label>
+              <input type="text" name="B_x" placeholder="x">
+              <input type="text" name="B_y" placeholder="y">
+            </div>
+            <div class="form-group">
+              <label>Coordenadas C (opcional, x, y):</label>
+              <input type="text" name="C_x" placeholder="x">
+              <input type="text" name="C_y" placeholder="y">
+            </div>
+            <button type="submit" class="btn">
+              <i class="fas fa-route"></i> Calcular Distancias
+            </button>
+          </form>
+        </div>
+        
         <h3 style="text-align: center; margin-top: 25px;"><i class="fas fa-drafting-compass"></i> Gráficas del Triángulo</h3>
         <div class="result-item">
           <img src="data:image/png;base64,{{ imagen_estatico }}" alt="Gráfica estática del triángulo" class="triangle-image">
@@ -128,8 +134,11 @@
           </p>
         </div>
         
-        <!-- Calculadora de conversión de unidades -->
-        <div class="result-item" style="background: #e9ecef; padding: 15px;">
+        <!-- Botón dorado para mostrar/ocultar la calculadora de conversión -->
+        <button type="button" onclick="toggleSection('conversionSection')" style="background-color:gold; color:black; border:none; padding:10px 15px; border-radius:8px; margin-top:20px; display:block; margin-left:auto; margin-right:auto;">
+          <i class="fas fa-exchange-alt"></i> Mostrar/Ocultar Calculadora de Unidades
+        </button>
+        <div id="conversionSection" style="display:none; margin-top:20px;">
           <h3 style="text-align: center;">Calculadora de Unidades</h3>
           <form id="conversionForm">
             <div class="form-group">
@@ -197,6 +206,7 @@
       }
       const de = document.getElementById("de_unidad").value;
       const a = document.getElementById("a_unidad").value;
+      // Factores de cada unidad a metros
       const factores = {
         "Milímetros": 0.001,
         "Centímetros": 0.01,
@@ -216,42 +226,6 @@
       }
       const resultado = valor * (factores[de] / factores[a]);
       document.getElementById("conversionResult").innerText = `Resultado: ${resultado.toLocaleString()} ${a}`;
-    });
-
-    // Toggle de sección de cálculo de distancias
-    document.getElementById("toggleDistancia").addEventListener("click", function() {
-      const section = document.getElementById("distanciaSection");
-      section.style.display = section.style.display === "none" ? "block" : "none";
-    });
-
-    // Envío vía AJAX para cálculo de distancia
-    document.getElementById("distanciaForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-      fetch("{{ url_for('calcular_distancia') }}", {
-        method: "POST",
-        body: formData
-      })
-      .then(response => response.json())
-      .then(data => {
-        let output = "";
-        if(data.error){
-          output = data.error;
-        } else {
-          if(data.distancia){
-            output = `<strong>Distancia AB:</strong> ${data.distancia} <br>` + data.procedimiento;
-          } else {
-            output = `<strong>Distancias:</strong><br>AB: ${data.distancias.AB} <br>BC: ${data.distancias.BC} <br>AC: ${data.distancias.CA} <br>` +
-                     `<strong>Perímetro:</strong> ${data.perimetro} <br>` +
-                     `<strong>Área:</strong> ${data.area} <br>` +
-                     data.procedimiento;
-          }
-        }
-        document.getElementById("distanciaResult").innerHTML = output;
-      })
-      .catch(error => {
-        document.getElementById("distanciaResult").innerText = "Error: " + error;
-      });
     });
   </script>
 </body>

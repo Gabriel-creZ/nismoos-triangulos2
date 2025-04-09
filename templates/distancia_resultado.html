@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Distancias - Instant Math Solver: Triángulos</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}?v=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <h2 style="text-align:center;">Resultado del Cálculo de Distancias</h2>
+    <div class="result-item">
+      <p>{{ resultados.procedimiento|safe }}</p>
+    </div>
+    <div style="text-align:center; margin-top:20px;">
+      <a href="{{ url_for('index') }}" class="btn"><i class="fas fa-arrow-left"></i> Volver</a>
+    </div>
+  </div>
+</body>
+</html>
