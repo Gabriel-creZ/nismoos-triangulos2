@@ -264,7 +264,7 @@ def graficar_triangulo_interactivo(a, b, c, A, B, C):
                              mode='lines', name=f"Lado b = {b:.2f}", line=dict(color='red')))
     fig.add_trace(go.Scatter(x=[B_point[0], C_point[0]], y=[B_point[1], C_point[1]],
                              mode='lines', name=f"Lado a = {a:.2f}", line=dict(color='green')))
-    // Medianas
+    # Medianas
     mid_AB = ((A_point[0]+B_point[0])/2, (A_point[1]+B_point[1])/2)
     mid_BC = ((B_point[0]+C_point[0])/2, (B_point[1]+C_point[1])/2)
     mid_AC = ((A_point[0]+C_point[0])/2, (A_point[1]+C_point[1])/2)
@@ -274,10 +274,10 @@ def graficar_triangulo_interactivo(a, b, c, A, B, C):
                              mode='lines', name="m₂", line=dict(color='black', dash='dash')))
     fig.add_trace(go.Scatter(x=[B_point[0], mid_AC[0]], y=[B_point[1], mid_AC[1]],
                              mode='lines', name="m₃", line=dict(color='black', dash='dash')))
-    // Altura vertical
+    # Altura vertical
     fig.add_trace(go.Scatter(x=[C_point[0], C_point[0]], y=[C_point[1], 0],
                              mode='lines', name="Altura", line=dict(color='magenta', dash='dot')))
-    // Circuncentro y ortocentro con nombres correctos
+    # Circuncentro y ortocentro con nombres correctos
     circ = calcular_circuncentro(A_point, B_point, C_point)
     orto = calcular_ortocentro(A_point, B_point, C_point)
     if circ:
@@ -288,7 +288,7 @@ def graficar_triangulo_interactivo(a, b, c, A, B, C):
         fig.add_trace(go.Scatter(x=[orto[0]], y=[orto[1]], mode='markers+text',
                                  marker=dict(color='magenta', size=10), text=["Ortocentro"],
                                  textposition="top left", name="Ortocentro"))
-    // Vértices con etiquetas "Punto a", "Punto b", "Punto c"
+    # Vértices con etiquetas "Punto a", "Punto b", "Punto c"
     fig.add_trace(go.Scatter(x=[A_point[0]], y=[A_point[1]], mode='markers+text',
                              text=["Punto a"], textposition="top left", marker=dict(color='black', size=8)))
     fig.add_trace(go.Scatter(x=[B_point[0]], y=[B_point[1]], mode='markers+text',
