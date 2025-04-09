@@ -34,6 +34,7 @@ def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None,
     if num_angles + num_sides < 3 or num_sides < 1:
         raise ValueError("Información insuficiente para resolver el triángulo.")
     if num_angles >= 2:
+        # Completar el ángulo faltante
         if angulo_A is None:
             angulo_A = 180 - (angulo_B + angulo_C)
         elif angulo_B is None:
@@ -41,11 +42,13 @@ def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None,
         elif angulo_C is None:
             angulo_C = 180 - (angulo_A + angulo_B)
     if angulo_A is not None and angulo_B is not None and angulo_C is not None:
+        # Verificar que sumen 180°
         if abs(angulo_A + angulo_B + angulo_C - 180) > 1e-5:
             raise ValueError("Los ángulos no suman 180°.")
         if angulo_A <= 0 or angulo_B <= 0 or angulo_C <= 0:
             raise ValueError("Los ángulos deben ser mayores que 0.")
     if num_angles >= 2 and num_sides >= 1:
+        # Ley de senos con un lado conocido
         if lado_a is not None:
             ratio = lado_a / math.sin(math.radians(angulo_A))
             if lado_b is None:
@@ -67,6 +70,8 @@ def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None,
             if lado_b is None:
                 lado_b = ratio * math.sin(math.radians(angulo_B))
             return lado_a, lado_b, lado_c, angulo_A, angulo_B, angulo_C
+
+    # Caso SSA: 2 lados y 1 ángulo
     if num_angles == 1 and num_sides == 2:
         if angulo_A is not None and lado_a is not None:
             if lado_b is not None:
@@ -85,6 +90,7 @@ def calcular_triangulo_sen(angulo_A=None, angulo_B=None, angulo_C=None,
                 angulo_B = 180 - angulo_A - angulo_C
                 lado_b = (lado_a * math.sin(math.radians(angulo_B))) / math.sin(math.radians(angulo_A))
                 return lado_a, lado_b, lado_c, angulo_A, angulo_B, angulo_C
+
     raise ValueError("No se pudo determinar el triángulo con la información proporcionada.")
 
 def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
@@ -95,11 +101,14 @@ def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
             B = 180 - A - C
         elif C is None:
             C = 180 - A - B
+
     if all(x is not None for x in [a, b, c]):
+        # Si se conocen los 3 lados, calculamos los ángulos
         A = math.degrees(math.acos((b**2 + c**2 - a**2) / (2 * b * c)))
         B = math.degrees(math.acos((a**2 + c**2 - b**2) / (2 * a * c)))
         C = 180 - A - B
         return a, b, c, A, B, C
+
     if a is not None and b is not None and C is not None:
         c = math.sqrt(a**2 + b**2 - 2*a*b*math.cos(math.radians(C)))
         A = math.degrees(math.asin(a * math.sin(math.radians(C)) / c))
@@ -115,6 +124,7 @@ def calcular_triangulo_cos(a=None, b=None, c=None, A=None, B=None, C=None):
         B = math.degrees(math.asin(b * math.sin(math.radians(A)) / a))
         C = 180 - A - B
         return a, b, c, A, B, C
+
     raise ValueError("No se pudo resolver el triángulo con la información dada.")
 
 def resolver_triangulo(a, b, c, A, B, C):
@@ -123,6 +133,7 @@ def resolver_triangulo(a, b, c, A, B, C):
     count_angles = sum(x is not None for x in [A, B, C])
     if count_sides + count_angles < 3 or count_sides < 1:
         raise ValueError("Se requieren al menos 3 datos (con al menos 1 lado) para resolver el triángulo.")
+
     if count_angles >= 2:
         metodo = "senos"
         return calcular_triangulo_sen(angulo_A=A, angulo_B=B, angulo_C=C,
@@ -136,7 +147,7 @@ def resolver_triangulo(a, b, c, A, B, C):
                                       lado_a=a, lado_b=b, lado_c=c), metodo
 
 # -----------------------------------------------------------
-# Funciones adicionales: medianas (m₁, m₂, m₃), circuncentro, ortocentro, tipo de triángulo, clasificación y conversión de unidades
+# Funciones adicionales: medianas, circuncentro, ortocentro, tipo y clasificación, conversión de unidades
 # -----------------------------------------------------------
 def calcular_medianas(a, b, c):
     m1 = 0.5 * math.sqrt(2*(b**2 + c**2) - a**2)
@@ -166,7 +177,7 @@ def determinar_clasificacion_angulo(A, B, C):
         return "Acutángulo"
 
 def convertir_unidades(valor, de_unidad, a_unidad):
-    # Se utiliza la conversión a metros y luego de metros a la unidad destino
+    # Factor de cada unidad a metros
     factores = {
         "Milímetros": 0.001,
         "Centímetros": 0.01,
@@ -187,6 +198,7 @@ def convertir_unidades(valor, de_unidad, a_unidad):
         raise ValueError("Conversión no soportada.")
     return valor * (factor_de / factor_a)
 
+
 def calcular_circuncentro(A, B, C):
     d = 2*(A[0]*(B[1]-C[1]) + B[0]*(C[1]-A[1]) + C[0]*(A[1]-B[1]))
     if abs(d) < 1e-9:
@@ -204,30 +216,6 @@ def calcular_ortocentro(A, B, C):
     return (Hx, Hy)
 
 # -----------------------------------------------------------
-# Nueva función: Calcular distancias entre puntos y procedimiento completo
-# -----------------------------------------------------------
-def calcular_distancias(y1, x1, y2, x2, y3=None, x3=None):
-    # Calcula las distancias entre dos o tres puntos
-    # Se espera que las coordenadas sean numéricas y se muestran los pasos.
-    procedimiento = ""
-    def distancia(p1, p2):
-        d = math.sqrt((p2[0]-p1[0])**2 + (p2[1]-p1[1])**2)
-        return d
-    A = (x1, y1)
-    B = (x2, y2)
-    d_AB = distancia(A, B)
-    procedimiento += f"Distancia AB: sqrt(({x2}-{x1})² + ({y2}-{y1})²) = sqrt({(x2-x1)**2} + {(y2-y1)**2}) = {d_AB:.2f}\n"
-    if x3 is not None and y3 is not None:
-        C = (x3, y3)
-        d_BC = distancia(B, C)
-        d_AC = distancia(A, C)
-        procedimiento += f"Distancia BC: sqrt(({x3}-{x2})² + ({y3}-{y2})²) = {d_BC:.2f}\n"
-        procedimiento += f"Distancia AC: sqrt(({x3}-{x1})² + ({y3}-{y1})²) = {d_AC:.2f}\n"
-        return {"AB": d_AB, "BC": d_BC, "AC": d_AC}, procedimiento
-    else:
-        return {"AB": d_AB}, procedimiento
-
-# -----------------------------------------------------------
 # Funciones de graficado: estático e interactivo
 # -----------------------------------------------------------
 def graficar_triangulo_estatico(a, b, c, A, B, C, metodo):
@@ -240,7 +228,7 @@ def graficar_triangulo_estatico(a, b, c, A, B, C, metodo):
     plt.plot([A_point[0], B_point[0]], [A_point[1], B_point[1]], 'b-', label=f"Lado c = {c:.2f}")
     plt.plot([A_point[0], C_point[0]], [A_point[1], C_point[1]], 'r-', label=f"Lado b = {b:.2f}")
     plt.plot([B_point[0], C_point[0]], [B_point[1], C_point[1]], 'g-', label=f"Lado a = {a:.2f}")
-    # Medianas: etiquetadas como m₁, m₂, m₃
+    # Medianas: m₁, m₂, m₃
     mid_AB = ((A_point[0]+B_point[0])/2, (A_point[1]+B_point[1])/2)
     mid_BC = ((B_point[0]+C_point[0])/2, (B_point[1]+C_point[1])/2)
     mid_AC = ((A_point[0]+C_point[0])/2, (A_point[1]+C_point[1])/2)
@@ -254,11 +242,11 @@ def graficar_triangulo_estatico(a, b, c, A, B, C, metodo):
     orto = calcular_ortocentro(A_point, B_point, C_point)
     if circ:
         plt.plot(circ[0], circ[1], 'co', markersize=8, label="Circuncentro")
-        plt.text(circ[0]+0.1, circ[1], "Circuncentro", color='cyan')
+        plt.text(circ[0]+0.1, circ[1], "Circ.", color='cyan')
     if orto:
         plt.plot(orto[0], orto[1], 'mo', markersize=8, label="Ortocentro")
-        plt.text(orto[0]+0.1, orto[1], "Ortocentro", color='magenta')
-    # Etiquetas de vértices
+        plt.text(orto[0]+0.1, orto[1], "Orto.", color='magenta')
+    # Etiquetas
     plt.text(A_point[0]-0.2, A_point[1]-0.2, "A", fontsize=12)
     plt.text(B_point[0]+0.2, B_point[1]-0.2, "B", fontsize=12)
     plt.text(C_point[0], C_point[1]+0.2, "C", fontsize=12)
@@ -282,6 +270,7 @@ def graficar_triangulo_interactivo(a, b, c, A, B, C):
     B_point = (c, 0)
     C_point = (b * math.cos(math.radians(A)), b * math.sin(math.radians(A)))
     fig = go.Figure()
+    # Lados
     fig.add_trace(go.Scatter(x=[A_point[0], B_point[0]], y=[A_point[1], B_point[1]],
                              mode='lines', name=f"Lado c = {c:.2f}", line=dict(color='blue')))
     fig.add_trace(go.Scatter(x=[A_point[0], C_point[0]], y=[A_point[1], C_point[1]],
@@ -301,7 +290,7 @@ def graficar_triangulo_interactivo(a, b, c, A, B, C):
     # Altura
     fig.add_trace(go.Scatter(x=[C_point[0], C_point[0]], y=[C_point[1], 0],
                              mode='lines', name="Altura", line=dict(color='magenta', dash='dot')))
-    # Circuncentro y ortocentro con nombres correctos
+    # Circuncentro y ortocentro (con sus nombres correctos)
     circ = calcular_circuncentro(A_point, B_point, C_point)
     orto = calcular_ortocentro(A_point, B_point, C_point)
     if circ:
@@ -312,7 +301,7 @@ def graficar_triangulo_interactivo(a, b, c, A, B, C):
         fig.add_trace(go.Scatter(x=[orto[0]], y=[orto[1]], mode='markers+text',
                                  marker=dict(color='magenta', size=10), text=["Ortocentro"],
                                  textposition="top left", name="Ortocentro"))
-    # Etiquetar vértices
+    # Etiquetar vértices como Punto a, b, c
     fig.add_trace(go.Scatter(x=[A_point[0]], y=[A_point[1]], mode='markers+text',
                              text=["Punto a"], textposition="top left", marker=dict(color='black', size=8)))
     fig.add_trace(go.Scatter(x=[B_point[0]], y=[B_point[1]], mode='markers+text',
@@ -329,26 +318,137 @@ def graficar_triangulo_interactivo(a, b, c, A, B, C):
     return fig.to_html(full_html=False)
 
 # -----------------------------------------------------------
-# Nueva función: Calcular distancias entre puntos con procedimiento completo
+# Ruta para conversión de unidades (calculadora interactiva)
 # -----------------------------------------------------------
-def calcular_distancias(p1_x, p1_y, p2_x, p2_y, p3_x=None, p3_y=None):
-    procedimiento = ""
-    def distancia(x1, y1, x2, y2):
-        d = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
-        return d
-    AB = distancia(p1_x, p1_y, p2_x, p2_y)
-    procedimiento += f"AB = sqrt(({p2_x} - {p1_x})² + ({p2_y} - {p1_y})²) = sqrt({(p2_x - p1_x)**2} + {(p2_y - p1_y)**2}) = {AB:.2f}\n"
-    if p3_x is not None and p3_y is not None:
-        BC = distancia(p2_x, p2_y, p3_x, p3_y)
-        AC = distancia(p1_x, p1_y, p3_x, p3_y)
-        procedimiento += f"BC = sqrt(({p3_x} - {p2_x})² + ({p3_y} - {p2_y})²) = {BC:.2f}\n"
-        procedimiento += f"AC = sqrt(({p3_x} - {p1_x})² + ({p3_y} - {p1_y})²) = {AC:.2f}\n"
-        return {"AB": AB, "BC": BC, "AC": AC}, procedimiento
-    else:
-        return {"AB": AB}, procedimiento
+@app.route('/convertir', methods=['POST'])
+def convertir():
+    try:
+        valor = float(request.form.get('valor'))
+        de_unidad = request.form.get('de_unidad')
+        a_unidad = request.form.get('a_unidad')
+        resultado_conv = convertir_unidades(valor, de_unidad, a_unidad)
+        flash(f"Resultado: {resultado_conv} {a_unidad}")
+    except Exception as e:
+        flash(str(e))
+    return redirect(url_for('index'))
 
 # -----------------------------------------------------------
-# Integración del cálculo de distancias en la ruta principal
+# Rutas para Donar y Reportar Error
+# -----------------------------------------------------------
+@app.route('/donar')
+def donar():
+    return render_template("donar.html")
+
+@app.route('/reporte', methods=['GET', 'POST'])
+def reporte():
+    if request.method == "POST":
+        email = request.form.get("email")
+        mensaje = request.form.get("mensaje")
+        asunto = "Reporte de error - Instant Math Solver: Triángulos"
+        cuerpo = f"Reporte de: {email}\n\nMensaje:\n{mensaje}"
+        msg = MIMEText(cuerpo)
+        msg['Subject'] = asunto
+        msg['From'] = SMTP_USER
+        msg['To'] = SMTP_USER
+        try:
+            server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+            server.starttls()
+            server.login(SMTP_USER, SMTP_PASSWORD)
+            server.send_message(msg)
+            server.quit()
+            flash("Reporte enviado correctamente. ¡Gracias por tus comentarios!")
+        except Exception as e:
+            flash(f"Error al enviar el reporte: {e}")
+        return redirect(url_for("reporte"))
+    return render_template("reporte.html")
+
+# -----------------------------------------------------------
+# Ruta de login (endpoint especificado)
+# -----------------------------------------------------------
+@app.route('/login', methods=['GET', 'POST'], endpoint='login')
+def login_route():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        if username == 'alumno' and password == 'amrd':
+            session['logged_in'] = True
+            session['user'] = username
+            return redirect(url_for('index'))
+        else:
+            flash('Usuario o contraseña incorrectos, intente de nuevo.')
+            return render_template("login.html")
+    return render_template("login.html")
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    flash("Sesión cerrada correctamente.")
+    return redirect(url_for('login'))
+
+# --- Funciones para calcular distancia entre puntos ---
+def distancia_2puntos(A, B):
+    # Calcula la distancia Euclidiana entre dos puntos A y B (tuplas)
+    dist = math.sqrt((B[0] - A[0]) ** 2 + (B[1] - A[1]) ** 2)
+    proc = f"Distancia = √(({B[0]} - {A[0]})² + ({B[1]} - {A[1]})²) = √({(B[0]-A[0])**2} + {(B[1]-A[1])**2}) = {dist:.2f}"
+    return dist, proc
+
+def calcular_distancia_triangulo(A, B, C):
+    dAB, pAB = distancia_2puntos(A, B)
+    dBC, pBC = distancia_2puntos(B, C)
+    dAC, pAC = distancia_2puntos(A, C)
+    per = dAB + dBC + dAC
+    s = per / 2
+    area = math.sqrt(s * (s - dAB) * (s - dBC) * (s - dAC))
+    proc = (f"AB: {pAB}\n" +
+            f"BC: {pBC}\n" +
+            f"AC: {pAC}\n" +
+            f"Perímetro = {dAB:.2f} + {dBC:.2f} + {dAC:.2f} = {per:.2f}\n" +
+            f"Semiperímetro = {s:.2f}\n" +
+            f"Área = √({s:.2f} * ({s-dAB:.2f}) * ({s-dBC:.2f}) * ({s-dAC:.2f})) = {area:.2f}")
+    return dAB, dBC, dAC, per, area, proc
+
+# -----------------------------------------------------------
+@app.route('/calcular_distancia', methods=['POST'])
+def calcular_distancia():
+    try:
+        xA = float(request.form.get("xA"))
+        yA = float(request.form.get("yA"))
+        xB = float(request.form.get("xB"))
+        yB = float(request.form.get("yB"))
+        A_point = (xA, yA)
+        B_point = (xB, yB)
+        xC = request.form.get("xC")
+        yC = request.form.get("yC")
+        # Si se ingresan coordenadas para el tercer punto, se calcula como triángulo
+        if xC and yC and xC.strip() != "" and yC.strip() != "":
+            xC = float(xC)
+            yC = float(yC)
+            C_point = (xC, yC)
+            dAB, dBC, dAC, per, area, proc = calcular_distancia_triangulo(A_point, B_point, C_point)
+            return {
+                "status": "ok",
+                "tipo": "triangulo",
+                "dAB": f"{dAB:.2f}",
+                "dBC": f"{dBC:.2f}",
+                "dAC": f"{dAC:.2f}",
+                "perimetro": f"{per:.2f}",
+                "area": f"{area:.2f}",
+                "procedure": proc
+            }
+        else:
+            dAB, proc = distancia_2puntos(A_point, B_point)
+            return {
+                "status": "ok",
+                "tipo": "segmento",
+                "dAB": f"{dAB:.2f}",
+                "procedure": proc
+            }
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
+# -----------------------------------------------------------
+# Ruta principal
 # -----------------------------------------------------------
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -356,109 +456,57 @@ def index():
         return redirect(url_for('login'))
     if request.method == 'POST':
         try:
-            # Función auxiliar para convertir valor de texto a float
             def get_val(field):
                 val = request.form.get(field)
                 return float(val) if val and val.strip() != "" else None
+            a_val = get_val("lado_a")
+            b_val = get_val("lado_b")
+            c_val = get_val("lado_c")
+            A_val = get_val("angulo_A")
+            B_val = get_val("angulo_B")
+            C_val = get_val("angulo_C")
 
-            # Verificamos si se ingresaron coordenadas para distancias
-            p1_x = get_val("p1_x")
-            p1_y = get_val("p1_y")
-            p2_x = get_val("p2_x")
-            p2_y = get_val("p2_y")
-            p3_x = get_val("p3_x")
-            p3_y = get_val("p3_y")
+            (res_a, res_b, res_c, res_A, res_B, res_C), metodo = resolver_triangulo(a_val, b_val, c_val, A_val, B_val, C_val)
+            perimetro = res_a + res_b + res_c
+            s = perimetro / 2
+            area = math.sqrt(s * (s - res_a) * (s - res_b) * (s - res_c))
 
-            if p1_x is not None and p1_y is not None and p2_x is not None and p2_y is not None:
-                # Modo calcular distancias (para 2 o 3 puntos)
-                distancias, proc = calcular_distancias(p1_x, p1_y, p2_x, p2_y, p3_x, p3_y)
-                # También se puede calcular el triángulo (si se dieron 3 puntos) y graficarlo
-                if "AC" in distancias:
-                    perimetro = distancias["AB"] + distancias["BC"] + distancias["AC"]
-                    s = perimetro/2
-                    area = math.sqrt(s*(s-distancias["AB"])*(s-distancias["BC"])*(s-distancias["AC"]))
-                    procedimiento_tri = f"Área (Herón) = sqrt({s}({s-distancias['AB']:.2f})({s-distancias['BC']:.2f})({s-distancias['AC']:.2f})) = {area:.2f}"
-                else:
-                    perimetro = distancias["AB"]
-                    area = "N/A"
-                    procedimiento_tri = ""
-                # Generar gráfica interactiva basada en coordenadas
-                fig = go.Figure()
-                # Dibujar puntos y lados si hay 3 puntos
-                fig.add_trace(go.Scatter(x=[p1_x, p2_x], y=[p1_y, p2_y],
-                                         mode='lines+markers', name="Segmento AB", line=dict(color='blue')))
-                if p3_x is not None and p3_y is not None:
-                    fig.add_trace(go.Scatter(x=[p2_x, p3_x], y=[p2_y, p3_y],
-                                             mode='lines+markers', name="Segmento BC", line=dict(color='red')))
-                    fig.add_trace(go.Scatter(x=[p1_x, p3_x], y=[p1_y, p3_y],
-                                             mode='lines+markers', name="Segmento AC", line=dict(color='green')))
-                fig.update_layout(template="plotly_white",
-                                  autosize=True,
-                                  margin=dict(l=20, r=20, t=30, b=20))
-                grafica_coord = fig.to_html(full_html=False)
-                # Preparar resultados del modo distancias
-                resultados = {
-                    'modo': "Coordenadas",
-                    'distancias': distancias,
-                    'procedimiento': proc + "\n" + procedimiento_tri,
-                    'perimetro': f"{perimetro:.2f}" if isinstance(perimetro, float) else perimetro,
-                    'area': f"{area:.2f}" if isinstance(area, float) else area
-                }
-                return render_template("resultado.html", resultados=resultados,
-                                       imagen_estatico=None, imagen_interactivo=grafica_coord)
-            else:
-                # Modo tradicional: calcular triángulo usando lados y ángulos
-                a_val = get_val("lado_a")
-                b_val = get_val("lado_b")
-                c_val = get_val("lado_c")
-                A_val = get_val("angulo_A")
-                B_val = get_val("angulo_B")
-                C_val = get_val("angulo_C")
+            mediana_1, mediana_2, mediana_3 = calcular_medianas(res_a, res_b, res_c)
+            circumradius = calcular_circumradius(res_a, res_b, res_c, area)
+            tipo_triangulo = determinar_tipo_triangulo(res_a, res_b, res_c)
+            clasificacion_angulo = determinar_clasificacion_angulo(res_A, res_B, res_C)
+            # Altura vertical (lado_b * sin(A))
+            altura_vertical = res_b * math.sin(math.radians(res_A))
 
-                (res_a, res_b, res_c, res_A, res_B, res_C), metodo = resolver_triangulo(a_val, b_val, c_val, A_val, B_val, C_val)
-                perimetro = res_a + res_b + res_c
-                s = perimetro / 2
-                area = math.sqrt(s * (s - res_a) * (s - res_b) * (s - res_c))
+            img_estatico, A_pt, B_pt, C_pt = graficar_triangulo_estatico(res_a, res_b, res_c, res_A, res_B, res_C, metodo)
+            img_interactivo = graficar_triangulo_interactivo(res_a, res_b, res_c, res_A, res_B, res_C)
+            circ = calcular_circuncentro(A_pt, B_pt, C_pt)
+            orto = calcular_ortocentro(A_pt, B_pt, C_pt)
 
-                mediana_1, mediana_2, mediana_3 = calcular_medianas(res_a, res_b, res_c)
-                circumradius = calcular_circumradius(res_a, res_b, res_c, area)
-                tipo_triangulo = determinar_tipo_triangulo(res_a, res_b, res_c)
-                clasificacion_angulo = determinar_clasificacion_angulo(res_A, res_B, res_C)
-                altura_vertical = res_b * math.sin(math.radians(res_A))
-
-                img_estatico, A_pt, B_pt, C_pt = graficar_triangulo_estatico(res_a, res_b, res_c, res_A, res_B, res_C, metodo)
-                img_interactivo = graficar_triangulo_interactivo(res_a, res_b, res_c, res_A, res_B, res_C)
-                circ = calcular_circuncentro(A_pt, B_pt, C_pt)
-                orto = calcular_ortocentro(A_pt, B_pt, C_pt)
-
-                resultados = {
-                    'modo': "Triángulo",
-                    'lado_a': f"{res_a:.2f}",
-                    'lado_b': f"{res_b:.2f}",
-                    'lado_c': f"{res_c:.2f}",
-                    'angulo_A': f"{res_A:.2f}",
-                    'angulo_B': f"{res_B:.2f}",
-                    'angulo_C': f"{res_C:.2f}",
-                    'perimetro': f"{perimetro:.2f}",
-                    'area': f"{area:.2f}",
-                    'mediana_1': f"{mediana_1:.2f}",
-                    'mediana_2': f"{mediana_2:.2f}",
-                    'mediana_3': f"{mediana_3:.2f}",
-                    'circumradius': f"{circumradius:.2f}" if circumradius is not None else "N/A",
-                    'tipo_triangulo': tipo_triangulo,
-                    'clasificacion_angulo': clasificacion_angulo,
-                    'metodo': metodo,
-                    'circuncentro': f"({circ[0]:.2f}, {circ[1]:.2f})" if circ else "N/A",
-                    'ortocentro': f"({orto[0]:.2f}, {orto[1]:.2f})" if orto else "N/A",
-                    'altura': f"{altura_vertical:.2f}"
-                }
-                return render_template("resultado.html", resultados=resultados, 
-                                       imagen_estatico=img_estatico, 
-                                       imagen_interactivo=img_interactivo)
+            resultados = {
+                'lado_a': f"{res_a:.2f}",
+                'lado_b': f"{res_b:.2f}",
+                'lado_c': f"{res_c:.2f}",
+                'angulo_A': f"{res_A:.2f}",
+                'angulo_B': f"{res_B:.2f}",
+                'angulo_C': f"{res_C:.2f}",
+                'perimetro': f"{perimetro:.2f}",
+                'area': f"{area:.2f}",
+                'mediana_1': f"{mediana_1:.2f}",
+                'mediana_2': f"{mediana_2:.2f}",
+                'mediana_3': f"{mediana_3:.2f}",
+                'circumradius': f"{circumradius:.2f}" if circumradius is not None else "N/A",
+                'tipo_triangulo': tipo_triangulo,
+                'clasificacion_angulo': clasificacion_angulo,
+                'metodo': metodo,
+                'circuncentro': f"({circ[0]:.2f}, {circ[1]:.2f})" if circ else "N/A",
+                'ortocentro': f"({orto[0]:.2f}, {orto[1]:.2f})" if orto else "N/A",
+                'altura': f"{altura_vertical:.2f}"
+            }
+            return render_template("resultado.html", resultados=resultados, 
+                                   imagen_estatico=img_estatico, 
+                                   imagen_interactivo=img_interactivo)
         except Exception as e:
             flash(str(e))
             return redirect(url_for('index'))
     return render_template("index.html", resultados=None)
-    
-if __name__ == "__main__":
-    app.run(debug=True)
