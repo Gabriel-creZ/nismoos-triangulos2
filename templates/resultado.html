@@ -7,16 +7,6 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}?v=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <script>
-    function toggleSection(id) {
-      var section = document.getElementById(id);
-      if (section.style.display === "none" || section.style.display === "") {
-        section.style.display = "block";
-      } else {
-        section.style.display = "none";
-      }
-    }
-  </script>
 </head>
 <body>
   <div class="container">
@@ -36,96 +26,91 @@
     
     <div class="content">
       <div class="results-container">
-        <h2 class="results-title"><i class="fas fa-chart-pie"></i> Resultados (Método: {{ resultados.metodo }})</h2>
-        
-        <div class="result-item">
-          <span class="result-label"><span class="emoji">📏</span> Lado a:</span>
-          <span class="result-value">{{ resultados.lado_a }} u</span>
-        </div>
-        <div class="result-item">
-          <span class="result-label"><span class="emoji">📏</span> Lado b:</span>
-          <span class="result-value">{{ resultados.lado_b }} u</span>
-        </div>
-        <div class="result-item">
-          <span class="result-label"><span class="emoji">📏</span> Lado c:</span>
-          <span class="result-value">{{ resultados.lado_c }} u</span>
-        </div>
-        <div class="result-item">
-          <span class="result-label"><span class="emoji">📐</span> Ángulo α:</span>
-          <span class="result-value">{{ resultados.angulo_A }}°</span>
-        </div>
-        <div class="result-item">
-          <span class="result-label"><span class="emoji">📐</span> Ángulo β:</span>
-          <span class="result-value">{{ resultados.angulo_B }}°</span>
-        </div>
-        <div class="result-item">
-          <span class="result-label"><span class="emoji">📐</span> Ángulo γ:</span>
-          <span class="result-value">{{ resultados.angulo_C }}°</span>
-        </div>
-        <div class="result-item">
-          <span class="result-label"><span class="emoji">⏱️</span> Perímetro:</span>
-          <span class="result-value">{{ resultados.perimetro }} u</span>
-        </div>
-        <div class="result-item">
-          <span class="result-label"><span class="emoji">🔵</span> Área (Herón):</span>
-          <span class="result-value">{{ resultados.area }} u²</span>
-        </div>
-        <div class="result-item">
-          <span class="result-label"><span class="emoji">🧮</span> Medianas:</span>
-          <span class="result-value">m₁ = {{ resultados.mediana_1 }} u, m₂ = {{ resultados.mediana_2 }} u, m₃ = {{ resultados.mediana_3 }} u</span>
-        </div>
-        <div class="result-item">
-          <span class="result-label"><span class="emoji">⚪</span> Radio del circuncentro:</span>
-          <span class="result-value">{{ resultados.circumradius }} u</span>
-        </div>
-        <div class="result-item">
-          <span class="result-label"><span class="emoji">📊</span> Tipo de triángulo:</span>
-          <span class="result-value">{{ resultados.tipo_triangulo }} ({{ resultados.clasificacion_angulo }})</span>
-        </div>
-        <div class="result-item">
-          <span class="result-label"><span class="emoji">📌</span> Circuncentro:</span>
-          <span class="result-value">{{ resultados.circuncentro }}</span>
-        </div>
-        <div class="result-item">
-          <span class="result-label"><span class="emoji">📌</span> Ortocentro:</span>
-          <span class="result-value">{{ resultados.ortocentro }}</span>
-        </div>
-        <div class="result-item">
-          <span class="result-label"><span class="emoji">📏</span> Altura vertical:</span>
-          <span class="result-value">{{ resultados.altura }} u</span>
-        </div>
-        
-        <!-- Botón dorado para mostrar/ocultar la sección de cálculo de distancias -->
-        <button type="button" onclick="toggleSection('distanciaSection')" style="background-color:gold; color:black; border:none; padding:10px 15px; border-radius:8px; margin-top:20px; display:block; margin-left:auto; margin-right:auto;">
-          <i class="fas fa-arrows-alt-h"></i> Mostrar/Ocultar Cálculo de Distancias
-        </button>
-        <div id="distanciaSection" style="display:none; margin-top:20px;">
-          <h3 style="text-align: center;">Cálculo de Distancias entre Puntos</h3>
-          <form method="POST" action="{{ url_for('calcular_distancia') }}">
-            <div class="form-group">
-              <label>Coordenadas A (x, y):</label>
-              <input type="text" name="A_x" placeholder="x">
-              <input type="text" name="A_y" placeholder="y">
+        {% if resultados.modo == "Coordenadas" %}
+          <h2 class="results-title"><i class="fas fa-chart-pie"></i> Resultados - Distancias entre Puntos</h2>
+          {% for key, value in resultados.distancias.items() %}
+            <div class="result-item">
+              <span class="result-label">{{ key }}:</span>
+              <span class="result-value">{{ value|round(2) }} u</span>
             </div>
-            <div class="form-group">
-              <label>Coordenadas B (x, y):</label>
-              <input type="text" name="B_x" placeholder="x">
-              <input type="text" name="B_y" placeholder="y">
-            </div>
-            <div class="form-group">
-              <label>Coordenadas C (opcional, x, y):</label>
-              <input type="text" name="C_x" placeholder="x">
-              <input type="text" name="C_y" placeholder="y">
-            </div>
-            <button type="submit" class="btn">
-              <i class="fas fa-route"></i> Calcular Distancias
-            </button>
-          </form>
-        </div>
+          {% endfor %}
+          <div class="result-item">
+            <span class="result-label">Procedimiento:</span>
+            <pre class="result-value" style="white-space: pre-wrap;">{{ resultados.procedimiento }}</pre>
+          </div>
+          <div class="result-item">
+            <span class="result-label">Perímetro:</span>
+            <span class="result-value">{{ resultados.perimetro }} u</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label">Área (Herón):</span>
+            <span class="result-value">{{ resultados.area }} u²</span>
+          </div>
+        {% else %}
+          <h2 class="results-title"><i class="fas fa-chart-pie"></i> Resultados (Método: {{ resultados.metodo }})</h2>
+          <div class="result-item">
+            <span class="result-label"><span class="emoji">📏</span> Lado a:</span>
+            <span class="result-value">{{ resultados.lado_a }} u</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label"><span class="emoji">📏</span> Lado b:</span>
+            <span class="result-value">{{ resultados.lado_b }} u</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label"><span class="emoji">📏</span> Lado c:</span>
+            <span class="result-value">{{ resultados.lado_c }} u</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label"><span class="emoji">📐</span> Ángulo α:</span>
+            <span class="result-value">{{ resultados.angulo_A }}°</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label"><span class="emoji">📐</span> Ángulo β:</span>
+            <span class="result-value">{{ resultados.angulo_B }}°</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label"><span class="emoji">📐</span> Ángulo γ:</span>
+            <span class="result-value">{{ resultados.angulo_C }}°</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label"><span class="emoji">⏱️</span> Perímetro:</span>
+            <span class="result-value">{{ resultados.perimetro }} u</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label"><span class="emoji">🔵</span> Área (Herón):</span>
+            <span class="result-value">{{ resultados.area }} u²</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label"><span class="emoji">🧮</span> Medianas:</span>
+            <span class="result-value">m₁ = {{ resultados.mediana_1 }} u, m₂ = {{ resultados.mediana_2 }} u, m₃ = {{ resultados.mediana_3 }} u</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label"><span class="emoji">⚪</span> Radio del circuncentro:</span>
+            <span class="result-value">{{ resultados.circumradius }} u</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label"><span class="emoji">📊</span> Tipo de triángulo:</span>
+            <span class="result-value">{{ resultados.tipo_triangulo }} ({{ resultados.clasificacion_angulo }})</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label"><span class="emoji">📌</span> Circuncentro:</span>
+            <span class="result-value">{{ resultados.circuncentro }}</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label"><span class="emoji">📌</span> Ortocentro:</span>
+            <span class="result-value">{{ resultados.ortocentro }}</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label"><span class="emoji">📏</span> Altura vertical:</span>
+            <span class="result-value">{{ resultados.altura }} u</span>
+          </div>
+        {% endif %}
         
         <h3 style="text-align: center; margin-top: 25px;"><i class="fas fa-drafting-compass"></i> Gráficas del Triángulo</h3>
         <div class="result-item">
-          <img src="data:image/png;base64,{{ imagen_estatico }}" alt="Gráfica estática del triángulo" class="triangle-image">
+          {% if imagen_estatico %}
+            <img src="data:image/png;base64,{{ imagen_estatico }}" alt="Gráfica estática del triángulo" class="triangle-image">
+          {% endif %}
         </div>
         <div class="result-item">
           {{ imagen_interactivo|safe }}
@@ -134,11 +119,8 @@
           </p>
         </div>
         
-        <!-- Botón dorado para mostrar/ocultar la calculadora de conversión -->
-        <button type="button" onclick="toggleSection('conversionSection')" style="background-color:gold; color:black; border:none; padding:10px 15px; border-radius:8px; margin-top:20px; display:block; margin-left:auto; margin-right:auto;">
-          <i class="fas fa-exchange-alt"></i> Mostrar/Ocultar Calculadora de Unidades
-        </button>
-        <div id="conversionSection" style="display:none; margin-top:20px;">
+        <!-- Calculadora de conversión de unidades -->
+        <div class="result-item" style="background: #e9ecef; padding: 15px;">
           <h3 style="text-align: center;">Calculadora de Unidades</h3>
           <form id="conversionForm">
             <div class="form-group">
@@ -148,33 +130,33 @@
             <div class="form-group">
               <label for="de_unidad">De:</label>
               <select name="de_unidad" id="de_unidad" required>
-                <option value="Milímetros">Milímetros</option>
-                <option value="Centímetros" selected>Centímetros</option>
-                <option value="Decímetros">Decímetros</option>
-                <option value="Decámetros">Decámetros</option>
-                <option value="Hectómetros">Hectómetros</option>
-                <option value="Kilómetros">Kilómetros</option>
-                <option value="Metros">Metros</option>
-                <option value="Pulgadas">Pulgadas</option>
-                <option value="Pies">Pies</option>
-                <option value="Yardas">Yardas</option>
-                <option value="Millas">Millas</option>
+                <option value="Milímetros">Milímetros (mm)</option>
+                <option value="Centímetros" selected>Centímetros (cm)</option>
+                <option value="Decímetros">Decímetros (dm)</option>
+                <option value="Decámetros">Decámetros (dam)</option>
+                <option value="Hectómetros">Hectómetros (hm)</option>
+                <option value="Kilómetros">Kilómetros (km)</option>
+                <option value="Metros">Metros (m)</option>
+                <option value="Pulgadas">Pulgadas (in)</option>
+                <option value="Pies">Pies (ft)</option>
+                <option value="Yardas">Yardas (yd)</option>
+                <option value="Millas">Millas (mi)</option>
               </select>
             </div>
             <div class="form-group">
               <label for="a_unidad">A:</label>
               <select name="a_unidad" id="a_unidad" required>
-                <option value="Milímetros">Milímetros</option>
-                <option value="Centímetros" selected>Centímetros</option>
-                <option value="Decímetros">Decímetros</option>
-                <option value="Decámetros">Decámetros</option>
-                <option value="Hectómetros">Hectómetros</option>
-                <option value="Kilómetros">Kilómetros</option>
-                <option value="Metros">Metros</option>
-                <option value="Pulgadas">Pulgadas</option>
-                <option value="Pies">Pies</option>
-                <option value="Yardas">Yardas</option>
-                <option value="Millas">Millas</option>
+                <option value="Milímetros">Milímetros (mm)</option>
+                <option value="Centímetros" selected>Centímetros (cm)</option>
+                <option value="Decímetros">Decímetros (dm)</option>
+                <option value="Decámetros">Decámetros (dam)</option>
+                <option value="Hectómetros">Hectómetros (hm)</option>
+                <option value="Kilómetros">Kilómetros (km)</option>
+                <option value="Metros">Metros (m)</option>
+                <option value="Pulgadas">Pulgadas (in)</option>
+                <option value="Pies">Pies (ft)</option>
+                <option value="Yardas">Yardas (yd)</option>
+                <option value="Millas">Millas (mi)</option>
               </select>
             </div>
             <button type="submit" class="btn">
@@ -195,7 +177,7 @@
     </div>
   </div>
   <script>
-    // Calculadora de conversión de unidades en JavaScript, compatible con decimales y números grandes
+    // Calculadora de conversión de unidades en JavaScript, ahora compatible con números decimales y grandes
     document.getElementById("conversionForm").addEventListener("submit", function(e) {
       e.preventDefault();
       const valorInput = document.getElementById("valor").value;
@@ -206,7 +188,7 @@
       }
       const de = document.getElementById("de_unidad").value;
       const a = document.getElementById("a_unidad").value;
-      // Factores de cada unidad a metros
+      // Factores a metros
       const factores = {
         "Milímetros": 0.001,
         "Centímetros": 0.01,
