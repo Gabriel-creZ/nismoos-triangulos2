@@ -26,6 +26,7 @@
     
     <div class="content">
       <div class="results-container">
+        {% if resultados %}
         <h2 class="results-title"><i class="fas fa-chart-pie"></i> Resultados (Método: {{ resultados.metodo }})</h2>
         
         <div class="result-item">
@@ -84,109 +85,40 @@
           <span class="result-label"><span class="emoji">📏</span> Altura vertical:</span>
           <span class="result-value">{{ resultados.altura }} u</span>
         </div>
+        {% endif %}
         
-        <h3 style="text-align: center; margin-top: 25px;"><i class="fas fa-drafting-compass"></i> Gráficas del Triángulo</h3>
+        {% if distancias %}
+        <h2 class="results-title"><i class="fas fa-arrows-alt-h"></i> Distancias entre Puntos</h2>
         <div class="result-item">
-          <img src="data:image/png;base64,{{ imagen_estatico }}" alt="Gráfica estática del triángulo" class="triangle-image">
+          <span class="result-label">Distancia AB:</span>
+          <span class="result-value">{{ distancias.dist_AB }} u</span>
         </div>
         <div class="result-item">
-          {{ imagen_interactivo|safe }}
+          <span class="result-label">Distancia BC:</span>
+          <span class="result-value">{{ distancias.dist_BC }} u</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label">Distancia AC:</span>
+          <span class="result-value">{{ distancias.dist_AC }} u</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label">Perímetro:</span>
+          <span class="result-value">{{ distancias.perimetro }} u</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label">Área (Herón):</span>
+          <span class="result-value">{{ distancias.area }} u²</span>
+        </div>
+        <div class="result-item">
+          <pre style="white-space: pre-wrap; font-size: 0.9rem;">{{ distancias.procedimiento }}</pre>
+        </div>
+        <div class="result-item">
+          {{ distancias.grafica|safe }}
           <p style="text-align:center; margin-top:10px; font-style:italic;">
             Recomendamos visualizar la gráfica interactiva en PC o tablet.
           </p>
         </div>
-        
-        <!-- Calculadora de Conversión -->
-        <button id="toggleConversion" class="gold-btn" style="margin-top:20px; display: block; margin-left: auto; margin-right: auto;">
-          <i class="fas fa-exchange-alt"></i> Mostrar/Ocultar Calculadora de Unidades
-        </button>
-        <div id="conversionSection" style="display:none;">
-          <div class="result-item" style="background: #e9ecef; padding: 15px;">
-            <h3 style="text-align: center;">Calculadora de Unidades</h3>
-            <form id="conversionForm">
-              <div class="form-group">
-                <label for="valor">Valor:</label>
-                <input type="number" step="any" name="valor" id="valor" placeholder="Ingrese valor" required>
-              </div>
-              <div class="form-group">
-                <label for="de_unidad">De:</label>
-                <select name="de_unidad" id="de_unidad" required>
-                  <option value="Milímetros">Milímetros (mm)</option>
-                  <option value="Centímetros" selected>Centímetros (cm)</option>
-                  <option value="Decímetros">Decímetros (dm)</option>
-                  <option value="Decámetros">Decámetros (dam)</option>
-                  <option value="Hectómetros">Hectómetros (hm)</option>
-                  <option value="Kilómetros">Kilómetros (km)</option>
-                  <option value="Metros">Metros (m)</option>
-                  <option value="Pulgadas">Pulgadas (in)</option>
-                  <option value="Pies">Pies (ft)</option>
-                  <option value="Yardas">Yardas (yd)</option>
-                  <option value="Millas">Millas (mi)</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="a_unidad">A:</label>
-                <select name="a_unidad" id="a_unidad" required>
-                  <option value="Milímetros">Milímetros (mm)</option>
-                  <option value="Centímetros" selected>Centímetros (cm)</option>
-                  <option value="Decímetros">Decímetros (dm)</option>
-                  <option value="Decámetros">Decámetros (dam)</option>
-                  <option value="Hectómetros">Hectómetros (hm)</option>
-                  <option value="Kilómetros">Kilómetros (km)</option>
-                  <option value="Metros">Metros (m)</option>
-                  <option value="Pulgadas">Pulgadas (in)</option>
-                  <option value="Pies">Pies (ft)</option>
-                  <option value="Yardas">Yardas (yd)</option>
-                  <option value="Millas">Millas (mi)</option>
-                </select>
-              </div>
-              <button type="submit" class="btn">
-                <i class="fas fa-exchange-alt"></i> Convertir
-              </button>
-            </form>
-            <div id="conversionResult" style="margin-top:10px; font-weight:bold; text-align:center;"></div>
-          </div>
-        </div>
-        
-        <!-- Calculadora de Distancia -->
-        <button id="toggleDistanceResult" class="gold-btn" style="margin-top:20px; display: block; margin-left: auto; margin-right: auto;">
-          <i class="fas fa-route"></i> Mostrar/Ocultar Calculadora de Distancia
-        </button>
-        <div id="distanceCalculatorResult" style="display:none; background: #e9ecef; padding: 15px;">
-          <h3 style="text-align: center;">Calculadora de Distancia</h3>
-          <p style="font-size:0.9rem; text-align:center; margin-bottom:10px;">
-            Ingresa las coordenadas de 2 o 3 puntos. Si se ingresan 3 puntos (no colineales), se calcularán todas las distancias, el perímetro y el área del triángulo formado, además de graficarlo.
-          </p>
-          <form id="distanceFormResult">
-            <div class="form-group">
-              <label for="x1R">Coordenada X1:</label>
-              <input type="number" step="any" id="x1R" required>
-            </div>
-            <div class="form-group">
-              <label for="y1R">Coordenada Y1:</label>
-              <input type="number" step="any" id="y1R" required>
-            </div>
-            <div class="form-group">
-              <label for="x2R">Coordenada X2:</label>
-              <input type="number" step="any" id="x2R" required>
-            </div>
-            <div class="form-group">
-              <label for="y2R">Coordenada Y2:</label>
-              <input type="number" step="any" id="y2R" required>
-            </div>
-            <div class="form-group">
-              <label for="x3R">Coordenada X3 (opcional):</label>
-              <input type="number" step="any" id="x3R">
-            </div>
-            <div class="form-group">
-              <label for="y3R">Coordenada Y3 (opcional):</label>
-              <input type="number" step="any" id="y3R">
-            </div>
-            <button type="submit" class="btn"><i class="fas fa-calculator"></i> Calcular Distancias</button>
-          </form>
-          <div id="distanceResultR" style="margin-top:10px; white-space: pre-wrap; font-weight:bold; text-align:center;"></div>
-          <div id="triangleGraphR" style="margin-top:15px;"></div>
-        </div>
+        {% endif %}
         
         <div class="result-item">
           <a href="{{ url_for('index') }}" class="btn"><i class="fas fa-arrow-left"></i> Realizar nuevo cálculo</a>
@@ -198,23 +130,20 @@
       <em>@ 2025 Instant Math Solver - Herramienta educativa desarrollada por Gabriel Castillo - Alumno AMRD</em>
     </div>
   </div>
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  
   <script>
-    // Toggle para la calculadora de conversión en la página de resultados
-    document.getElementById("toggleConversion").addEventListener("click", function() {
-      const section = document.getElementById("conversionSection");
-      section.style.display = (section.style.display === "none" ? "block" : "none");
-    });
-    
+    // Calculadora de conversión de unidades en JavaScript, compatible con decimales y números grandes
     document.getElementById("conversionForm").addEventListener("submit", function(e) {
       e.preventDefault();
-      const valor = Number(document.getElementById("valor").value);
+      const valorInput = document.getElementById("valor").value;
+      const valor = Number(valorInput);
       if (isNaN(valor)) {
          document.getElementById("conversionResult").innerText = "Por favor, ingresa un número válido.";
          return;
       }
       const de = document.getElementById("de_unidad").value;
       const a = document.getElementById("a_unidad").value;
+      // Factores a metros
       const factores = {
         "Milímetros": 0.001,
         "Centímetros": 0.01,
@@ -232,78 +161,9 @@
         document.getElementById("conversionResult").innerText = "Conversión no soportada.";
         return;
       }
+      // Convertir: valor (de) a metros y dividir por factor de a
       const resultado = valor * (factores[de] / factores[a]);
       document.getElementById("conversionResult").innerText = `Resultado: ${resultado.toLocaleString()} ${a}`;
-    });
-    
-    // Toggle para la calculadora de distancias en la página de resultados
-    document.getElementById("toggleDistanceResult").addEventListener("click", function() {
-      const section = document.getElementById("distanceCalculatorResult");
-      section.style.display = (section.style.display === "none" ? "block" : "none");
-    });
-    
-    // Calculadora de distancia en Resultados
-    document.getElementById("distanceFormResult").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const x1 = Number(document.getElementById("x1R").value);
-      const y1 = Number(document.getElementById("y1R").value);
-      const x2 = Number(document.getElementById("x2R").value);
-      const y2 = Number(document.getElementById("y2R").value);
-      const x3Field = document.getElementById("x3R");
-      const y3Field = document.getElementById("y3R");
-      const x3 = x3Field.value ? Number(x3Field.value) : null;
-      const y3 = y3Field.value ? Number(y3Field.value) : null;
-      
-      function calcularDistancia(xa, ya, xb, yb) {
-        const dx = xb - xa;
-        const dy = yb - ya;
-        const d = Math.sqrt(dx * dx + dy * dy);
-        const procedimiento = `√[(${xb} - ${xa})² + (${yb} - ${ya})²] = √[${(dx*dx).toFixed(4)} + ${(dy*dy).toFixed(4)}] = ${d.toFixed(4)}`;
-        return { d, procedimiento };
-      }
-      
-      let resultadoTexto = "";
-      let perimetroTri = "";
-      let areaTri = "";
-      if (x3 === null || y3 === null) {
-        const res = calcularDistancia(x1, y1, x2, y2);
-        resultadoTexto = `Distancia entre Punto 1 y Punto 2:\n${res.procedimiento}`;
-        document.getElementById("triangleGraphR").innerHTML = "";
-      } else {
-        const res1 = calcularDistancia(x1, y1, x2, y2);
-        const res2 = calcularDistancia(x2, y2, x3, y3);
-        const res3 = calcularDistancia(x1, y1, x3, y3);
-        resultadoTexto =
-          "Distancia entre Punto 1 y Punto 2:\n" + res1.procedimiento + "\n\n" +
-          "Distancia entre Punto 2 y Punto 3:\n" + res2.procedimiento + "\n\n" +
-          "Distancia entre Punto 1 y Punto 3:\n" + res3.procedimiento;
-        const d1 = res1.d, d2 = res2.d, d3 = res3.d;
-        const s = (d1 + d2 + d3) / 2;
-        const areaCalc = Math.sqrt(s * (s - d1) * (s - d2) * (s - d3));
-        perimetroTri = `\n\nPerímetro: ${(d1 + d2 + d3).toFixed(4)}`;
-        areaTri = `\nÁrea: ${areaCalc.toFixed(4)}`;
-        resultadoTexto += perimetroTri + areaTri;
-        
-        // Graficar triángulo usando Plotly
-        var trace = {
-          x: [x1, x2, x3, x1],
-          y: [y1, y2, y3, y1],
-          mode: 'lines+markers',
-          marker: {color: 'blue'},
-          line: {width: 2},
-          name: 'Triángulo'
-        };
-        var data = [trace];
-        var layout = {
-          title: 'Gráfica del Triángulo',
-          xaxis: {title: 'Eje X'},
-          yaxis: {title: 'Eje Y'},
-          autosize: true,
-          margin: {l: 40, r: 40, t: 40, b: 40}
-        };
-        Plotly.newPlot('triangleGraphR', data, layout, {responsive: true});
-      }
-      document.getElementById("distanceResultR").innerText = resultadoTexto;
     });
   </script>
 </body>
