@@ -115,7 +115,7 @@
               <label for="yC">Coordenada Y de Punto C (opcional):</label>
               <input type="number" step="any" name="yC" id="yC">
             </div>
-            <button type="button" class="btn" onclick="calcularDistancia()">Calcular Distancia</button>
+            <button type="button" class="btn" style="background-color: black; color: white;" onclick="calcularDistancia()">Calcular Distancia</button>
           </form>
           <div id="distanciaResult" style="margin-top:10px; white-space: pre-wrap;"></div>
         </details>
@@ -189,7 +189,7 @@
     </div>
   </div>
   <script>
-    // Calculadora de conversión de unidades en JavaScript (actualizado para soportar números decimales/grandes)
+    // Calculadora de conversión de unidades en JavaScript (compatible con decimales y números grandes)
     document.getElementById("conversionForm").addEventListener("submit", function(e) {
       e.preventDefault();
       const valorInput = document.getElementById("valor").value;
@@ -230,19 +230,23 @@
        }).then(response => response.json())
          .then(data => {
            if(data.status === "ok"){
-             let resultText = "";
+             let resultHTML = "";
              if(data.tipo === "triangulo"){
-               resultText = "Distancias:\n" +
-                            "AB = " + data.dAB + "\n" +
-                            "BC = " + data.dBC + "\n" +
-                            "AC = " + data.dAC + "\n" +
-                            "Perímetro = " + data.perimetro + "\n" +
-                            "Área = " + data.area + "\n\n" +
-                            "Procedimiento:\n" + data.procedure;
+               resultHTML = "<strong>Distancias:</strong><br>" +
+                            "AB = " + data.dAB + "<br>" +
+                            "BC = " + data.dBC + "<br>" +
+                            "AC = " + data.dAC + "<br>" +
+                            "Perímetro = " + data.perimetro + "<br>" +
+                            "Área = " + data.area + "<br><br>" +
+                            "<strong>Procedimiento:</strong><br>" + data.procedure + "<br><br>";
+               if(data.graph){
+                 resultHTML += data.graph;
+               }
              } else {
-               resultText = "Distancia AB = " + data.dAB + "\n\n" + "Procedimiento:\n" + data.procedure;
+               resultHTML = "<strong>Distancia AB = " + data.dAB + "</strong><br><br>" +
+                            "<strong>Procedimiento:</strong><br>" + data.procedure;
              }
-             document.getElementById("distanciaResult").innerText = resultText;
+             document.getElementById("distanciaResult").innerHTML = resultHTML;
            } else {
              document.getElementById("distanciaResult").innerText = "Error: " + data.message;
            }

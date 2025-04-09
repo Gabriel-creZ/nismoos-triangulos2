@@ -317,6 +317,78 @@ def graficar_triangulo_interactivo(a, b, c, A, B, C):
                       margin=dict(l=20, r=20, t=50, b=20))
     return fig.to_html(full_html=False)
 
+# --- Función para graficar un triángulo a partir de coordenadas ---
+def graficar_triangulo_coord(A, B, C):
+    fig = go.Figure()
+    # Dibujar lados
+    fig.add_trace(go.Scatter(x=[A[0], B[0]], y=[A[1], B[1]],
+                             mode='lines', line=dict(color='blue')))
+    fig.add_trace(go.Scatter(x=[B[0], C[0]], y=[B[1], C[1]],
+                             mode='lines', line=dict(color='red')))
+    fig.add_trace(go.Scatter(x=[C[0], A[0]], y=[C[1], A[1]],
+                             mode='lines', line=dict(color='green')))
+    # No se agrega título
+    fig.update_layout(
+        title="",
+        xaxis=dict(title=""),
+        yaxis=dict(title=""),
+        showlegend=False,
+        margin=dict(l=10, r=10, t=10, b=10)
+    )
+    return fig.to_html(full_html=False)
+
+@app.route('/calcular_distancia', methods=['POST'])
+def calcular_distancia():
+    try:
+        xA = float(request.form.get("xA"))
+        yA = float(request.form.get("yA"))
+        xB = float(request.form.get("xB"))
+        yB = float(request.form.get("yB"))
+        A_point = (xA, yA)
+        B_point = (xB, yB)
+        xC = request.form.get("xC")
+        yC = request.form.get("yC")
+        if xC and yC and xC.strip() != "" and yC.strip() != "":
+            xC = float(xC)
+            yC = float(yC)
+            C_point = (xC, yC)
+            # Calcular distancias entre 3 puntos
+            def distancia_2puntos(P, Q):
+                return math.sqrt((Q[0]-P[0])**2 + (Q[1]-P[1])**2)
+            dAB = distancia_2puntos(A_point, B_point)
+            dBC = distancia_2puntos(B_point, C_point)
+            dAC = distancia_2puntos(A_point, C_point)
+            per = dAB + dBC + dAC
+            s = per / 2
+            area = math.sqrt(s * (s-dAB) * (s-dBC) * (s-dAC))
+            proc = (f"Distancia AB = √(({B_point[0]} - {A_point[0]})² + ({B_point[1]} - {A_point[1]})²) = {dAB:.2f}\n"
+                    f"Distancia BC = √(({C_point[0]} - {B_point[0]})² + ({C_point[1]} - {B_point[1]})²) = {dBC:.2f}\n"
+                    f"Distancia AC = √(({C_point[0]} - {A_point[0]})² + ({C_point[1]} - {A_point[1]})²) = {dAC:.2f}\n"
+                    f"Perímetro = {dAB:.2f} + {dBC:.2f} + {dAC:.2f} = {per:.2f}\n"
+                    f"Semiperímetro = {s:.2f}\n"
+                    f"Área = √({s:.2f}({s-dAB:.2f})({s-dBC:.2f})({s-dAC:.2f})) = {area:.2f}")
+            # Generar la gráfica interactiva a partir de coordenadas
+            graph_html = graficar_triangulo_coord(A_point, B_point, C_point)
+            return {
+                "status": "ok",
+                "tipo": "triangulo",
+                "dAB": f"{dAB:.2f}",
+                "dBC": f"{dBC:.2f}",
+                "dAC": f"{dAC:.2f}",
+                "perimetro": f"{per:.2f}",
+                "area": f"{area:.2f}",
+                "procedure": proc,
+                "graph": graph_html
+            }
+        else:
+            # Calcular distancia entre 2 puntos
+            dist = math.sqrt((B_point[0]-A_point[0])**2 + (B_point[1]-A_point[1])**2)
+            proc = f"Distancia AB = √(({B_point[0]} - {A_point[0]})² + ({B_point[1]} - {A_point[1]})²) = {dist:.2f}"
+            return {"status": "ok", "tipo": "segmento", "dAB": f"{dist:.2f}", "procedure": proc}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+# -----------------------------------------------------------
+
 # -----------------------------------------------------------
 # Ruta para conversión de unidades (calculadora interactiva)
 # -----------------------------------------------------------
@@ -407,7 +479,6 @@ def calcular_distancia_triangulo(A, B, C):
             f"Área = √({s:.2f} * ({s-dAB:.2f}) * ({s-dBC:.2f}) * ({s-dAC:.2f})) = {area:.2f}")
     return dAB, dBC, dAC, per, area, proc
 
-# -----------------------------------------------------------
 @app.route('/calcular_distancia', methods=['POST'])
 def calcular_distancia():
     try:
