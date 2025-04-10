@@ -150,39 +150,6 @@
     </div>
   {% endif %}
   <script>
-    // Calculadora de conversión de unidades en JavaScript (compatible con decimales y números grandes)
-    document.getElementById("conversionForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const valorInput = document.getElementById("valor").value;
-      const valor = Number(valorInput);
-      if (isNaN(valor)) {
-         document.getElementById("conversionResult").innerText = "Por favor, ingresa un número válido.";
-         return;
-      }
-      const de = document.getElementById("de_unidad").value;
-      const a = document.getElementById("a_unidad").value;
-      const factores = {
-        "Milímetros": 0.001,
-        "Centímetros": 0.01,
-        "Decímetros": 0.1,
-        "Metros": 1,
-        "Decámetros": 10,
-        "Hectómetros": 100,
-        "Kilómetros": 1000,
-        "Pulgadas": 0.0254,
-        "Pies": 0.3048,
-        "Yardas": 0.9144,
-        "Millas": 1609.34
-      };
-      if (!(de in factores) || !(a in factores)) {
-        document.getElementById("conversionResult").innerText = "Conversión no soportada.";
-        return;
-      }
-      const resultado = valor * (factores[de] / factores[a]);
-      document.getElementById("conversionResult").innerText = `Resultado: ${resultado.toLocaleString()} ${a}`;
-    });
-
-    // Función para calcular distancia usando AJAX (fetch)
     function calcularDistancia(){
        const formData = new FormData(document.getElementById("distanciaForm"));
        fetch("{{ url_for('calcular_distancia') }}", {
@@ -200,13 +167,17 @@
                             "Perímetro = " + data.perimetro + "\n" +
                             "Área = " + data.area + "\n\n" +
                             "Procedimiento:\n" + data.procedure + "\n\n";
-               if(data.graph){
-                 resultText += "Gráfica:\n" + data.graph;
+               if(data.graph && data.graph.trim() !== ""){
+                 resultText += "A continuación se muestra la gráfica interactiva del triángulo.";
+                 // Insertar la gráfica debajo
+                 document.getElementById("distanciaResult").innerHTML = resultText + "\n\n" + data.graph +
+                 '<p style="text-align:center; margin-top:10px; font-style:italic;">Recomendamos visualizar la gráfica interactiva en PC o tablet.</p>';
+                 return;
                }
              } else {
-               resultText = "Distancia AB = " + data.dAB + "\n\n" + "Procedimiento:\n" + data.procedure;
+               resultText = "Distancia AB = " + data.dAB + "\n\nProcedimiento:\n" + data.procedure;
              }
-             document.getElementById("distanciaResult").innerHTML = resultText;
+             document.getElementById("distanciaResult").innerText = resultText;
            } else {
              document.getElementById("distanciaResult").innerText = "Error: " + data.message;
            }

@@ -189,7 +189,7 @@
     </div>
   </div>
   <script>
-    // Calculadora de conversión de unidades en JavaScript (compatible con decimales y números grandes)
+    // Calculadora de conversión de unidades en JavaScript (actualizada)
     document.getElementById("conversionForm").addEventListener("submit", function(e) {
       e.preventDefault();
       const valorInput = document.getElementById("valor").value;
@@ -221,7 +221,7 @@
       document.getElementById("conversionResult").innerText = `Resultado: ${resultado.toLocaleString()} ${a}`;
     });
 
-    // Función para calcular distancia usando AJAX (fetch)
+    // Función para calcular distancia usando AJAX
     function calcularDistancia(){
        const formData = new FormData(document.getElementById("distanciaForm"));
        fetch("{{ url_for('calcular_distancia') }}", {
@@ -230,23 +230,25 @@
        }).then(response => response.json())
          .then(data => {
            if(data.status === "ok"){
-             let resultHTML = "";
+             let resultText = "";
              if(data.tipo === "triangulo"){
-               resultHTML = "<strong>Distancias:</strong><br>" +
-                            "AB = " + data.dAB + "<br>" +
-                            "BC = " + data.dBC + "<br>" +
-                            "AC = " + data.dAC + "<br>" +
-                            "Perímetro = " + data.perimetro + "<br>" +
-                            "Área = " + data.area + "<br><br>" +
-                            "<strong>Procedimiento:</strong><br>" + data.procedure + "<br><br>";
-               if(data.graph){
-                 resultHTML += data.graph;
+               resultText = "Distancias:\n" +
+                            "AB = " + data.dAB + "\n" +
+                            "BC = " + data.dBC + "\n" +
+                            "AC = " + data.dAC + "\n" +
+                            "Perímetro = " + data.perimetro + "\n" +
+                            "Área = " + data.area + "\n\n" +
+                            "Procedimiento:\n" + data.procedure;
+               if(data.graph && data.graph.trim() !== ""){
+                 resultText += "\n\n";
+                 document.getElementById("distanciaResult").innerHTML = resultText + data.graph +
+                 '<p style="text-align:center; margin-top:10px; font-style:italic;">Recomendamos visualizar la gráfica interactiva en PC o tablet.</p>';
+                 return;
                }
              } else {
-               resultHTML = "<strong>Distancia AB = " + data.dAB + "</strong><br><br>" +
-                            "<strong>Procedimiento:</strong><br>" + data.procedure;
+               resultText = "Distancia AB = " + data.dAB + "\n\nProcedimiento:\n" + data.procedure;
              }
-             document.getElementById("distanciaResult").innerHTML = resultHTML;
+             document.getElementById("distanciaResult").innerText = resultText;
            } else {
              document.getElementById("distanciaResult").innerText = "Error: " + data.message;
            }
