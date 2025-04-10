@@ -430,18 +430,28 @@ def calcular_distancia():
             xC = float(xC)
             yC = float(yC)
             C_point = (xC, yC)
-            dAB, dBC, dAC, per, area, proc = calcular_distancia_triangulo(A_point, B_point, C_point)
-            # Generar gráfica estática usando Matplotlib para el triángulo
+            dAB, pAB = distancia_2puntos(A_point, B_point)
+            dBC, pBC = distancia_2puntos(B_point, C_point)
+            dAC, pAC = distancia_2puntos(A_point, C_point)
+            per = dAB + dBC + dAC
+            s = per / 2
+            area = math.sqrt(s * (s - dAB) * (s - dBC) * (s - dAC))
+            proc = (f"<strong>AB</strong>: {pAB}<br>" +
+                    f"<strong>BC</strong>: {pBC}<br>" +
+                    f"<strong>AC</strong>: {pAC}<br>" +
+                    f"<strong>Perímetro</strong> = {dAB:.4f} + {dBC:.4f} + {dAC:.4f} = {per:.4f}<br>" +
+                    f"<strong>Semiperímetro</strong> = {s:.4f}<br>" +
+                    f"<strong>Área</strong> = √({s:.4f} * ({s-dAB:.4f}) * ({s-dBC:.4f}) * ({s-dAC:.4f})) = {area:.4f}")
             img = graficar_distancia_estatico(A_point, B_point, C_point)
-            graph_html = f'<img src="data:image/png;base64,{img}" alt="Gráfica de Distancia" style="max-width:100%; height:auto;">'
+            graph_html = f'<img src="data:image/png;base64,{img}" alt="Gráfica de Distancia" style="display:block; margin:auto; max-width:100%; height:auto;">'
             return {
                 "status": "ok",
                 "tipo": "triangulo",
-                "dAB": f"{dAB:.2f}",
-                "dBC": f"{dBC:.2f}",
-                "dAC": f"{dAC:.2f}",
-                "perimetro": f"{per:.2f}",
-                "area": f"{area:.2f}",
+                "dAB": f"{dAB:.4f}",
+                "dBC": f"{dBC:.4f}",
+                "dAC": f"{dAC:.4f}",
+                "perimetro": f"{per:.4f}",
+                "area": f"{area:.4f}",
                 "procedure": proc,
                 "graph": graph_html
             }
@@ -450,7 +460,7 @@ def calcular_distancia():
             return {
                 "status": "ok",
                 "tipo": "segmento",
-                "dAB": f"{dAB:.2f}",
+                "dAB": f"{dAB:.4f}",
                 "procedure": proc,
                 "graph": ""
             }

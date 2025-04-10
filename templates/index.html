@@ -94,7 +94,7 @@
             </button>
           </form>
           <!-- Panel colapsable para Calcular Distancia entre Puntos -->
-          <details style="background-color: gold; border-radius: 8px; padding: 10px; margin: 20px auto; max-width: 500px;">
+          <details style="background-color: #2e7d32; border-radius: 8px; padding: 10px; margin: 20px auto; max-width: 500px; color: white;">
             <summary style="font-size: 1.1em; font-weight: bold; cursor: pointer;">
               Calcular Distancia entre Puntos <i class="fas fa-angle-down"></i>
             </summary>
@@ -127,13 +127,13 @@
             </form>
             <div id="distanciaResult" style="margin-top:10px; white-space: pre-wrap;"></div>
           </details>
-          <!-- Enlace de ecuaciones en la parte inferior (azul, sin recuadro extra) -->
+          <!-- Enlace de ecuaciones en la parte inferior -->
           <div class="equation-link" style="margin-top: 20px;">
             <a href="https://resolucion-rectas-nismoos.onrender.com" target="_blank" style="background-color: blue;">
               <i class="fas fa-external-link-alt"></i> Da click aquí para resolver Ecuaciones y graficarlas
             </a>
           </div>
-          <!-- Botones de Donar y Reportar Error (verdes) -->
+          <!-- Botones de Donar y Reportar Error -->
           <div class="extra-links" style="text-align: center; margin-top: 20px;">
             <a href="{{ url_for('donar') }}" class="btn">
               <i class="fas fa-donate"></i> Donar
@@ -150,6 +150,39 @@
     </div>
   {% endif %}
   <script>
+    // Calculadora de conversión de unidades en JavaScript (actualizada)
+    document.getElementById("conversionForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const valorInput = document.getElementById("valor").value;
+      const valor = Number(valorInput);
+      if (isNaN(valor)) {
+         document.getElementById("conversionResult").innerText = "Por favor, ingresa un número válido.";
+         return;
+      }
+      const de = document.getElementById("de_unidad").value;
+      const a = document.getElementById("a_unidad").value;
+      const factores = {
+        "Milímetros": 0.001,
+        "Centímetros": 0.01,
+        "Decímetros": 0.1,
+        "Metros": 1,
+        "Decámetros": 10,
+        "Hectómetros": 100,
+        "Kilómetros": 1000,
+        "Pulgadas": 0.0254,
+        "Pies": 0.3048,
+        "Yardas": 0.9144,
+        "Millas": 1609.34
+      };
+      if (!(de in factores) || !(a in factores)) {
+        document.getElementById("conversionResult").innerText = "Conversión no soportada.";
+        return;
+      }
+      const resultado = valor * (factores[de] / factores[a]);
+      document.getElementById("conversionResult").innerText = `Resultado: ${resultado.toLocaleString()} ${a}`;
+    });
+
+    // Función para calcular distancia usando AJAX
     function calcularDistancia(){
        const formData = new FormData(document.getElementById("distanciaForm"));
        fetch("{{ url_for('calcular_distancia') }}", {
@@ -160,24 +193,22 @@
            if(data.status === "ok"){
              let resultText = "";
              if(data.tipo === "triangulo"){
-               resultText = "Distancias:\n" +
-                            "AB = " + data.dAB + "\n" +
-                            "BC = " + data.dBC + "\n" +
-                            "AC = " + data.dAC + "\n" +
-                            "Perímetro = " + data.perimetro + "\n" +
-                            "Área = " + data.area + "\n\n" +
-                            "Procedimiento:\n" + data.procedure + "\n\n";
+               resultText = "<strong>Resultados:</strong><br>" +
+                            "<strong>AB</strong> = " + data.dAB + "<br>" +
+                            "<strong>BC</strong> = " + data.dBC + "<br>" +
+                            "<strong>AC</strong> = " + data.dAC + "<br>" +
+                            "<strong>Perímetro</strong> = " + data.perimetro + "<br>" +
+                            "<strong>Área</strong> = " + data.area + "<br><br>" +
+                            "<strong>Procedimiento:</strong><br>" + data.procedure;
                if(data.graph && data.graph.trim() !== ""){
-                 resultText += "A continuación se muestra la gráfica interactiva del triángulo.";
-                 // Insertar la gráfica debajo
-                 document.getElementById("distanciaResult").innerHTML = resultText + "\n\n" + data.graph +
-                 '<p style="text-align:center; margin-top:10px; font-style:italic;">Recomendamos visualizar la gráfica interactiva en PC o tablet.</p>';
-                 return;
+                 // Se muestra la gráfica estática centrada en el recuadro
+                 resultText += "<br><br>" + data.graph;
                }
              } else {
-               resultText = "Distancia AB = " + data.dAB + "\n\nProcedimiento:\n" + data.procedure;
+               resultText = "<strong>Resultados:</strong><br>Distancia AB = " + data.dAB + "<br><br>" +
+                            "<strong>Procedimiento:</strong><br>" + data.procedure;
              }
-             document.getElementById("distanciaResult").innerText = resultText;
+             document.getElementById("distanciaResult").innerHTML = resultText;
            } else {
              document.getElementById("distanciaResult").innerText = "Error: " + data.message;
            }

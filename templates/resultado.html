@@ -86,7 +86,7 @@
         </div>
         
         <!-- Panel colapsable para Calcular Distancia entre Puntos -->
-        <details style="background-color: gold; border-radius: 8px; padding: 10px; margin: 20px auto; max-width: 500px;">
+        <details style="background-color: #2e7d32; border-radius: 8px; padding: 10px; margin: 20px auto; max-width: 500px; color: white;">
           <summary style="font-size: 1.1em; font-weight: bold; cursor: pointer;">
             Calcular Distancia entre Puntos <i class="fas fa-angle-down"></i>
           </summary>
@@ -232,23 +232,21 @@
            if(data.status === "ok"){
              let resultText = "";
              if(data.tipo === "triangulo"){
-               resultText = "Distancias:\n" +
-                            "AB = " + data.dAB + "\n" +
-                            "BC = " + data.dBC + "\n" +
-                            "AC = " + data.dAC + "\n" +
-                            "Perímetro = " + data.perimetro + "\n" +
-                            "Área = " + data.area + "\n\n" +
-                            "Procedimiento:\n" + data.procedure;
+               resultText = "<strong>Resultados:</strong><br>" +
+                            "<strong>AB</strong> = " + data.dAB + "<br>" +
+                            "<strong>BC</strong> = " + data.dBC + "<br>" +
+                            "<strong>AC</strong> = " + data.dAC + "<br>" +
+                            "<strong>Perímetro</strong> = " + data.perimetro + "<br>" +
+                            "<strong>Área</strong> = " + data.area + "<br><br>" +
+                            "<strong>Procedimiento:</strong><br>" + data.procedure;
                if(data.graph && data.graph.trim() !== ""){
-                 resultText += "\n\n";
-                 document.getElementById("distanciaResult").innerHTML = resultText + data.graph +
-                 '<p style="text-align:center; margin-top:10px; font-style:italic;">Recomendamos visualizar la gráfica interactiva en PC o tablet.</p>';
-                 return;
+                 resultText += "<br><br>" + data.graph;
                }
              } else {
-               resultText = "Distancia AB = " + data.dAB + "\n\nProcedimiento:\n" + data.procedure;
+               resultText = "<strong>Resultados:</strong><br>Distancia AB = " + data.dAB + "<br><br>" +
+                            "<strong>Procedimiento:</strong><br>" + data.procedure;
              }
-             document.getElementById("distanciaResult").innerText = resultText;
+             document.getElementById("distanciaResult").innerHTML = resultText;
            } else {
              document.getElementById("distanciaResult").innerText = "Error: " + data.message;
            }
