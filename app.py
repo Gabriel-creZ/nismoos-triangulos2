@@ -135,7 +135,7 @@ def resolver_triangulo(a, b, c, A, B, C):
                                       lado_a=a, lado_b=b, lado_c=c), metodo
 
 # -----------------------------------------------------------
-# Funciones adicionales: medianas, circuncentro, ortocentro, tipo y clasificación, conversión de unidades
+# Funciones adicionales: medianas (m₁, m₂, m₃), circuncentro, ortocentro, tipo y clasificación, conversión de unidades
 # -----------------------------------------------------------
 def calcular_medianas(a, b, c):
     m1 = 0.5 * math.sqrt(2*(b**2 + c**2) - a**2)
@@ -203,7 +203,29 @@ def calcular_ortocentro(A, B, C):
     return (Hx, Hy)
 
 # -----------------------------------------------------------
-# Funciones de graficado: estático e interactivo
+# Función para graficar de forma estática la distancia (triángulo)
+# -----------------------------------------------------------
+def graficar_distancia_estatico(A, B, C):
+    plt.figure(figsize=(5,5))
+    # Se dibuja el triángulo conectando A, B y C (y volviendo a A)
+    x_vals = [A[0], B[0], C[0], A[0]]
+    y_vals = [A[1], B[1], C[1], A[1]]
+    plt.plot(x_vals, y_vals, 'o-', color='blue', linewidth=2)
+    # Etiquetas de los puntos
+    plt.text(A[0], A[1], "A", fontsize=12, color='black')
+    plt.text(B[0], B[1], "B", fontsize=12, color='black')
+    plt.text(C[0], C[1], "C", fontsize=12, color='black')
+    plt.grid(True)
+    plt.axis('equal')
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png', bbox_inches="tight")
+    buf.seek(0)
+    img = base64.b64encode(buf.getvalue()).decode("utf-8")
+    plt.close()
+    return img
+
+# -----------------------------------------------------------
+# Funciones de graficado: estático e interactivo del triángulo
 # -----------------------------------------------------------
 def graficar_triangulo_estatico(a, b, c, A, B, C, metodo):
     A_point = (0, 0)
@@ -215,9 +237,9 @@ def graficar_triangulo_estatico(a, b, c, A, B, C, metodo):
     plt.plot([A_point[0], C_point[0]], [A_point[1], C_point[1]], 'r-', label=f"Lado b = {b:.2f}")
     plt.plot([B_point[0], C_point[0]], [B_point[1], C_point[1]], 'g-', label=f"Lado a = {a:.2f}")
     # Medianas: m₁, m₂, m₃
-    mid_AB = ((A_point[0]+B_point[0])/2, (A_point[1]+B_point[1])/2)
-    mid_BC = ((B_point[0]+C_point[0])/2, (B_point[1]+C_point[1])/2)
-    mid_AC = ((A_point[0]+C_point[0])/2, (A_point[1]+C_point[1])/2)
+    mid_AB = ((A_point[0] + B_point[0]) / 2, (A_point[1] + B_point[1]) / 2)
+    mid_BC = ((B_point[0] + C_point[0]) / 2, (B_point[1] + C_point[1]) / 2)
+    mid_AC = ((A_point[0] + C_point[0]) / 2, (A_point[1] + C_point[1]) / 2)
     plt.plot([C_point[0], mid_AB[0]], [C_point[1], mid_AB[1]], 'k--', label="m₁")
     plt.plot([A_point[0], mid_BC[0]], [A_point[1], mid_BC[1]], 'k--', label="m₂")
     plt.plot([B_point[0], mid_AC[0]], [B_point[1], mid_AC[1]], 'k--', label="m₃")
@@ -228,14 +250,14 @@ def graficar_triangulo_estatico(a, b, c, A, B, C, metodo):
     orto = calcular_ortocentro(A_point, B_point, C_point)
     if circ:
         plt.plot(circ[0], circ[1], 'co', markersize=8, label="Circuncentro")
-        plt.text(circ[0]+0.1, circ[1], "Circ.", color='cyan')
+        plt.text(circ[0] + 0.1, circ[1], "Circ.", color='cyan')
     if orto:
         plt.plot(orto[0], orto[1], 'mo', markersize=8, label="Ortocentro")
-        plt.text(orto[0]+0.1, orto[1], "Orto.", color='magenta')
+        plt.text(orto[0] + 0.1, orto[1], "Orto.", color='magenta')
     # Etiquetas de vértices
-    plt.text(A_point[0]-0.2, A_point[1]-0.2, "A", fontsize=12)
-    plt.text(B_point[0]+0.2, B_point[1]-0.2, "B", fontsize=12)
-    plt.text(C_point[0], C_point[1]+0.2, "C", fontsize=12)
+    plt.text(A_point[0] - 0.2, A_point[1] - 0.2, "A", fontsize=12)
+    plt.text(B_point[0] + 0.2, B_point[1] - 0.2, "B", fontsize=12)
+    plt.text(C_point[0], C_point[1] + 0.2, "C", fontsize=12)
     
     plt.xlabel("Eje X")
     plt.ylabel("Eje Y")
@@ -263,9 +285,9 @@ def graficar_triangulo_interactivo(a, b, c, A, B, C):
     fig.add_trace(go.Scatter(x=[B_point[0], C_point[0]], y=[B_point[1], C_point[1]],
                              mode='lines', name=f"Lado a = {a:.2f}", line=dict(color='green')))
     # Medianas
-    mid_AB = ((A_point[0]+B_point[0])/2, (A_point[1]+B_point[1])/2)
-    mid_BC = ((B_point[0]+C_point[0])/2, (B_point[1]+C_point[1])/2)
-    mid_AC = ((A_point[0]+C_point[0])/2, (A_point[1]+C_point[1])/2)
+    mid_AB = ((A_point[0] + B_point[0]) / 2, (A_point[1] + B_point[1]) / 2)
+    mid_BC = ((B_point[0] + C_point[0]) / 2, (B_point[1] + C_point[1]) / 2)
+    mid_AC = ((A_point[0] + C_point[0]) / 2, (A_point[1] + C_point[1]) / 2)
     fig.add_trace(go.Scatter(x=[C_point[0], mid_AB[0]], y=[C_point[1], mid_AB[1]],
                              mode='lines', name="m₁", line=dict(color='black', dash='dash')))
     fig.add_trace(go.Scatter(x=[A_point[0], mid_BC[0]], y=[A_point[1], mid_BC[1]],
@@ -275,7 +297,7 @@ def graficar_triangulo_interactivo(a, b, c, A, B, C):
     # Altura vertical
     fig.add_trace(go.Scatter(x=[C_point[0], C_point[0]], y=[C_point[1], 0],
                              mode='lines', name="Altura", line=dict(color='magenta', dash='dot')))
-    # Circuncentro y ortocentro con etiquetas correctas
+    # Circuncentro y ortocentro con nombres correctos
     circ = calcular_circuncentro(A_point, B_point, C_point)
     orto = calcular_ortocentro(A_point, B_point, C_point)
     if circ:
@@ -409,7 +431,7 @@ def calcular_distancia():
             yC = float(yC)
             C_point = (xC, yC)
             dAB, dBC, dAC, per, area, proc = calcular_distancia_triangulo(A_point, B_point, C_point)
-            # Generar gráfica estática usando Matplotlib
+            # Generar gráfica estática usando Matplotlib para el triángulo
             img = graficar_distancia_estatico(A_point, B_point, C_point)
             graph_html = f'<img src="data:image/png;base64,{img}" alt="Gráfica de Distancia" style="max-width:100%; height:auto;">'
             return {
