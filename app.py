@@ -135,7 +135,7 @@ def resolver_triangulo(a, b, c, A, B, C):
                                       lado_a=a, lado_b=b, lado_c=c), metodo
 
 # -----------------------------------------------------------
-# Funciones adicionales: medianas (m₁, m₂, m₃), circuncentro, ortocentro, tipo y clasificación, conversión de unidades
+# Funciones adicionales: medianas, circuncentro, ortocentro, tipo y clasificación, conversión de unidades
 # -----------------------------------------------------------
 def calcular_medianas(a, b, c):
     m1 = 0.5 * math.sqrt(2*(b**2 + c**2) - a**2)
@@ -275,7 +275,7 @@ def graficar_triangulo_interactivo(a, b, c, A, B, C):
     # Altura vertical
     fig.add_trace(go.Scatter(x=[C_point[0], C_point[0]], y=[C_point[1], 0],
                              mode='lines', name="Altura", line=dict(color='magenta', dash='dot')))
-    # Circuncentro y ortocentro con nombres correctos
+    # Circuncentro y ortocentro con etiquetas correctas
     circ = calcular_circuncentro(A_point, B_point, C_point)
     orto = calcular_ortocentro(A_point, B_point, C_point)
     if circ:
@@ -286,7 +286,7 @@ def graficar_triangulo_interactivo(a, b, c, A, B, C):
         fig.add_trace(go.Scatter(x=[orto[0]], y=[orto[1]], mode='markers+text',
                                  marker=dict(color='magenta', size=10), text=["Ortocentro"],
                                  textposition="top left", name="Ortocentro"))
-    # Etiquetar vértices como "Punto a", "Punto b" y "Punto c"
+    # Etiquetar vértices como "Punto a", "Punto b", "Punto c"
     fig.add_trace(go.Scatter(x=[A_point[0]], y=[A_point[1]], mode='markers+text',
                              text=["Punto a"], textposition="top left", marker=dict(color='black', size=8)))
     fig.add_trace(go.Scatter(x=[B_point[0]], y=[B_point[1]], mode='markers+text',
@@ -409,18 +409,9 @@ def calcular_distancia():
             yC = float(yC)
             C_point = (xC, yC)
             dAB, dBC, dAC, per, area, proc = calcular_distancia_triangulo(A_point, B_point, C_point)
-            # Generar gráfica interactiva con plotly sin título y con márgenes adecuados
-            fig = go.Figure()
-            fig.add_trace(go.Scatter(x=[A_point[0], B_point[0]], y=[A_point[1], B_point[1]],
-                          mode='lines', name="Lado AB", line=dict(color='blue')))
-            fig.add_trace(go.Scatter(x=[B_point[0], C_point[0]], y=[B_point[1], C_point[1]],
-                          mode='lines', name="Lado BC", line=dict(color='red')))
-            fig.add_trace(go.Scatter(x=[A_point[0], C_point[0]], y=[A_point[1], C_point[1]],
-                          mode='lines', name="Lado AC", line=dict(color='green')))
-            fig.update_layout(title="",
-                              autosize=True,
-                              margin=dict(l=20, r=20, t=20, b=20))
-            graph_html = fig.to_html(full_html=False)
+            # Generar gráfica estática usando Matplotlib
+            img = graficar_distancia_estatico(A_point, B_point, C_point)
+            graph_html = f'<img src="data:image/png;base64,{img}" alt="Gráfica de Distancia" style="max-width:100%; height:auto;">'
             return {
                 "status": "ok",
                 "tipo": "triangulo",
